@@ -40,10 +40,5 @@ public class InvSlotIterator implements Iterable<InvSlot>, Iterator<InvSlot> {
 
 	@Override
 	public void remove() { } // do nothing.
-	
-	
 
-
-	
-	
 }

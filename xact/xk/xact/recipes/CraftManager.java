@@ -90,7 +90,7 @@ public class CraftManager {
         FakeCraftingInventory craftGrid = FakeCraftingInventory.emulateContents(ingredients);
         if( craftGrid == null )
             return null;
-        ItemStack output = CraftingManager.getInstance().func_82787_a(craftGrid, world);
+        ItemStack output = CraftingManager.getInstance().findMatchingRecipe(craftGrid, world);
         if( output == null )
             return null;
 

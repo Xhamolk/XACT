@@ -3,7 +3,6 @@ package xk.xact.gui;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.Slot;
 import xk.xact.ItemRecipe;
 import xk.xact.TileCrafter;
@@ -11,8 +10,6 @@ import xk.xact.event.CraftEvent;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 
 /**
  * The container used for the Crafter's GUI.

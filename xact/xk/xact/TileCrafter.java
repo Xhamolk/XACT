@@ -58,12 +58,14 @@ public class TileCrafter extends TileMachine implements IInventory {
 	public TileCrafter() {
 		this.results = new Inventory(4, "Results");
 		this.circuits = new Inventory(4, "Encoded Recipes") {
+			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
 				TileCrafter.this.updateStates();
 			}
 		};
 		this.resources = new Inventory(2*9, "Resources") {
+			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateStates();
 			}
@@ -238,7 +240,7 @@ public class TileCrafter extends TileMachine implements IInventory {
 
 
 
-
+	@Override
 	public void handleEvent(XactEvent event) {
 		if( event instanceof CraftEvent ) {
 			CraftEvent craftEvent = (CraftEvent) event;

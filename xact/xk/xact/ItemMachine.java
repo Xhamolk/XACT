@@ -1,6 +1,5 @@
 package xk.xact;
 
-import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
 

@@ -22,7 +22,7 @@ public class GuiCrafter extends GuiMachine {
 		crafter.updateStates();
 	}
 
-
+	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		// todo: next version: draw the recipe´s ingredients.
 		this.fontRenderer.drawString("XACT Crafter", 50 , 6, 4210752);

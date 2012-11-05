@@ -12,6 +12,7 @@ public abstract class GuiMachine extends GuiContainer {
 		super(container);
 	}
 
+	@Override
 	public void initGui() {
 		super.initGui();
 	}

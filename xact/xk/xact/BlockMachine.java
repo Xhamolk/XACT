@@ -24,12 +24,14 @@ public class BlockMachine extends BlockContainer {
 
 
 	// update block when it's placed on the world.
+	@Override
 	public void updateBlockMetadata(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
 		int type = world.getBlockMetadata(x, y, z);
 		int meta = side << 1 | type;
 		world.setBlockMetadata(x, y, z, meta);
 	}
 
+	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living) {
 		EntityPlayer player = (EntityPlayer) living;
 		int meta = world.getBlockMetadata(x, y, z);
@@ -51,6 +53,7 @@ public class BlockMachine extends BlockContainer {
 		world.setBlockMetadata(x, y, z, meta);
 	}
 
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xOff, float yOff, float zOff){
 
 		if( player.isSneaking() ) {
@@ -71,6 +74,7 @@ public class BlockMachine extends BlockContainer {
 		return true;
 	}
 
+	@Override
 	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
 		TileMachine entity = (TileMachine) world.getBlockTileEntity(x, y, z);
 		
@@ -112,14 +116,15 @@ public class BlockMachine extends BlockContainer {
 			}
 		}
 	}
-	
+
+	@Override
 	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		list.add(new ItemStack(this, 1, metadata & MASK_TYPE));
 		return list;
 	}
 
-
+	@Override
 	public TileEntity createNewTileEntity(World world, int metadata) {
 		int metaType = (metadata & MASK_TYPE);
 		if( metaType == 0 )
@@ -134,12 +139,14 @@ public class BlockMachine extends BlockContainer {
 
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public void addCreativeItems(ArrayList itemList){
 		itemList.add(new ItemStack(this, 1, 0)); // encoder
 		itemList.add(new ItemStack(this, 1, 1)); // crafter
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public void getSubBlocks(int itemID, CreativeTabs tab, List itemList){
 		itemList.add(new ItemStack(this, 1, 0)); // encoder
 		itemList.add(new ItemStack(this, 1, 1)); // crafter
@@ -163,7 +170,7 @@ public class BlockMachine extends BlockContainer {
 	
 	///////////////
 	///// Textures
-	
+	@Override
 	public String getTextureFile(){
 		return XActMod.TEXTURE_BLOCKS;
 	}
@@ -172,6 +179,7 @@ public class BlockMachine extends BlockContainer {
 	// Textures:
 		// [0]  top, front, side, bottom // encoder
 		// [16] top, front, side, bottom // crafter
+	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int metadata){
 		// top, front, side, bottom.
 		int base = (metadata & MASK_TYPE) * 16;

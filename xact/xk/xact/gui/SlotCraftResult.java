@@ -35,7 +35,7 @@ public abstract class SlotCraftResult extends Slot implements SpecialSlot {
 	}
 
 	@Override
-	public void func_82870_a(EntityPlayer player, ItemStack stack) { // onPickupFromSlot
+	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
 		// client side?
 		if( player instanceof EntityClientPlayerMP )
 			return; // this should only be handled server-side.
@@ -56,7 +56,7 @@ public abstract class SlotCraftResult extends Slot implements SpecialSlot {
 
 	@Override
 	public boolean allowPickUp() {
-//		return !crafter.isRedState(recipeIndex);
+//		return !crafter.isRedState(recipeIndex); // todo: re-implement.
 		return crafter.canCraftRecipe(recipeIndex);
 	}
 

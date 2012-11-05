@@ -11,6 +11,7 @@ public class XactTab extends CreativeTabs {
         super("xact");
     }
 
+	@Override
     public ItemStack getIconItemStack() {
         return new ItemStack(XActMod.blockMachine, 1, 1);
     }

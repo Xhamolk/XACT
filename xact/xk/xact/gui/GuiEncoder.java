@@ -21,6 +21,7 @@ public class GuiEncoder extends GuiMachine {
 		this.ghostRenderer = new RenderGhostItem();
 	}
 
+	@Override
 	public void onInit() {
 		ghostRenderer.setTransparency(0.85f);
 		encoder.updateRecipe();
@@ -28,6 +29,7 @@ public class GuiEncoder extends GuiMachine {
 
 	private boolean configured = false;
 
+	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		this.fontRenderer.drawString("XACT Encoder", 50, 6, 4210752);
 		this.fontRenderer.drawString("Player's Inventory", 8, this.ySize - 94, 4210752);
@@ -65,6 +67,7 @@ public class GuiEncoder extends GuiMachine {
 
 	}
 
+	@Override
 	protected void mouseClicked(int x, int y, int par3) {
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;

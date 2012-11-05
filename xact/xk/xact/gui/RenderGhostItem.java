@@ -113,7 +113,7 @@ public class RenderGhostItem extends Render {
 				GL11.glScalef(1.0F, 1.0F, -1.0F);
 				GL11.glRotatef(210.0F, 1.0F, 0.0F, 0.0F);
 				GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
-				int colorFromDamage = Item.itemsList[itemID].func_82790_a(stack, 0); // getColorFromDamage
+				int colorFromDamage = Item.itemsList[itemID].getColorFromItemStack(stack, 0);
 				float red = (float)(colorFromDamage >> 16 & 255) / 255.0F;
 				float green = (float)(colorFromDamage >> 8 & 255) / 255.0F;
 				float blue = (float)(colorFromDamage & 255) / 255.0F;
@@ -136,7 +136,7 @@ public class RenderGhostItem extends Render {
 
 				for (int i = 0; i <= renderPasses; ++i) {
 					int iconFromDamage = Item.itemsList[itemID].getIconFromDamageForRenderPass(itemDamage, i);
-					int colorFromDamage = Item.itemsList[itemID].func_82790_a(stack, 0); // getColorFromDamage
+					int colorFromDamage = Item.itemsList[itemID].getColorFromItemStack(stack, 0);
 					float var11 = (float)(colorFromDamage >> 16 & 255) / 255.0F;
 					float var12 = (float)(colorFromDamage >> 8 & 255) / 255.0F;
 					float var13 = (float)(colorFromDamage & 255) / 255.0F;
@@ -155,7 +155,7 @@ public class RenderGhostItem extends Render {
 
 				renderEngine.bindTexture(renderEngine.getTexture(Item.itemsList[itemID].getTextureFile()));
 
-				int colorFromDamage = Item.itemsList[itemID].func_82790_a(stack, 0); // getColorFromDamage
+				int colorFromDamage = Item.itemsList[itemID].getColorFromItemStack(stack, 0);
 				float red = (float)(colorFromDamage >> 16 & 255) / 255.0F;
 				float green = (float)(colorFromDamage >> 8 & 255) / 255.0F;
 				float blue = (float)(colorFromDamage & 255) / 255.0F;
