@@ -15,4 +15,5 @@ public class XactTab extends CreativeTabs {
     public ItemStack getIconItemStack() {
         return new ItemStack(XActMod.blockMachine, 1, 1);
     }
+
 }

@@ -93,11 +93,18 @@ public abstract class ContainerMachine extends Container {
 			}
 
 			amount = (mouseButton == 0) ? slotStack.stackSize : (slotStack.stackSize + 1) / 2;
-			ItemStack tempStack = slot.decrStackSize(amount);
-			inventoryPlayer.setItemStack(tempStack);
 
-			if (slotStack.stackSize == 0) {
-				slot.putStack(null);
+			if( slot instanceof SlotCraftResult ){
+			    // do not extract.
+				inventoryPlayer.setItemStack(slotStack.copy());
+				slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
+			} else {
+				ItemStack tempStack = slot.decrStackSize(amount);
+				inventoryPlayer.setItemStack(tempStack);
+
+				if (slotStack.stackSize == 0) {
+					slot.putStack(null);
+				}
 			}
 			
 			slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
@@ -144,10 +151,12 @@ public abstract class ContainerMachine extends Container {
 				}
 
 				playerStack.stackSize += amount;
-				slotStack = slot.decrStackSize(amount);
+				if (!(slot instanceof SlotCraftResult)) {
+					slotStack = slot.decrStackSize(amount);
 
-				if (slotStack.stackSize == 0) {
-					slot.putStack(null);
+					if (slotStack != null && slotStack.stackSize == 0) {
+						slot.putStack(null);
+					}
 				}
 
 				slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());

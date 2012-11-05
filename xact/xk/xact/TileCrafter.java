@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import static xk.xact.util.InventoryUtils.addStackToInventory;
 import static xk.xact.util.InventoryUtils.inventoryIterator;
-import static xk.xact.util.InventoryUtils.stackDescription;
 
 /**
  * 
@@ -56,7 +55,14 @@ public class TileCrafter extends TileMachine implements IInventory {
 
 
 	public TileCrafter() {
-		this.results = new Inventory(4, "Results");
+		this.results = new Inventory(4, "Results"){
+			@Override
+			public ItemStack getStackInSlot(int slot) {
+				if( 0 <= slot && slot < 4 )
+					return getRecipeResult(slot);
+				return null;
+			}
+		};
 		this.circuits = new Inventory(4, "Encoded Recipes") {
 			@Override
 			public void onInventoryChanged() {
@@ -109,7 +115,7 @@ public class TileCrafter extends TileMachine implements IInventory {
 
 	private boolean[] redState = new boolean[4];
 
-	private ItemStack[] recipes = new ItemStack[4];
+	private CraftRecipe[] recipes = new CraftRecipe[4];
 
 
 	// whether if the recipe's state must be red.
@@ -118,17 +124,25 @@ public class TileCrafter extends TileMachine implements IInventory {
 	}
 
 	// Gets the recipe's result.
-	public ItemStack getRecipeResult(int index) {
-		return recipes[index];
+	public ItemStack getRecipeResult(int slot) {
+		CraftRecipe recipe = this.getRecipeAt(slot);
+		return recipe == null ? null : recipe.getResult();
 	}
 
 	// updates the stored recipe results.
 	public void updateRecipes() {
 		for(int i=0; i<4; i++) {
-			CraftRecipe recipe = getRecipeAt(i);
-			recipes[i] = (recipe == null) ? null : recipe.getResult();
+			ItemStack stack = this.circuits.getStackInSlot(i);
+			if( stack == null )
+				recipes[i] = null;
+
+			recipes[i] = getRecipeFrom(stack);
 		}
-		results.setContents(recipes);
+
+		for(int i=0; i<4; i++) {
+			ItemStack stack = recipes[i] == null ? null : recipes[i].getResult();
+			results.setInventorySlotContents(i, stack);
+		}
 	}
 
 	public void updateStates() {
@@ -218,7 +232,22 @@ public class TileCrafter extends TileMachine implements IInventory {
 
 
     public String getMissingIngredients(CraftRecipe recipe) {
-        return null; // todo: next version.
+        if( recipe == null )
+			return "<invalid recipe>";
+
+		String retValue = "";
+		ItemStack[] ingredients = recipe.getSimplifiedIngredients();
+		int[] missingCount = getMissingIngredientsCount(recipe);
+		for( int i=0; i<ingredients.length; i++ ){
+			if( missingCount[i] > 0 ) {
+				ItemStack tempStack = ingredients[i].copy();
+				tempStack.stackSize = missingCount[i];
+				retValue += InventoryUtils.stackDescription(tempStack);
+
+				// add commas.
+			}
+		}
+		return retValue.equals("") ? "none" : retValue;
     }
 
 
@@ -231,14 +260,19 @@ public class TileCrafter extends TileMachine implements IInventory {
 	public CraftRecipe getRecipeAt(int slot) {
 		if( slot < 0 || slot > 4 )
 			return null;
-		ItemStack stack = circuits.getStackInSlot(slot);
-		if( stack != null && CraftManager.isEncoded(stack) ){
-			return CraftManager.decodeRecipe(circuits.getStackInSlot(slot));
+		if( recipes[slot] == null ) {
+			ItemStack stack = this.circuits.getStackInSlot(slot);
+			if( stack != null )
+				recipes[slot] = CraftManager.decodeRecipe(stack);
 		}
-		return null;
+		return recipes[slot];
 	}
 
-
+	public CraftRecipe getRecipeFrom(ItemStack stack){
+		if( stack != null && CraftManager.isEncoded(stack) )
+			return CraftManager.decodeRecipe( stack );
+		return null;
+	}
 
 	@Override
 	public void handleEvent(XactEvent event) {
@@ -268,7 +302,7 @@ public class TileCrafter extends TileMachine implements IInventory {
 				ItemStack left = addStackToInventory(stack, craftEvent.player.inventory, false);
 				if( left == null || left.stackSize <= 0 )
 					continue;
-				// item's that can't fit will be dropped. (there's nothing more i can do)
+				// item's that can't fit will be dropped. (there's nothing else i can do)
 				craftEvent.player.dropPlayerItem(left);
 			}
 

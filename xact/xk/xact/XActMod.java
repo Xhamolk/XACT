@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.1")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.02")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = {"xact_chan_enc"}, packetHandler = PacketHandler.class)
 public class XActMod {
@@ -84,15 +84,15 @@ public class XActMod {
 		GameRegistry.registerTileEntity(TileCrafter.class, "tile.xact.Crafter");
 
 		// Add names
-        LanguageRegistry.addName(itemRecipeBlank, "Recipe Chip");
+		LanguageRegistry.addName(itemRecipeBlank, "Recipe Chip");
 		LanguageRegistry.addName(itemRecipeEncoded, "\u00a72"+"Recipe Chip");
 			
 		// machine's names
 		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 0), "XACT Encoder");
 		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 1), "XACT Crafter");
 
-        // tab's name
-        LanguageRegistry.instance().addStringLocalization("itemGroup.xact", "XACT");
+		// tab's name
+		LanguageRegistry.instance().addStringLocalization("itemGroup.xact", "XACT");
 
 		// Register GUIs
 		NetworkRegistry.instance().registerGuiHandler(XActMod.instance, proxy);

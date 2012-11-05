@@ -57,8 +57,6 @@ public class CraftRecipe {
         if( simpleIngredients != null )
             return simpleIngredients;
 
-        System.out.println("Simplifying recipe: " + this);
-
         ArrayList<StackReference> referenceList = new ArrayList<StackReference>() {
             public boolean contains(Object o){
                 if( o == null )
