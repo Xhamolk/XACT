@@ -2,6 +2,7 @@ package xk.xact.gui;
 
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 import xk.xact.ItemRecipe;
@@ -9,6 +10,10 @@ import xk.xact.TileCrafter;
 import xk.xact.event.CraftEvent;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.util.FakeCraftingInventory;
+import xk.xact.util.InvSlot;
+
+import static xk.xact.util.InventoryUtils.inventoryIterator;
 
 
 /**
@@ -31,16 +36,7 @@ public class ContainerCrafter extends ContainerMachine {
 	private void buildContainer() {
 		// craft results
 		for(int i=0; i<4; i++) {
-			addSlotToContainer(new SlotCraftResult(crafter, i, 26 + 36*i, 25){
-				@Override
-				public void fireCraftEvent(ItemStack stack) { // this only gets called server-side
-					CraftRecipe recipe = crafter.getRecipeAt(this.recipeIndex);
-					CraftEvent event = new CraftEvent(player, recipe, stack);
-					crafter.handleEvent(event);
-					crafter.updateRecipes();
-					crafter.updateStates();
-				}
-			});
+			addSlotToContainer(new SlotCraft(crafter, i, 26 + 36*i, 25));
 		}
 
 		// circuits
@@ -85,6 +81,14 @@ public class ContainerCrafter extends ContainerMachine {
 		ItemStack stackInSlot = slot.getStack();
 		ItemStack stack = stackInSlot.copy();
 
+		if( slot instanceof SlotCraft ) {
+			// todo: merge the stack to the resources inv, but don't remove it.
+			if (mergeItemStack(stackInSlot, 8, 8+18, false))
+				return stack;
+
+			return null;
+		}
+
 		// From the crafter to the resources buffer.
 		if( slotID < 8 ) {
 			if (!mergeItemStack(stackInSlot, 8, 18+8, false))
@@ -114,4 +118,5 @@ public class ContainerCrafter extends ContainerMachine {
 
 		return stack;
 	}
+
 }

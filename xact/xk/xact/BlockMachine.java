@@ -40,16 +40,7 @@ public class BlockMachine extends BlockContainer {
 			side = sideByAngles(player, x, y, z);
 		}
 
-		// debugging
-//		player.sendChatToPlayer("Placed with meta: "+meta);
-//		TileEntity entity = world.getBlockTileEntity(x, y, z);
-//		if( entity != null ) {
-//			player.sendChatToPlayer("Real meta: "+entity.blockMetadata);
-//		}
-
 		meta = (side << 1) | (meta & 1);
-//		player.sendChatToPlayer("New meta: "+meta);
-
 		world.setBlockMetadata(x, y, z, meta);
 	}
 
@@ -57,17 +48,8 @@ public class BlockMachine extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xOff, float yOff, float zOff){
 
 		if( player.isSneaking() ) {
-			// debugging
-//			player.sendChatToPlayer("Side: "+ (world.isRemote ? "Client" : "Server"));
-//			int meta = world.getBlockMetadata(x, y, z);
-//			int type = (meta & MASK_TYPE);
-//			int front = (meta & MASK_FRONT) >> 1;
-//			player.sendChatToPlayer("Metadata: "+ meta+". Type: "+type+". Front: "+ front);
-//			return true;
-
 			return false;
 		}
-
 		int type = (world.getBlockMetadata(x, y, z) & 1);
 		player.openGui(XActMod.instance, type, world, x, y, z);
 

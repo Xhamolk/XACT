@@ -1,10 +1,7 @@
 package xk.xact;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.*;
 import xk.xact.event.CraftEvent;
 import xk.xact.event.XactEvent;
 import xk.xact.recipes.CraftManager;
@@ -135,8 +132,8 @@ public class TileCrafter extends TileMachine implements IInventory {
 			ItemStack stack = this.circuits.getStackInSlot(i);
 			if( stack == null )
 				recipes[i] = null;
-
-			recipes[i] = getRecipeFrom(stack);
+			else
+				recipes[i] = getRecipeFrom(stack);
 		}
 
 		for(int i=0; i<4; i++) {
@@ -274,16 +271,19 @@ public class TileCrafter extends TileMachine implements IInventory {
 		return null;
 	}
 
-	@Override
-	public void handleEvent(XactEvent event) {
+	@Override // temporary unused.
+	public void handleEvent(XactEvent event) { // todo: if the items are consumed, move to ContainerCrafter. Might be ready to remove.
 		if( event instanceof CraftEvent ) {
 			CraftEvent craftEvent = (CraftEvent) event;
 			if( craftEvent.recipe == null )
 				return;
 
-			FakeCraftingInventory craftingGrid = generateTemporaryCraftingGridFor(craftEvent.recipe);
-			if( craftingGrid == null )
-                throw new RuntimeException("Can't generate temp grid.");
+			//FakeCraftingInventory craftingGrid = generateTemporaryCraftingGridFor(craftEvent.recipe);
+			FakeCraftingInventory craftingGrid = ((CraftEvent) event).grid;
+			if( craftingGrid == null ) {
+                craftEvent.player.sendChatToPlayer("Can't craft that. Missing: " + this.getMissingIngredients(craftEvent.recipe));
+				return;
+			}
 
 			// follow the crafting rules.
 			ItemStack craftedStack = craftEvent.recipe.getResult();
@@ -295,6 +295,8 @@ public class TileCrafter extends TileMachine implements IInventory {
 
 			// the ingredients left will be added back to the available inventories.
 			restoreItemsLeftInGrid(craftingGrid);
+
+			resources.onInventoryChanged(); // necessary?
 
 			// items still around will be added to the player's inventory.
 			ItemStack[] remainingItems = getItemsLeftInGrid( craftingGrid );
@@ -321,10 +323,10 @@ public class TileCrafter extends TileMachine implements IInventory {
 	 * @return A FakeCraftingInventory
 	 * @throws xk.xact.util.MissingIngredientsException if cannot find enough items to fill the grid with.
 	 */
-	private FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe) {
+	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe) {
 		if( !canCraft(recipe) ) {
             System.err.println("XACT: generateTemporaryCraftingGridFor: !canCraft");
-			throw new RuntimeException("Can't generate temp grid.");
+			return null;
         }
 
 		ItemStack[] ingredients = recipe.getIngredients();
@@ -341,6 +343,8 @@ public class TileCrafter extends TileMachine implements IInventory {
 			// iterate through every slot on every available inventory.
 			for( IInventory inv : getAvailableInventories() ) {
 				for( InvSlot slot : inventoryIterator(inv) ){
+					// todo: the real slot.onSlotChange
+
 					if( required <= 0 ) continue items;
 					if( slot == null )
 						continue;
