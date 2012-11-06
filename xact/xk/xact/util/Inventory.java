@@ -50,9 +50,38 @@ public class Inventory implements IInventory {
 		this.internalInv = contents;
 	}
 
-
 	public ItemStack[] getContents() {
 		return this.internalInv.clone();
+	}
+
+	/**
+	 * Tries to add the stack into this inventory.
+	 * First will try to merge with the not-full stacks, and the remaining will be placed on the first empty slot.
+	 *
+	 * Note: the stack will be manipulated.
+	 * @param stack the stack to add to this inventory. if null, will return true.
+	 * @return true if the stack was added entirely, false otherwise.
+	 */
+	public boolean addStack(ItemStack stack) {
+		if( stack == null )
+			return true;
+
+		// Merge with existing stacks.
+		ItemStack remaining = InventoryUtils.addStackToInventory(stack, this, true);
+		if( remaining == null ) {
+			stack.stackSize = 0;
+			return true;
+		}
+
+		// Add to the first empty slot available.
+		remaining = InventoryUtils.addStackToInventory(remaining, this, false);
+		if( remaining == null ) {
+			stack.stackSize = 0;
+			return true;
+		}
+
+		stack.stackSize = remaining.stackSize;
+		return false;
 	}
     
     @Override
