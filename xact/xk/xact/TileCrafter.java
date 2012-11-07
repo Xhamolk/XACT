@@ -235,13 +235,15 @@ public class TileCrafter extends TileMachine implements IInventory {
 		String retValue = "";
 		ItemStack[] ingredients = recipe.getSimplifiedIngredients();
 		int[] missingCount = getMissingIngredientsCount(recipe);
+		boolean addCommas = false;
 		for( int i=0; i<ingredients.length; i++ ){
 			if( missingCount[i] > 0 ) {
 				ItemStack tempStack = ingredients[i].copy();
 				tempStack.stackSize = missingCount[i];
+				if( addCommas )
+					retValue += ", ";
 				retValue += InventoryUtils.stackDescription(tempStack);
-
-				// add commas.
+				addCommas = true;
 			}
 		}
 		return retValue.equals("") ? "none" : retValue;
