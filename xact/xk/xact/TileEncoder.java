@@ -43,18 +43,18 @@ public class TileEncoder extends TileMachine {
 	public final Inventory craftingGrid = new Inventory(9, "crafting grid") {
 		public void onInventoryChanged(){
 			updateRecipe();
-			updateMode();
 		}
 	};
 
 	/**
 	 * The inventory that stores the circuit placed on the slot. 
 	 */
-	public final Inventory circuitInv = new Inventory(1, "circuit") {
-		public void onInventoryChanged() {
-			updateMode();
-		}
-	};
+	public final Inventory circuitInv = new Inventory(1, "circuit");
+
+	/**
+	 * The inventory that contains the crafting recipe's output.
+	 */
+	public final Inventory outputInv = new Inventory(1, "craft output");
 
 
 	/**
@@ -65,52 +65,6 @@ public class TileEncoder extends TileMachine {
 	public CraftRecipe getCurrentRecipe() {
         return CraftManager.generateRecipe(craftingGrid.getContents(), this.worldObj);
 	}
-
-
-	@Override
-	public void handleEvent(XactEvent event) {
-		if( event instanceof EncodeEvent ) {
-			EncodeEvent encodeEvent = (EncodeEvent) event;
-			ItemStack circuit = circuitInv.getStackInSlot(0);
-			if( circuit == null )
-				return; // do nothing.
-
-			if( currentMode == Mode.READY ) {
-				CraftRecipe recipe = encodeEvent.recipe;
-				if( recipe == null ) {
-					currentMode = Mode.CLEAR;
-					return; // this shouldn't ever happen.
-				}
-
-				if( CraftManager.isValid(circuit) ) {
-					circuitInv.setInventorySlotContents(0, CraftManager.encodeRecipe(recipe));
-
-					// forge crafting events.
-					ItemStack craftedStack = recipe.getResult();
-					GameRegistry.onItemCrafted(encodeEvent.player, craftedStack, craftingGrid);
-					craftedStack.onCrafting(encodeEvent.player.worldObj, encodeEvent.player, craftedStack.stackSize);
-
-					// consume items.
-					consumeIngredients();
-
-					// update recipe.
-					updateRecipe();
-
-					currentMode = Mode.SUCCESS;
-					return;
-				}
-			}
-
-			if( currentMode == Mode.CLEAR ) {
-				// clear the recipe.
-				ItemStack blankRecipe = new ItemStack(XActMod.itemRecipeBlank, 1);
-				circuitInv.setInventorySlotContents(0, blankRecipe);
-
-				currentMode = Mode.NONE;
-			}
-		}
-	}
-
 
 	@Override
 	public ArrayList<ItemStack> getDropItems() {
@@ -128,44 +82,12 @@ public class TileEncoder extends TileMachine {
 	}
 
 
-	/**
-	 * Consumes the items on the crafting grid.
-	 */
-	private void consumeIngredients() {
-		for( int i=0; i<9; i++ ){
-			craftingGrid.decrStackSize(i, 1);
-		}
-	}
-
-
 	///////////////
 	///// Current State  
 
-	public Mode currentMode = Mode.NONE; // todo: remove
-	
-	public ItemStack currentRecipe = null;
-
 	public void updateRecipe() {
 		CraftRecipe recipe = getCurrentRecipe();
-		currentRecipe = ( recipe == null ) ? null : recipe.getResult();
-	}
-
-	private void updateMode() {
-		ItemStack stack = circuitInv.getStackInSlot(0);
-		if( stack == null ) {
-			currentMode = Mode.NONE;
-			return;
-		}
-		if( CraftManager.isEncoded( stack )){
-			currentMode = Mode.CLEAR;
-		} else {
-			currentMode = (currentRecipe != null) ? Mode.READY : Mode.NONE;
-		}
-	}
-
-
-	public static enum Mode {
-		READY, SUCCESS, CLEAR, NONE
+		outputInv.setInventorySlotContents(0, recipe != null ? recipe.getResult() : null );
 	}
 
 
@@ -177,6 +99,7 @@ public class TileEncoder extends TileMachine {
 		super.readFromNBT(compound);
 		craftingGrid.readFromNBT(compound);
 		circuitInv.readFromNBT(compound);
+		outputInv.readFromNBT(compound);
 	}
 	
 	@Override
@@ -184,6 +107,7 @@ public class TileEncoder extends TileMachine {
 		super.writeToNBT(compound);
 		craftingGrid.writeToNBT(compound);
 		circuitInv.writeToNBT(compound);
+		outputInv.writeToNBT(compound);
 	}
 
 }

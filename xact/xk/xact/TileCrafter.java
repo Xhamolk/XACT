@@ -299,8 +299,6 @@ public class TileCrafter extends TileMachine implements IInventory {
 			// iterate through every slot on every available inventory.
 			for( IInventory inv : getAvailableInventories() ) {
 				for( InvSlot slot : inventoryIterator(inv) ){
-					// todo: the real slot.onSlotChange
-
 					if( required <= 0 ) continue items;
 					if( slot == null )
 						continue;
@@ -330,8 +328,6 @@ public class TileCrafter extends TileMachine implements IInventory {
 
 		return FakeCraftingInventory.emulateContents(contents);
 	}
-
-	public void handleEvent(XactEvent event) {} // unused.
 
 	///////////////
 	///// IInventory: provide access to the resources inventory

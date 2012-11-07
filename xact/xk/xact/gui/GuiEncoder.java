@@ -56,13 +56,6 @@ public class GuiEncoder extends GuiMachine {
 			// paint at (133,19), from (176, 14*buttonIndex), size is (14, 14).
 			this.drawTexturedModalRect(cornerX+ 133, cornerY+ 19, 176, 14*buttonIndex, 14, 14);
 		}
-		
-		// Draw the current recipe.
-		if( encoder.currentRecipe != null ){
-			// 16x16 slot -> (98, 21);
-			// 18x18 slot -> (97, 20);
-			ghostRenderer.renderStackOnGUI(encoder.currentRecipe, cornerX+ 98, cornerY+ 21);
-		}
 
 	}
 
@@ -74,9 +67,6 @@ public class GuiEncoder extends GuiMachine {
 		
 		if( cornerX+ 134 <= x && x < cornerX+ 148 ) {
 			if( cornerY+ 19 <= y && y < cornerY+ 33 ) {
-//				if( encoder.currentMode == TileEncoder.Mode.NONE || encoder.currentMode == TileEncoder.Mode.SUCCESS )
-//					return; // do nothing.
-
 				fireEvent();
 				return;
 			}
@@ -86,14 +76,6 @@ public class GuiEncoder extends GuiMachine {
 
 	// used by drawGuiContainerBackgroundLayer to get the button texture.
 	private int getButtonIndex() {
-//		switch (encoder.currentMode) {
-//			case READY:
-//				return 0;
-//			case SUCCESS:
-//				return 1;
-//			case CLEAR:
-//				return 2;
-//		}
 		switch (encoder.mode) {
 			case TileEncoder.MODE_ENCODE:
 				return 0;

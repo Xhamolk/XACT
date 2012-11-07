@@ -15,6 +15,4 @@ public abstract class TileMachine extends TileEntity {
 	
 	public abstract ArrayList<ItemStack> getDropItems();
 
-	public abstract void handleEvent(XactEvent event);
-
 }
