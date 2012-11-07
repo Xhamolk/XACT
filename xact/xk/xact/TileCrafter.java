@@ -271,50 +271,6 @@ public class TileCrafter extends TileMachine implements IInventory {
 		return null;
 	}
 
-	@Override // temporary unused.
-	public void handleEvent(XactEvent event) { // todo: if the items are consumed, move to ContainerCrafter. Might be ready to remove.
-		if( event instanceof CraftEvent ) {
-			CraftEvent craftEvent = (CraftEvent) event;
-			if( craftEvent.recipe == null )
-				return;
-
-			//FakeCraftingInventory craftingGrid = generateTemporaryCraftingGridFor(craftEvent.recipe);
-			FakeCraftingInventory craftingGrid = ((CraftEvent) event).grid;
-			if( craftingGrid == null ) {
-                craftEvent.player.sendChatToPlayer("Can't craft that. Missing: " + this.getMissingIngredients(craftEvent.recipe));
-				return;
-			}
-
-			// follow the crafting rules.
-			ItemStack craftedStack = craftEvent.recipe.getResult();
-			GameRegistry.onItemCrafted(craftEvent.player, craftedStack, craftingGrid);
-			craftedStack.onCrafting(craftEvent.player.worldObj, craftEvent.player, craftedStack.stackSize);
-
-			// consume items
-			consumeItemsBy(craftEvent.player, craftingGrid);
-
-			// the ingredients left will be added back to the available inventories.
-			restoreItemsLeftInGrid(craftingGrid);
-
-			resources.onInventoryChanged(); // necessary?
-
-			// items still around will be added to the player's inventory.
-			ItemStack[] remainingItems = getItemsLeftInGrid( craftingGrid );
-			for(ItemStack stack : remainingItems) {
-				ItemStack left = addStackToInventory(stack, craftEvent.player.inventory, false);
-				if( left == null || left.stackSize <= 0 )
-					continue;
-				// item's that can't fit will be dropped. (there's nothing else i can do)
-				craftEvent.player.dropPlayerItem(left);
-			}
-
-			// just in case.
-			craftingGrid.cleanContents();
-		}
-	}
-
-
-
 	/**
 	 * Will generate a temporary crafting grid based on the recipe's ingredients.
 	 * The items that populate the grid will be taken from the available inventories.
@@ -375,96 +331,7 @@ public class TileCrafter extends TileMachine implements IInventory {
 		return FakeCraftingInventory.emulateContents(contents);
 	}
 
-
-	/**
-	 * Decreases all the stacks found on the inventory by one.
-	 * Does the same a vanilla Crafting table does when the crafted item is pulled out.
-	 *
-	 * @param player the player that crafts the item.
-	 * @param craftingGrid the
-	 */
-	private void consumeItemsBy(EntityPlayer player, IInventory craftingGrid) {
-		for( int i=0; i<craftingGrid.getSizeInventory(); i++) {
-			ItemStack stack = craftingGrid.getStackInSlot(i);
-			if( stack == null )
-				continue;
-
-			craftingGrid.decrStackSize(i, 1);
-			if( !stack.getItem().hasContainerItem() )
-				continue;
-
-			ItemStack containerStack = stack.getItem().getContainerItemStack(stack);
-			if( stack.getItem().doesContainerItemLeaveCraftingGrid(stack) ) {
-				if( !player.inventory.addItemStackToInventory(containerStack))    {
-					ItemStack stack1 = craftingGrid.getStackInSlot(i);
-					if( stack1 == null )
-						craftingGrid.setInventorySlotContents(i, containerStack);
-					else
-						player.dropPlayerItem(containerStack);
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Will try to return the items left on the crafting grid to the resources buffer.
-	 * If they can't fit, then will try on the next available inventory.
-	 * 
-	 * Note: items will first try to merge with the already existing stacks of the same kind,
-	 * if there's not possible, empty slots will be considered.
-	 * 
-	 * Consider the scenario where the crafting grid will still have some items remaining after calling this.
-	 * 
-	 * @param craftingGrid the temporary crafting grid used to craft recipes.
-	 */
-	private void restoreItemsLeftInGrid(FakeCraftingInventory craftingGrid) {
-		nextItem: for(InvSlot current : inventoryIterator(craftingGrid) ){
-			if( current == null )
-				continue;
-			
-			// first, try to add it to slots with some of the same item. 
-			for( IInventory inv : this.getAvailableInventories() ){
-				ItemStack stackLeft = addStackToInventory(current.stack, inv, true);
-				if( stackLeft == null || stackLeft.stackSize <= 0)
-					continue nextItem;
-			}
-			
-			// then, add it to the empty slots.
-			for( IInventory inv : this.getAvailableInventories() ){
-				// at this point, the only available slots are the empty ones.
-				ItemStack stackLeft = addStackToInventory(current.stack, inv, false);
-				if( stackLeft == null || stackLeft.stackSize <= 0)
-					continue nextItem;
-			}
-		}
-		
-		// remove invalid stacks (where it's stackSize == 0)
-		for( int i=0; i< craftingGrid.getSizeInventory(); i++ ){
-			ItemStack stackInSlot = craftingGrid.getStackInSlot(i);
-			if( stackInSlot != null && stackInSlot.stackSize <= 0 ){
-				craftingGrid.setInventorySlotContents(i, null);
-			}
-		}
-	}
-
-	/**
-	 * Gets all the items left in the crafting grid.
-	 * 
-	 * @param craftingGrid the temporary crafting grid used to craft recipes.
-	 * @return an array containing all the stacks found on the passed crafting grid.
-	 */
-	private ItemStack[] getItemsLeftInGrid(FakeCraftingInventory craftingGrid) {
-		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		for( InvSlot current : inventoryIterator(craftingGrid) ) {
-			if( current != null && current.stack != null )
-				list.add( current.stack );
-		}
-		return list.toArray(new ItemStack[list.size()]);
-	}
-
-
-
+	public void handleEvent(XactEvent event) {} // unused.
 
 	///////////////
 	///// IInventory: provide access to the resources inventory
