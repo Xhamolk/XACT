@@ -1,8 +1,7 @@
 package xk.xact;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.src.*;
-import xk.xact.event.CraftEvent;
+
 import xk.xact.event.XactEvent;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
@@ -13,7 +12,6 @@ import xk.xact.util.InventoryUtils;
 
 import java.util.ArrayList;
 
-import static xk.xact.util.InventoryUtils.addStackToInventory;
 import static xk.xact.util.InventoryUtils.inventoryIterator;
 
 /**
