@@ -113,9 +113,8 @@ public class ContainerCrafter extends ContainerMachine {
 		return stack;
 	}
 
-	public ItemStack slotClick(int slotID, int mouseButton, int flag, EntityPlayer player)
-	{
-		ItemStack var5 = null;
+	public ItemStack slotClick(int slotID, int mouseButton, int flag, EntityPlayer player) {
+		ItemStack retValue = null;
 		InventoryPlayer inventoryPlayer = player.inventory;
 		Slot slot;
 		ItemStack stackInSlot;
@@ -154,7 +153,7 @@ public class ContainerCrafter extends ContainerMachine {
 
 					if (stackInSlot != null) {
 						int var12 = stackInSlot.itemID;
-						var5 = stackInSlot.copy();
+						retValue = stackInSlot.copy();
 
 						if (slot != null && slot.getStack() != null && !(slot instanceof SlotCraft) && slot.getStack().itemID == var12) {
 							this.retrySlotClick(slotID, mouseButton, true, player);
@@ -178,7 +177,7 @@ public class ContainerCrafter extends ContainerMachine {
 
 					if (stackInSlot != null)
 					{
-						var5 = stackInSlot.copy();
+						retValue = stackInSlot.copy();
 					}
 
 					if (stackInSlot == null)
@@ -230,7 +229,7 @@ public class ContainerCrafter extends ContainerMachine {
 
 								if (var13.stackSize == 0)
 								{
-									inventoryPlayer.setItemStack((ItemStack) null);
+									inventoryPlayer.setItemStack(null);
 								}
 
 								stackInSlot.stackSize += amount;
@@ -252,7 +251,7 @@ public class ContainerCrafter extends ContainerMachine {
 
 								if (stackInSlot.stackSize == 0)
 								{
-									slot.putStack((ItemStack)null);
+									slot.putStack(null);
 								}
 
 								slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
@@ -290,7 +289,7 @@ public class ContainerCrafter extends ContainerMachine {
 						if (amount > -1)
 						{
 							inventoryPlayer.addItemStackToInventory(stackInSlot);
-							slot.putStack((ItemStack)null);
+							slot.putStack(null);
 							slot.onPickupFromSlot(player, var11);
 						}
 					}
@@ -302,7 +301,7 @@ public class ContainerCrafter extends ContainerMachine {
 				}
 				else if (!slot.getHasStack() && stackInSlot != null && slot.isItemValid(stackInSlot))
 				{
-					inventoryPlayer.setInventorySlotContents(mouseButton, (ItemStack) null);
+					inventoryPlayer.setInventorySlotContents(mouseButton, null);
 					slot.putStack(stackInSlot);
 				}
 			}
@@ -319,7 +318,7 @@ public class ContainerCrafter extends ContainerMachine {
 			}
 		}
 
-		return var5;
+		return retValue;
 	}
 
 
