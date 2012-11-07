@@ -15,6 +15,7 @@ public abstract class GuiMachine extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
+		this.onInit();
 	}
 
 	public abstract void onInit();

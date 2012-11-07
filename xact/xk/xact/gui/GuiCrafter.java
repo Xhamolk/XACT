@@ -25,7 +25,7 @@ public class GuiCrafter extends GuiMachine {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		// todo: next version: draw the recipe´s ingredients.
-		this.fontRenderer.drawString("XACT Crafter", 50 , 6, 4210752);
+		this.fontRenderer.drawString("X.A.C.T. Crafter", 50 , 6, 4210752);
 		this.fontRenderer.drawString("Player's Inventory", 8, this.ySize - 92, 4210752);
 	}
 
