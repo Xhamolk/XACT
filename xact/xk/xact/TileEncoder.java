@@ -32,6 +32,10 @@ public class TileEncoder extends TileMachine {
 
 	 */
 
+	public static final byte MODE_ENCODE = 1;
+	public static final byte MODE_CLEAR = 2;
+
+	public byte mode = MODE_ENCODE;
 
 	/**
 	 * The simulated crafting grid.
@@ -52,23 +56,6 @@ public class TileEncoder extends TileMachine {
 		}
 	};
 
-	
-	// remove, as it's not used.
-	public void encodeRecipe(CraftRecipe recipe) {
-		ItemStack circuit = circuitInv.getStackInSlot(0);
-		if( circuit == null )
-			return;
-
-		// if the recipe is invalid (therefore null), clear the circuit.
-		if( recipe == null ){
-			circuitInv.setInventorySlotContents(0, new ItemStack(XActMod.itemRecipeBlank, 1));
-			return;
-		}
-
-		if( CraftManager.isValid(circuit) ) {
-			circuitInv.setInventorySlotContents(0, CraftManager.encodeRecipe(recipe));
-		}
-	}
 
 	/**
 	 * Gets the recipe that matches the current crafting grid.
@@ -154,7 +141,7 @@ public class TileEncoder extends TileMachine {
 	///////////////
 	///// Current State  
 
-	public Mode currentMode = Mode.NONE;
+	public Mode currentMode = Mode.NONE; // todo: remove
 	
 	public ItemStack currentRecipe = null;
 

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.3")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.4")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = {"xact_chan_enc"}, packetHandler = PacketHandler.class)
 public class XActMod {
@@ -96,12 +96,12 @@ public class XActMod {
 
 		// Register GUIs
 		NetworkRegistry.instance().registerGuiHandler(XActMod.instance, proxy);
+
+		// Add the recipes
+		addRecipes();
 	}
 
-
-
-    @Mod.PostInit
-	private void addRecipes(FMLPostInitializationEvent event) {
+	private void addRecipes() {
 		ItemStack[] ingredients;
 		
 		// Recipe Chip

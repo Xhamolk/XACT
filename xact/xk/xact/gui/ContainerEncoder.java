@@ -6,7 +6,6 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 import xk.xact.ItemRecipe;
 import xk.xact.TileEncoder;
-import xk.xact.recipes.CraftManager;
 
 public class ContainerEncoder extends ContainerMachine {
 
@@ -31,12 +30,7 @@ public class ContainerEncoder extends ContainerMachine {
 		}
 
 		// circuit slot
-		addSlotToContainer(new SlotRestricted(encoder.circuitInv, 0, 133, 49) {
-			@Override
-			public boolean isItemValid(ItemStack stack) {
-				return CraftManager.isValid(stack);
-			}
-		});
+		addSlotToContainer(new SlotEncode(encoder, 133, 49));
 
 		// player's inventory
 		for(int i=0; i<3; i++) {
@@ -70,10 +64,14 @@ public class ContainerEncoder extends ContainerMachine {
 
 			// Chips by default go to the chip slot.
 			if( stackInSlot.getItem() instanceof ItemRecipe ){
-                // TODO: make sure only one chip is added.
-
-				if (!mergeItemStack(stackInSlot, 9, 10, false))
-					return null;
+                if( stackInSlot.stackSize > 1 ) {
+					ItemStack stack_ = slot.decrStackSize(1);
+					if (!mergeItemStack(stack_, 9, 10, false))
+						return null;
+				} else {
+					if (!mergeItemStack(stackInSlot, 9, 10, false))
+						return null;
+				}
 			} else { // any other item goes to the crafting grid.
 				if (!mergeItemStack(stackInSlot, 0, 9, false))
 					return null;
@@ -82,10 +80,8 @@ public class ContainerEncoder extends ContainerMachine {
 
 		if ( stackInSlot.stackSize == 0 ) {
 			slot.putStack(null);
-		} else {
-			slot.onSlotChanged();
 		}
-		
+		slot.onSlotChanged();
 		
 		return stack;
 	}

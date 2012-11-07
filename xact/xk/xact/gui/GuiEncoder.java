@@ -5,7 +5,6 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Packet250CustomPayload;
 import org.lwjgl.opengl.GL11;
 import xk.xact.TileEncoder;
-import xk.xact.event.EncodeEvent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -75,8 +74,8 @@ public class GuiEncoder extends GuiMachine {
 		
 		if( cornerX+ 134 <= x && x < cornerX+ 148 ) {
 			if( cornerY+ 19 <= y && y < cornerY+ 33 ) {
-				if( encoder.currentMode == TileEncoder.Mode.NONE || encoder.currentMode == TileEncoder.Mode.SUCCESS )
-					return; // do nothing.
+//				if( encoder.currentMode == TileEncoder.Mode.NONE || encoder.currentMode == TileEncoder.Mode.SUCCESS )
+//					return; // do nothing.
 
 				fireEvent();
 				return;
@@ -87,36 +86,55 @@ public class GuiEncoder extends GuiMachine {
 
 	// used by drawGuiContainerBackgroundLayer to get the button texture.
 	private int getButtonIndex() {
-		switch (encoder.currentMode) {
-			case READY:
+//		switch (encoder.currentMode) {
+//			case READY:
+//				return 0;
+//			case SUCCESS:
+//				return 1;
+//			case CLEAR:
+//				return 2;
+//		}
+		switch (encoder.mode) {
+			case TileEncoder.MODE_ENCODE:
 				return 0;
-			case SUCCESS:
-				return 1;
-			case CLEAR:
+			case TileEncoder.MODE_CLEAR:
 				return 2;
 		}
 		return -1;
 	}
 
 	private void fireEvent() {
-		// Client Side:
-        EncodeEvent event = new EncodeEvent(mc.thePlayer, encoder.getCurrentRecipe());
-		encoder.handleEvent(event);
-		this.inventorySlots.getSlotFromInventory(encoder.circuitInv, 0).onSlotChanged();
-        encoder.currentMode = TileEncoder.Mode.SUCCESS;
+		byte nextMode = -1;
+		switch (encoder.mode) {
+			case TileEncoder.MODE_ENCODE:
+				nextMode = TileEncoder.MODE_CLEAR;
+				break;
+			case TileEncoder.MODE_CLEAR:
+				nextMode = TileEncoder.MODE_ENCODE;
+				break;
+		}
 
+		if( nextMode == -1 )
+			return;
 
-        // Send the packet to the server.
+		encoder.mode = nextMode;
+		this.mc.thePlayer.sendQueue.addToSendQueue(newPacket(nextMode));
+	}
+
+	private Packet250CustomPayload newPacket(byte nextMode) {
+
+		// Send the packet to the server.
 		int x = encoder.xCoord;
 		int y = encoder.yCoord;
 		int z = encoder.zCoord;
 
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(12);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(13); // 3 integers(12) + 1 byte.
 		DataOutputStream outputStream = new DataOutputStream(bos);
 		try {
 			outputStream.writeInt(x);
 			outputStream.writeInt(y);
 			outputStream.writeInt(z);
+			outputStream.writeByte(nextMode);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -126,9 +144,7 @@ public class GuiEncoder extends GuiMachine {
 		packet.data = bos.toByteArray();
 		packet.length = bos.size();
 
-
-		this.mc.thePlayer.sendQueue.addToSendQueue(packet);
+		return packet;
 	}
-
 
 }
