@@ -50,7 +50,7 @@ public class TileCrafter extends TileMachine implements IInventory {
 
 
 	public TileCrafter() {
-		this.results = new Inventory(4, "Results"){
+		this.results = new Inventory(4, "Results") {
 			@Override
 			public ItemStack getStackInSlot(int slot) {
 				if( 0 <= slot && slot < 4 )

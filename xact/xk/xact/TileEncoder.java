@@ -42,6 +42,7 @@ public class TileEncoder extends TileMachine {
 	 */
 	public final Inventory craftingGrid = new Inventory(9, "crafting grid") {
 		public void onInventoryChanged(){
+			super.onInventoryChanged();
 			updateRecipe();
 		}
 	};

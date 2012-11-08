@@ -132,7 +132,14 @@ public class Inventory implements IInventory {
     }
 
     @Override
-    public void onInventoryChanged() { }
+    public void onInventoryChanged() {
+	    for(int i=0; i<this.size; i++) {
+			ItemStack stack = this.getStackInSlot(i);
+			if( stack != null && stack.stackSize == 0 )
+				this.setInventorySlotContents(i, null);
+		}
+	}
+
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
