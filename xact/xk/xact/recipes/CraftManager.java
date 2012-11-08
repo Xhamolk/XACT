@@ -5,8 +5,6 @@ import xk.xact.ItemRecipe;
 import xk.xact.XActMod;
 import xk.xact.util.FakeCraftingInventory;
 
-import java.util.Iterator;
-
 /**
  * Handles the encoding/decoding of CraftRecipes.
  * @author Xhamolk_

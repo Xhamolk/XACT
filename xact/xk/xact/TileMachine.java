@@ -3,7 +3,6 @@ package xk.xact;
 
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.TileEntity;
-import xk.xact.event.XactEvent;
 
 import java.util.ArrayList;
 

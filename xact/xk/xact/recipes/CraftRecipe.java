@@ -4,7 +4,6 @@ import net.minecraft.src.ItemStack;
 import xk.xact.util.StackReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * The representation of a crafting recipe.

@@ -4,7 +4,6 @@ package xk.xact.gui;
 import net.minecraft.src.*;
 import xk.xact.ItemRecipe;
 import xk.xact.TileEncoder;
-import xk.xact.recipes.CraftRecipe;
 
 public class ContainerEncoder extends ContainerMachine {
 

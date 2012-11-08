@@ -1,10 +1,7 @@
 package xk.xact;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
-import xk.xact.event.EncodeEvent;
-import xk.xact.event.XactEvent;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.Inventory;

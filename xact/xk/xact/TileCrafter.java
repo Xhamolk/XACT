@@ -2,7 +2,6 @@ package xk.xact;
 
 import net.minecraft.src.*;
 
-import xk.xact.event.XactEvent;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.FakeCraftingInventory;
