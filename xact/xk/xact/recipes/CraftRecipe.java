@@ -79,6 +79,7 @@ public class CraftRecipe {
                     if( !referenceList.contains(reference) ) {
                         referenceList.add( reference );
                         ++added;
+						System.out.print("ref: "+reference.stack.getItem().getItemDisplayName(reference.stack));
                     }
                     referenceList.get(added -1).amount += 1;
                 }

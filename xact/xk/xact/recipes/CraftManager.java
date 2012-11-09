@@ -97,6 +97,7 @@ public class CraftManager {
             if( ingredients[i] != null ) {
                 realIngredients[i] = ingredients[i].copy();
                 realIngredients[i].stackSize = 1;
+				System.out.println("gen: "+ realIngredients[i].getItem().getItemDisplayName(realIngredients[i]));
             } else
                 realIngredients[i] = null;
         }
