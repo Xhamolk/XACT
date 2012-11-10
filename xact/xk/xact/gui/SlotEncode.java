@@ -35,7 +35,7 @@ public class SlotEncode extends Slot {
 		if( encoder.mode == TileEncoder.MODE_ENCODE ) {
 			CraftRecipe recipe = encoder.getCurrentRecipe();
 			if( recipe != null ) {
-				System.out.println("picked: "+recipe + " : " + recipe.ingredientsToString());
+				// System.out.println("picked: "+recipe + " : " + recipe.ingredientsToString());
 				player.inventory.setItemStack( CraftManager.encodeRecipe(recipe) );
 			} else {
 				player.inventory.setItemStack( new ItemStack(XActMod.itemRecipeBlank) );

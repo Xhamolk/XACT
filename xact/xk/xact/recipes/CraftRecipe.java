@@ -1,9 +1,7 @@
 package xk.xact.recipes;
 
 import net.minecraft.src.ItemStack;
-import xk.xact.util.StackReference;
-
-import java.util.ArrayList;
+import xk.xact.util.StackList;
 
 /**
  * The representation of a crafting recipe.
@@ -56,32 +54,12 @@ public class CraftRecipe {
         if( simpleIngredients != null )
             return simpleIngredients;
 
-        ArrayList<StackReference> referenceList = new ArrayList<StackReference>() {
-            public boolean contains(Object o){
-                if( o == null )
-                    return false;
-                for( StackReference current : this ) {
-                    if( current != null ){
-                        if( current.equals(o) )
-                            return true;
-                    }
-                }
-                return false;
-            }
-        };
-
-        int added = 0;
+		StackList list = new StackList();
         for( ItemStack current : getIngredients() ){
             try {
                 if( current != null ) {
-                    StackReference reference = new StackReference(current);
-
-                    if( !referenceList.contains(reference) ) {
-                        referenceList.add( reference );
-                        ++added;
-						System.out.print("ref: "+reference.stack.getItem().getItemDisplayName(reference.stack));
-                    }
-                    referenceList.get(added -1).amount += 1;
+					list.addStack(current);
+					// System.out.println("simple-ref: "+current.getItem().getItemDisplayName(current));
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -89,8 +67,7 @@ public class CraftRecipe {
             }
         }
 
-
-        return simpleIngredients = StackReference.toItemStacks(referenceList.toArray(new StackReference[referenceList.size()]));
+		return simpleIngredients = list.toArray();
 	}
 
 
