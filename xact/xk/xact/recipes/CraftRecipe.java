@@ -58,7 +58,7 @@ public class CraftRecipe {
         for( ItemStack current : getIngredients() ){
             try {
                 if( current != null ) {
-					list.addStack(current);
+					list.addStack(current.copy());
 					// System.out.println("simple-ref: "+current.getItem().getItemDisplayName(current));
                 }
             }catch (Exception e){

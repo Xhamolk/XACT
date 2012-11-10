@@ -104,7 +104,7 @@ public class InventoryUtils {
 				if( ignoreEmpty ) continue;
 
 				// the slot is empty, so feel free to add it.
-				inv.setInventorySlotContents(slot.slotIndex, stack);
+				inv.setInventorySlotContents(slot.slotIndex, stack.copy());
 				inv.onInventoryChanged();
 				stack.stackSize = 0;
 				return null; // success
@@ -124,7 +124,7 @@ public class InventoryUtils {
 			} else  { // fits partially
 				slot.stack.stackSize = slot.stack.getMaxStackSize();
 				remaining -= space;
-				inv.onInventoryChanged();
+				// inv.onInventoryChanged();
 			}
 		}
 		if( remaining == 0 )
