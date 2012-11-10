@@ -2,7 +2,10 @@ package xk.xact.gui;
 
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.src.*;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.InventoryCrafting;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.Slot;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import xk.xact.TileCrafter;

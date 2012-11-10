@@ -1,7 +1,9 @@
 package xk.xact;
 
-import net.minecraft.src.*;
-
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.IInventory;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.NBTTagCompound;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.FakeCraftingInventory;
