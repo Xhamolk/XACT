@@ -155,7 +155,7 @@ public class ContainerCrafter extends ContainerMachine {
 						int var12 = stackInSlot.itemID;
 						retValue = stackInSlot.copy();
 
-						if (slot != null && slot.getStack() != null && !(slot instanceof SlotCraft) && slot.getStack().itemID == var12) {
+						if (slot != null && slot.getStack() != null && slot.getStack().itemID == var12) {
 							this.retrySlotClick(slotID, mouseButton, true, player);
 						}
 					}
@@ -321,5 +321,14 @@ public class ContainerCrafter extends ContainerMachine {
 		return retValue;
 	}
 
+
+	protected void retrySlotClick(int slotID, int mouseClick, boolean flag, EntityPlayer player) {
+		Slot slot = (Slot)this.inventorySlots.get(slotID);
+		if(slot instanceof SlotCraft) {
+			if( mouseClick == 1 )
+				return;
+		}
+		this.slotClick(slotID, mouseClick, 1, player);
+	}
 
 }

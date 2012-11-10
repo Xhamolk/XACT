@@ -109,9 +109,13 @@ public class ContainerEncoder extends ContainerMachine {
 	@Override
 	protected void retrySlotClick(int slotID, int mouseButtom, boolean shift, EntityPlayer player) {
 		Slot slot = (Slot) this.inventorySlots.get(slotID);
-		if( slot == null || slot instanceof SlotCrafting )
+		if( slot == null )
 			return;
-		if( slot.getHasStack() && slot.getStack().getItem() instanceof ItemRecipe )
+		if( slot instanceof SlotCrafting ) {
+			if( mouseButtom == 1 ) // right clicking.
+				return;
+			// left clicking will craft a stack.
+		} else  if( slot.getHasStack() && slot.getStack().getItem() instanceof ItemRecipe )
 			return;
 		this.slotClick(slotID, mouseButtom, 1, player);
 	}
