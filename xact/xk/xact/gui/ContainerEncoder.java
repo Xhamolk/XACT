@@ -71,14 +71,6 @@ public class ContainerEncoder extends ContainerMachine {
 			return null;
 		}
 
-		if( slot instanceof SlotEncode ) {
-			if (mergeItemStack(stackInSlot, 11, inventorySlots.size(), false)) {
-				slot.onPickupFromSlot(player, stackInSlot);
-				slot.onSlotChanged();
-			}
-			return null;
-		}
-
 		// From the encoder to the player's inventory.
 		if( slotID < 11 ) {
 			if (!mergeItemStack(stackInSlot, 11, inventorySlots.size(), false))

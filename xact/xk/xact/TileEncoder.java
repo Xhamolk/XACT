@@ -47,7 +47,12 @@ public class TileEncoder extends TileMachine {
 	/**
 	 * The inventory that stores the circuit placed on the slot. 
 	 */
-	public final Inventory circuitInv = new Inventory(1, "circuit");
+	public final Inventory circuitInv = new Inventory(1, "circuit"){
+		public void onInventoryChanged(){
+			super.onInventoryChanged();
+			updateRecipe();
+		}
+	};
 
 	/**
 	 * The inventory that contains the crafting recipe's output.
@@ -86,6 +91,21 @@ public class TileEncoder extends TileMachine {
 	public void updateRecipe() {
 		CraftRecipe recipe = getCurrentRecipe();
 		outputInv.setInventorySlotContents(0, recipe != null ? recipe.getResult() : null );
+
+		// chip
+		if( circuitInv.getStackInSlot(0) != null ) {
+			switch( mode ){
+				case MODE_CLEAR:
+					circuitInv.setInventorySlotContents(0, new ItemStack(XActMod.itemRecipeBlank));
+					break;
+				case MODE_ENCODE:
+					if( recipe != null )
+						circuitInv.setInventorySlotContents(0,  CraftManager.encodeRecipe(recipe));
+					else
+						circuitInv.setInventorySlotContents(0, new ItemStack(XActMod.itemRecipeBlank));
+					break;
+			}
+		}
 	}
 
 
