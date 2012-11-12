@@ -25,10 +25,11 @@ public class BlockMachine extends BlockContainer {
 
 	// update block when it's placed on the world.
 	@Override
-	public void updateBlockMetadata(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-		int type = world.getBlockMetadata(x, y, z);
-		int meta = side << 1 | type;
-		world.setBlockMetadata(x, y, z, meta);
+	public int func_85104_a(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff, int metadata) { //updateBlockMetadata
+		//int type = world.getBlockMetadata(x, y, z);
+		//int meta = side << 1 | type;
+		// world.setBlockMetadata(x, y, z, meta);
+		return side << 1 | metadata;
 	}
 
 	@Override
