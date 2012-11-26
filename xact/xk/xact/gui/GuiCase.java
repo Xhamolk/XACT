@@ -5,12 +5,11 @@ import net.minecraft.src.Container;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.ItemStack;
 import org.lwjgl.opengl.GL11;
-import xk.xact.core.ItemChip;
 
-public class GuiLibrary extends GuiContainer {
+public class GuiCase extends GuiContainer {
 
-	public GuiLibrary(Container par1Container) {
-		super(par1Container);
+	public GuiCase(Container container) {
+		super(container);
 		this.xSize = 196;
 		this.ySize = 191;
 	}
@@ -31,7 +30,7 @@ public class GuiLibrary extends GuiContainer {
 		// the title
 	}
 
-	protected ItemChip getChipAt(int x, int y){
+	protected ItemStack getChipAt(int x, int y){
 		return null; // returning null means can't find.
 	}
 
@@ -50,6 +49,11 @@ public class GuiLibrary extends GuiContainer {
 	// tooltip: func_74184_a(ItemStack stack, int x, int y)   // this one is protected, so don't copy.
 
 
+	private boolean hoveringChip(int x, int y){
+		return false;
+	}
+
+	// todo: paint the chip's recipe.
 	protected void paintChip(ItemStack chip) {
 
 	}
