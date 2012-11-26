@@ -41,7 +41,8 @@ public class GuiChip extends GuiContainer {
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		// the title
-		this.fontRenderer.drawString("Recipe Chip", 56, 6, 4210752);
+		int xPos = (this.xSize - fontRenderer.getStringWidth("Recipe Chip")) / 2;
+		this.fontRenderer.drawString("Recipe Chip", xPos, 8, 4210752);
 	}
 
 	@Override
