@@ -105,17 +105,17 @@ public class XActMod {
 		ItemStack[] ingredients;
 		
 		// Recipe Chip
-		ItemStack chip = new ItemStack(itemRecipeBlank, 1);
+		ItemStack chip = new ItemStack(itemRecipeBlank, 4);
 		ingredients = ingredients(Item.ingotIron, Item.paper);
 		GameRegistry.addRecipe(shapelessRecipe(chip, ingredients));
 		
-		// Encoder
-		ingredients = ingredients(
-				Block.glass, 	itemRecipeBlank,	Block.glass,
-				Item.ingotGold,	Block.workbench, 	Item.ingotGold,
-				Block.stone, 	Item.ingotIron, 	Block.stone
-		);
-		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(blockMachine, 1, 0)));
+//		// Encoder todo: remove
+//		ingredients = ingredients(
+//				Block.glass, 	itemRecipeBlank,	Block.glass,
+//				Item.ingotGold,	Block.workbench, 	Item.ingotGold,
+//				Block.stone, 	Item.ingotIron, 	Block.stone
+//		);
+//		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(blockMachine, 1, 0)));
 
 		// Crafter
 		ingredients = ingredients(
