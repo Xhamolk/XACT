@@ -45,7 +45,7 @@ public class XActMod {
 	// Items
 	public static Item itemRecipeBlank;
 	public static Item itemRecipeEncoded;
-	public static Item itemLibrary;
+	public static Item itemChipCase;
 
 	// Block
 	public static Block blockMachine;
@@ -75,7 +75,7 @@ public class XActMod {
 		// Init Items
 		itemRecipeBlank = new ItemChip(blankChipID, false);
 		itemRecipeEncoded = new ItemChip(encodedChipID, true);
-		itemLibrary = new ItemCase(libraryID);
+		itemChipCase = new ItemCase(libraryID);
 
 		// Init Blocks
 		blockMachine = new BlockMachine(machineID);
@@ -90,7 +90,7 @@ public class XActMod {
 		// Add names
 		LanguageRegistry.addName(itemRecipeBlank, "Recipe Chip");
 		LanguageRegistry.addName(itemRecipeEncoded, "\u00a72"+"Recipe Chip");
-		LanguageRegistry.addName(itemLibrary, "Recipe Library");
+		LanguageRegistry.addName(itemChipCase, "Recipe Library");
 			
 		// machine's names
 		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 0), "XACT Encoder");
@@ -110,11 +110,17 @@ public class XActMod {
 		ItemStack[] ingredients;
 		
 		// Recipe Chip
-		ItemStack chip = new ItemStack(itemRecipeBlank, 4);
 		ingredients = ingredients(Item.ingotIron, Item.paper);
-		GameRegistry.addRecipe(shapelessRecipe(chip, ingredients));
+		GameRegistry.addRecipe(shapelessRecipe(new ItemStack(itemRecipeBlank, 4), ingredients));
 
-		// todo: Library recipe.
+		// Chip Case (temporary)
+		ItemStack chip = new ItemStack(itemRecipeBlank);
+		ingredients = ingredients(
+				chip, chip, chip,
+				chip, null, chip,
+				chip, chip, chip
+		);
+		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(itemChipCase, 1)));
 
 		// Crafter
 		ingredients = ingredients(
