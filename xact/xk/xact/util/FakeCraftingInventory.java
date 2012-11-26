@@ -65,21 +65,6 @@ public class FakeCraftingInventory extends InventoryCrafting { // todo: javadoc
 		}
 	}
 
-    public String contentsToString() { // todo: remove
-        String retValue = "";
-        int size = this.getSizeInventory();
-        for( int i=0; i<size; i++){
-            ItemStack stack = this.getStackInSlot(i);
-            if( stack == null )
-                continue;
-
-            retValue += stack.stackSize + "x " + stack.getItem().getItemDisplayName(stack);
-            if( i < size-1 )
-                retValue += ", ";
-        }
-
-        return retValue;
-    }
 
 	public ItemStack[] getContents() {
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();

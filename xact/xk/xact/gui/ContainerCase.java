@@ -8,7 +8,6 @@ import xk.xact.recipes.CraftManager;
 public class ContainerCase extends Container {
 
 	private ChipCase thing;
-	private EntityPlayer player;
 
 	public ContainerCase(ChipCase thing, EntityPlayer player) {
 		this.thing = thing;

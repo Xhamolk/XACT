@@ -9,12 +9,12 @@ import xk.xact.XActMod;
 
 import java.util.List;
 
-// temporarily used to develop the library.
+
 public class ItemCase extends Item {
 
 	public ItemCase(int itemID) {
 		super(itemID);
-		this.setItemName("chipLibrary" );
+		this.setItemName("chipCase");
 		this.setIconIndex(2); // todo
 		this.setMaxStackSize(1);
 		this.setTextureFile(XActMod.TEXTURE_ITEMS);

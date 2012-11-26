@@ -237,7 +237,6 @@ public abstract class CraftingHandler {
 	 *
 	 * @param recipe the recipe from which to take the ingredients.
 	 * @return A FakeCraftingInventory
-	 * @throws xk.xact.util.MissingIngredientsException if cannot find enough items to fill the grid with.
 	 */
 	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe) {
 		if( !canCraft(recipe) ) {

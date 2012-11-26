@@ -13,8 +13,6 @@ import java.util.Random;
  */
 public class BlockMachine extends BlockContainer {
 
-	public static final String[] names = { "encoder", "crafter" };
-
 	public BlockMachine(int itemID) {
 		super(itemID, Material.iron);
 		this.setStepSound(soundMetalFootstep);
@@ -27,9 +25,6 @@ public class BlockMachine extends BlockContainer {
 	// update block when it's placed on the world.
 	@Override
 	public int func_85104_a(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff, int metadata) { //updateBlockMetadata
-		//int type = world.getBlockMetadata(x, y, z);
-		//int meta = side << 1 | type;
-		// world.setBlockMetadata(x, y, z, meta);
 		return side << 1 | metadata;
 	}
 
@@ -39,7 +34,7 @@ public class BlockMachine extends BlockContainer {
 		int meta = world.getBlockMetadata(x, y, z);
 		int side = (meta & MASK_FRONT) >> 1;
 		if( side == 0 || side == 1 ){
-			side = sideByAngles(player, x, y, z);
+			side = sideByAngles(player, x, z);
 		}
 
 		meta = (side << 1) | (meta & 1);
@@ -52,8 +47,7 @@ public class BlockMachine extends BlockContainer {
 		if( player.isSneaking() ) {
 			return false;
 		}
-		int type = (world.getBlockMetadata(x, y, z) & 1);
-		player.openGui(XActMod.instance, -1, world, x, y, z);
+		player.openGui(XActMod.instance, 0, world, x, y, z);
 
 		return true;
 	}
@@ -90,9 +84,9 @@ public class BlockMachine extends BlockContainer {
 			stack.stackSize -= var13;
 			item = new EntityItem(world, (double)(x + var10), (double)(y + var11), (double)(z + var12), new ItemStack(stack.itemID, var13, stack.getItemDamage()));
 			float var15 = 0.05F;
-			item.motionX = (double)(random.nextGaussian() * var15);
-			item.motionY = (double)(random.nextGaussian() * var15 + 0.2F);
-			item.motionZ = (double)(random.nextGaussian() * var15);
+			item.motionX = (random.nextGaussian() * var15);
+			item.motionY = (random.nextGaussian() * var15 + 0.2F);
+			item.motionZ = (random.nextGaussian() * var15);
 
 			if (stack.hasTagCompound())
 			{
@@ -137,7 +131,7 @@ public class BlockMachine extends BlockContainer {
 	}
 
 
-	private int sideByAngles(EntityPlayer player, int x, int y, int z) {
+	private int sideByAngles(EntityPlayer player, int x, int z) {
 		double Dx = player.posX - x;
 		double Dz = player.posZ - z;
 		double angle = Math.atan2(Dz, Dx) / Math.PI * 180 + 180;
