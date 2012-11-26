@@ -22,7 +22,8 @@ public class GuiCrafter extends GuiMachine {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		this.fontRenderer.drawString("X.A.C.T. Crafter", 54 , 6, 4210752);
+		int xPos = (this.xSize - fontRenderer.getStringWidth("X.A.C.T. Crafter")) / 2;
+		this.fontRenderer.drawString("X.A.C.T. Crafter", xPos, 6, 4210752);
 		this.fontRenderer.drawString("Player's Inventory", 8, this.ySize - 92, 4210752);
 	}
 
