@@ -3,8 +3,8 @@ package xk.xact.gui;
 
 import net.minecraft.src.*;
 import net.minecraftforge.common.IArmorTextureProvider;
-import xk.xact.ItemRecipe;
-import xk.xact.TileCrafter;
+import xk.xact.core.ItemChip;
+import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
 
 
@@ -27,17 +27,20 @@ public class ContainerCrafter extends ContainerMachine {
 	private void buildContainer() {
 		// craft results
 		for(int i=0; i<4; i++) {
-			addSlotToContainer(new SlotCraft(crafter, i, 26 + 36*i, 25));
+			addSlotToContainer(new SlotCraft(crafter, crafter.results, i, 26 + 36*i, 25));
 		}
 
 		// circuits
 		for(int i=0; i<4; i++){
-			addSlotToContainer(new SlotRestricted(crafter.circuits, i, 26 + 36*i, 47) {
+			addSlotToContainer(new Slot(crafter.circuits, i, 26 + 36*i, 47) {
 				@Override
 				public boolean isItemValid(ItemStack stack) {
 					return CraftManager.isEncoded(stack);
 				}
-
+				@Override
+				public int getSlotStackLimit() {
+					return 1;
+				}
 			});
 		}
 
@@ -91,7 +94,7 @@ public class ContainerCrafter extends ContainerMachine {
 			
 		} else if( slotID < 8+18 ){ // from the resources buffer
 			// chips first try to go to the chip slots.
-			if( stackInSlot.getItem() instanceof ItemRecipe){
+			if( stackInSlot.getItem() instanceof ItemChip){
 				if (!mergeItemStack(stackInSlot, 4, 8, false)) // try add to the chip slots.
 					if (!mergeItemStack(stackInSlot, 8+18, inventorySlots.size(), false)) // add to the player's inv.
 						return null;

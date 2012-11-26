@@ -1,7 +1,7 @@
 package xk.xact.recipes;
 
 import net.minecraft.src.*;
-import xk.xact.ItemRecipe;
+import xk.xact.core.ItemChip;
 import xk.xact.XActMod;
 import xk.xact.util.FakeCraftingInventory;
 
@@ -20,6 +20,14 @@ public class CraftManager {
 	public static ItemStack encodeRecipe(CraftRecipe recipe) {
 		ItemStack stack = new ItemStack(XActMod.itemRecipeEncoded, 1);
 
+		if( stack.stackTagCompound == null )
+			stack.stackTagCompound = new NBTTagCompound();
+
+		recipe.writeToNBT(stack.stackTagCompound);
+		return stack;
+	}
+
+	public static NBTTagCompound generateNBTTagFor(CraftRecipe recipe){
 		// Result
 		NBTTagCompound result = new NBTTagCompound();
 		recipe.result.writeToNBT(result);
@@ -36,44 +44,28 @@ public class CraftManager {
 		}
 
 		// Actual encoding
-		NBTTagCompound recipeCompound = new NBTTagCompound();
+		NBTTagCompound recipeCompound = new NBTTagCompound("encodedRecipe");
 		recipeCompound.setTag("recipeResult", result);
 		recipeCompound.setTag("recipeIngredients", listIngredients);
 
-		if( stack.stackTagCompound == null )
-			stack.stackTagCompound = new NBTTagCompound();
-		stack.stackTagCompound.setTag("encodedRecipe", recipeCompound);
-
-		return stack;
+		return recipeCompound;
 	}
 
 	/**
 	 * Decodes the CraftRecipe stored on the specified stack.
 	 *
-	 * @param stack the stack containing the ItemRecipe
+	 * @param stack the stack containing the ItemChip
 	 * @return a CraftRecipe representation of the recipe.
 	 */
 	public static CraftRecipe decodeRecipe(ItemStack stack){
-		if( stack == null || !(stack.getItem() instanceof ItemRecipe) )
+		if( stack == null || !(stack.getItem() instanceof ItemChip) )
 			return null;
 
 		// Read recipe.
 		if( stack.stackTagCompound == null )
 			return null;
-		
-		NBTTagCompound compound = (NBTTagCompound) stack.stackTagCompound.getTag("encodedRecipe");
-		if( compound == null ) return null;
 
-		ItemStack[] ingredients = new ItemStack[9];
-		NBTTagList tagList = compound.getTagList("recipeIngredients");
-		for(int i=0; i<9; i++) {
-			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			ingredients[i] = ItemStack.loadItemStackFromNBT(tag);
-		}
-
-		ItemStack result = ItemStack.loadItemStackFromNBT((NBTTagCompound) compound.getTag("recipeResult"));
-
-		return new CraftRecipe(result, ingredients);
+		return CraftRecipe.readFromNBT(stack.stackTagCompound);
 	}
 
     /**
@@ -123,7 +115,7 @@ public class CraftManager {
 	 * @return true if contains an instance of this class.
 	 */
 	public static boolean isValid(ItemStack stack) {
-		return ( stack != null && stack.getItem() instanceof ItemRecipe );
+		return ( stack != null && stack.getItem() instanceof ItemChip);
 	}
 
 	/**
@@ -134,6 +126,6 @@ public class CraftManager {
 	 * @return true if contains an encoded recipe.
 	 */
 	public static boolean isEncoded(ItemStack stack){
-		return isValid(stack) && ((ItemRecipe) stack.getItem()).encoded;
+		return isValid(stack) && ((ItemChip) stack.getItem()).encoded;
 	}
 }

@@ -4,7 +4,7 @@ package xk.xact.gui;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
-import xk.xact.TileEncoder;
+import xk.xact.core.TileEncoder;
 import xk.xact.XActMod;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;

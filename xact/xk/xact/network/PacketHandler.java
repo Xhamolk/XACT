@@ -6,8 +6,9 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.World;
-import xk.xact.TileEncoder;
-import xk.xact.TileMachine;
+import xk.xact.core.TileEncoder;
+import xk.xact.core.TileMachine;
+import xk.xact.gui.ContainerChip;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -17,7 +18,18 @@ public class PacketHandler implements IPacketHandler {
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player packetSender) {
 
-		// Encoder stuff
+		if( packet.channel.equals("xact_channel") ){
+			// Chip doing it's stuff.
+			if( packet.data[0] == 0x01 ) {
+				int buttonID = packet.data[1];
+
+				ContainerChip chipContainer = (ContainerChip) ((EntityPlayer)packetSender).openContainer;
+				chipContainer.handlePacket(buttonID);
+				return;
+			}
+		}
+
+		// Encoder stuff (unused)
 		if (packet.channel.equals("xact_chan_enc")) {
 			try{
 				EntityPlayer player = (EntityPlayer)packetSender;

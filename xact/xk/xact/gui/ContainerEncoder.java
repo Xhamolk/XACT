@@ -5,8 +5,8 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 import net.minecraft.src.SlotCrafting;
-import xk.xact.ItemRecipe;
-import xk.xact.TileEncoder;
+import xk.xact.core.ItemChip;
+import xk.xact.core.TileEncoder;
 
 public class ContainerEncoder extends ContainerMachine {
 
@@ -81,7 +81,7 @@ public class ContainerEncoder extends ContainerMachine {
 		} else { // From the player's inventory to the encoder.
 
 			// Chips by default go to the chip slot.
-			if( stackInSlot.getItem() instanceof ItemRecipe ){
+			if( stackInSlot.getItem() instanceof ItemChip){
 				if( encoder.circuitInv.getStackInSlot(0) != null )
 					return null; // don't let the chips to stack.
 
@@ -118,7 +118,7 @@ public class ContainerEncoder extends ContainerMachine {
 			if( mouseButtom == 1 ) // right clicking.
 				return;
 			// left clicking will craft a stack.
-		} else  if( slot.getHasStack() && slot.getStack().getItem() instanceof ItemRecipe )
+		} else  if( slot.getHasStack() && slot.getStack().getItem() instanceof ItemChip)
 			return;
 		this.slotClick(slotID, mouseButtom, 1, player);
 	}

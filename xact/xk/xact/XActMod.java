@@ -10,6 +10,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.src.*;
 import net.minecraftforge.common.Configuration;
+import xk.xact.core.*;
 import xk.xact.gui.XactTab;
 import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
@@ -19,9 +20,9 @@ import java.util.ArrayList;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.6")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.7pre1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
-		channels = {"xact_chan_enc"}, packetHandler = PacketHandler.class)
+		channels = {"xact_channel"}, packetHandler = PacketHandler.class)
 public class XActMod {
 
 
@@ -69,8 +70,8 @@ public class XActMod {
         xactTab = new XactTab();
 
 		// Init Items
-		itemRecipeBlank = new ItemRecipe(blankChipID, false);
-		itemRecipeEncoded = new ItemRecipe(encodedChipID, true);
+		itemRecipeBlank = new ItemChip(blankChipID, false);
+		itemRecipeEncoded = new ItemChip(encodedChipID, true);
 
 		// Init Blocks
 		blockMachine = new BlockMachine(machineID);

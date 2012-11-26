@@ -5,11 +5,13 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.InventoryCrafting;
 import net.minecraft.src.ItemStack;
 
+import java.util.ArrayList;
+
 /**
  * Used to compare an array of ingredients the with the recipes.
  */
-public class FakeCraftingInventory extends InventoryCrafting {
-	
+public class FakeCraftingInventory extends InventoryCrafting { // todo: javadoc
+
 	public FakeCraftingInventory() {
 		super(new Container() {
 			@Override
@@ -53,9 +55,17 @@ public class FakeCraftingInventory extends InventoryCrafting {
 		return fake;
 	}
 
+	@Override
+	public void onInventoryChanged(){
+		super.onInventoryChanged();
+		for(int i=0; i<9; i++) {
+			ItemStack stack = this.getStackInSlot(i);
+			if( stack != null && stack.stackSize == 0 )
+				this.setInventorySlotContents(i, null);
+		}
+	}
 
-
-    public String contentsToString() {
+    public String contentsToString() { // todo: remove
         String retValue = "";
         int size = this.getSizeInventory();
         for( int i=0; i<size; i++){
@@ -71,4 +81,14 @@ public class FakeCraftingInventory extends InventoryCrafting {
         return retValue;
     }
 
+	public ItemStack[] getContents() {
+		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+		for(int i=0; i<9; i++) {
+			ItemStack temp = this.getStackInSlot(i);
+			if( temp != null )
+				list.add(temp);
+		}
+
+		return list.toArray(new ItemStack[list.size()]);
+	}
 }

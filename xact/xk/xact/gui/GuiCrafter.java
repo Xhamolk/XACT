@@ -3,7 +3,7 @@ package xk.xact.gui;
 
 import net.minecraft.src.EntityPlayer;
 import org.lwjgl.opengl.GL11;
-import xk.xact.TileCrafter;
+import xk.xact.core.TileCrafter;
 
 public class GuiCrafter extends GuiMachine {
 

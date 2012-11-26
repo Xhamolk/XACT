@@ -54,6 +54,14 @@ public class Inventory implements IInventory {
 		return this.internalInv.clone();
 	}
 
+	public boolean isEmpty() {
+		for(int i=0; i<this.size; i++){
+			if( internalInv[i] != null )
+				return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Tries to add the stack into this inventory.
 	 * First will try to merge with the not-full stacks, and the remaining will be placed on the first empty slot.

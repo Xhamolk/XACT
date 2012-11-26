@@ -1,6 +1,8 @@
 package xk.xact.recipes;
 
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.NBTTagList;
 import xk.xact.util.StackList;
 
 /**
@@ -59,7 +61,6 @@ public class CraftRecipe {
             try {
                 if( current != null ) {
 					list.addStack(current.copy());
-					// System.out.println("simple-ref: "+current.getItem().getItemDisplayName(current));
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -70,11 +71,16 @@ public class CraftRecipe {
 		return simpleIngredients = list.toArray();
 	}
 
-
+	// the output's name.
     public String toString() {
         return this.result.getItem().getItemDisplayName(result);
     }
 
+	/**
+	 * A string listing all the ingredients for this recipe by their amount and name.
+	 *
+	 * @see xk.xact.recipes.CraftRecipe#getSimplifiedIngredients()
+	 */
     public String ingredientsToString() {
         String retValue = "";
         ItemStack[] ingredients = this.getSimplifiedIngredients();
@@ -87,9 +93,41 @@ public class CraftRecipe {
             if( i < ingredients.length-1 )
                 retValue += ", ";
         }
-
-
         return retValue;
     }
+
+	/**
+	 * Create a CraftRecipe from the NBT.
+	 * If can't read it, will return null.
+	 *
+	 * @param nbtCompound the tag from which to read.
+	 * @return a CraftRecipe object, or null if something went wrong.
+	 */
+	public static CraftRecipe readFromNBT( NBTTagCompound nbtCompound ) {
+		NBTTagCompound compound = (NBTTagCompound) nbtCompound.getTag("encodedRecipe");
+		if( compound == null ) return null;
+
+		ItemStack[] ingredients = new ItemStack[9];
+		NBTTagList tagList = compound.getTagList("recipeIngredients");
+		if( tagList == null ) return null;
+		for(int i=0; i<9; i++) {
+			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
+			ingredients[i] = ItemStack.loadItemStackFromNBT(tag);
+		}
+
+		ItemStack result = ItemStack.loadItemStackFromNBT((NBTTagCompound) compound.getTag("recipeResult"));
+
+		return new CraftRecipe(result, ingredients);
+	}
+
+	/**
+	 * Write this CraftRecipe to the NBT.
+	 * @param nbtCompound the tag to which write.
+	 */
+	public void writeToNBT( NBTTagCompound nbtCompound ) {
+		NBTTagCompound tag = CraftManager.generateNBTTagFor(this);
+		if( tag != null)
+			nbtCompound.setTag("encodedRecipe", tag);
+	}
 
 }

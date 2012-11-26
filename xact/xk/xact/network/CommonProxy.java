@@ -4,13 +4,11 @@ package xk.xact.network;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
-import xk.xact.TileCrafter;
-import xk.xact.TileEncoder;
-import xk.xact.TileMachine;
-import xk.xact.gui.ContainerCrafter;
-import xk.xact.gui.ContainerEncoder;
-import xk.xact.gui.GuiCrafter;
-import xk.xact.gui.GuiEncoder;
+import xk.xact.core.TileCrafter;
+import xk.xact.core.TileEncoder;
+import xk.xact.core.TileMachine;
+import xk.xact.gui.*;
+import xk.xact.core.ChipDevice;
 
 public class CommonProxy implements IGuiHandler {
 
@@ -18,6 +16,18 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		// ID:
+			// 0: crafter
+			// 1: library
+			// 2: chip
+
+		if( ID == 2 ){
+			ChipDevice state = new ChipDevice(player.inventory.getCurrentItem(), player);
+			return new ContainerChip(state, player);
+		}
+
+		// todo: remove the encoder.
+
 		TileMachine machine = (TileMachine) world.getBlockTileEntity(x, y, z);
 		if( machine == null )
 			return null;
@@ -33,6 +43,18 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		// ID:
+		// 0: crafter
+		// 1: library
+		// 2: chip
+
+		// todo: remove the encoder.
+
+		if( ID == 2 ) {
+			ChipDevice state = new ChipDevice(player.inventory.getCurrentItem(), player);
+			return new GuiChip(state, new ContainerChip(state, player));
+		}
+
 		TileMachine machine = (TileMachine) world.getBlockTileEntity(x, y, z);
 		if( machine == null )
 			return null;

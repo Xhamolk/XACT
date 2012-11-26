@@ -4,7 +4,7 @@ package xk.xact.recipes;
  * The state of each recipe on TileCrafter.
  * @author Xhamolk_
  */
-public enum RecipeState { // to be implemented on the next version.
+public enum RecipeState { // todo: remove. won't be used.
 	
 	OK, LAST, NO_INGREDIENTS, NOT_SET;
 	

@@ -4,7 +4,7 @@ package xk.xact.gui;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Packet250CustomPayload;
 import org.lwjgl.opengl.GL11;
-import xk.xact.TileEncoder;
+import xk.xact.core.TileEncoder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
