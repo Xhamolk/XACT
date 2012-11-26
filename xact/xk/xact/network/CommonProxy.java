@@ -4,11 +4,8 @@ package xk.xact.network;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
-import xk.xact.core.TileCrafter;
-import xk.xact.core.TileEncoder;
-import xk.xact.core.TileMachine;
+import xk.xact.core.*;
 import xk.xact.gui.*;
-import xk.xact.core.ChipDevice;
 
 public class CommonProxy implements IGuiHandler {
 
@@ -21,9 +18,14 @@ public class CommonProxy implements IGuiHandler {
 			// 1: library
 			// 2: chip
 
+		if( ID == 1 ){
+			ChipCase chipCase = new ChipCase(player.inventory.getCurrentItem());
+			return new ContainerCase(chipCase, player);
+		}
+
 		if( ID == 2 ){
-			ChipDevice state = new ChipDevice(player.inventory.getCurrentItem(), player);
-			return new ContainerChip(state, player);
+			ChipDevice chipDevice = new ChipDevice(player.inventory.getCurrentItem(), player);
+			return new ContainerChip(chipDevice, player);
 		}
 
 		// todo: remove the encoder.
@@ -50,9 +52,14 @@ public class CommonProxy implements IGuiHandler {
 
 		// todo: remove the encoder.
 
+		if( ID == 1 ){
+			ChipCase chipCase = new ChipCase(player.inventory.getCurrentItem());
+			return new GuiCase(new ContainerCase(chipCase, player));
+		}
+
 		if( ID == 2 ) {
-			ChipDevice state = new ChipDevice(player.inventory.getCurrentItem(), player);
-			return new GuiChip(state, new ContainerChip(state, player));
+			ChipDevice chipDevice = new ChipDevice(player.inventory.getCurrentItem(), player);
+			return new GuiChip(chipDevice, new ContainerChip(chipDevice, player));
 		}
 
 		TileMachine machine = (TileMachine) world.getBlockTileEntity(x, y, z);

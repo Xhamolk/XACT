@@ -1,7 +1,5 @@
 package xk.xact.core;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -63,6 +61,7 @@ public class ItemChip extends Item {
 		return CraftManager.decodeRecipe(stack) != null;
 	}
 
+	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		if( itemStack.stackSize > 1 ) {
 			if( player.worldObj.isRemote)

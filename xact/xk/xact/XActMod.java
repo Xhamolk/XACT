@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.7pre1")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.7pre2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = {"xact_channel"}, packetHandler = PacketHandler.class)
 public class XActMod {
@@ -40,10 +40,12 @@ public class XActMod {
 	public static int machineID;
 	public static int blankChipID;
 	public static int encodedChipID;
+	public static int libraryID;
 
 	// Items
 	public static Item itemRecipeBlank;
 	public static Item itemRecipeEncoded;
+	public static Item itemLibrary;
 
 	// Block
 	public static Block blockMachine;
@@ -59,6 +61,7 @@ public class XActMod {
 		machineID = config.getBlock("machineID", 3919).getInt();
 		blankChipID = config.getItem("blankChip", 9100).getInt();
 		encodedChipID =  config.getItem("encodedChip", 9101).getInt();
+		libraryID = config.getItem("library", 9102).getInt();
 
 		config.save();
 	}
@@ -72,6 +75,7 @@ public class XActMod {
 		// Init Items
 		itemRecipeBlank = new ItemChip(blankChipID, false);
 		itemRecipeEncoded = new ItemChip(encodedChipID, true);
+		itemLibrary = new ItemCase(libraryID);
 
 		// Init Blocks
 		blockMachine = new BlockMachine(machineID);
@@ -86,6 +90,7 @@ public class XActMod {
 		// Add names
 		LanguageRegistry.addName(itemRecipeBlank, "Recipe Chip");
 		LanguageRegistry.addName(itemRecipeEncoded, "\u00a72"+"Recipe Chip");
+		LanguageRegistry.addName(itemLibrary, "Recipe Library");
 			
 		// machine's names
 		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 0), "XACT Encoder");
@@ -108,14 +113,8 @@ public class XActMod {
 		ItemStack chip = new ItemStack(itemRecipeBlank, 4);
 		ingredients = ingredients(Item.ingotIron, Item.paper);
 		GameRegistry.addRecipe(shapelessRecipe(chip, ingredients));
-		
-//		// Encoder todo: remove
-//		ingredients = ingredients(
-//				Block.glass, 	itemRecipeBlank,	Block.glass,
-//				Item.ingotGold,	Block.workbench, 	Item.ingotGold,
-//				Block.stone, 	Item.ingotIron, 	Block.stone
-//		);
-//		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(blockMachine, 1, 0)));
+
+		// todo: Library recipe.
 
 		// Crafter
 		ingredients = ingredients(
