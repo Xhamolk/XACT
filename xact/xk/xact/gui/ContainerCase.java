@@ -65,4 +65,29 @@ public class ContainerCase extends Container {
 
 	// todo: shift-clicking.
 
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+		Slot slot = (Slot) inventorySlots.get(slotID);
+
+		if( slot == null || !slot.getHasStack() )
+			return null;
+
+		ItemStack stackInSlot = slot.getStack();
+		ItemStack stack = stackInSlot.copy();
+
+		if( slotID < 60 ) {
+			if (!mergeItemStack(stackInSlot, 60, inventorySlots.size(), false))
+				return null;
+		} else {
+			if (!mergeItemStack(stackInSlot, 0, 60, false))
+				return null;
+		}
+
+		if ( stackInSlot.stackSize == 0 )
+			slot.putStack(null);
+
+		slot.onSlotChanged();
+		return stack;
+	}
+
 }

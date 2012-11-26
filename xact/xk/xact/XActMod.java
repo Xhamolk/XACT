@@ -40,7 +40,7 @@ public class XActMod {
 	public static int machineID;
 	public static int blankChipID;
 	public static int encodedChipID;
-	public static int libraryID;
+	public static int caseID;
 
 	// Items
 	public static Item itemRecipeBlank;
@@ -61,7 +61,7 @@ public class XActMod {
 		machineID = config.getBlock("machineID", 3919).getInt();
 		blankChipID = config.getItem("blankChip", 9100).getInt();
 		encodedChipID =  config.getItem("encodedChip", 9101).getInt();
-		libraryID = config.getItem("library", 9102).getInt();
+		caseID = config.getItem("chipCase", 9102).getInt();
 
 		config.save();
 	}
@@ -75,7 +75,7 @@ public class XActMod {
 		// Init Items
 		itemRecipeBlank = new ItemChip(blankChipID, false);
 		itemRecipeEncoded = new ItemChip(encodedChipID, true);
-		itemChipCase = new ItemCase(libraryID);
+		itemChipCase = new ItemCase(caseID);
 
 		// Init Blocks
 		blockMachine = new BlockMachine(machineID);
@@ -90,7 +90,7 @@ public class XActMod {
 		// Add names
 		LanguageRegistry.addName(itemRecipeBlank, "Recipe Chip");
 		LanguageRegistry.addName(itemRecipeEncoded, "\u00a72"+"Recipe Chip");
-		LanguageRegistry.addName(itemChipCase, "Recipe Library");
+		LanguageRegistry.addName(itemChipCase, "Chip Case");
 			
 		// machine's names
 		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 0), "XACT Encoder");
