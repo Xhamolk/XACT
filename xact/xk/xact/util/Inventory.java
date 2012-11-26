@@ -165,8 +165,10 @@ public class Inventory implements IInventory {
     ///// NBT
 
     public void readFromNBT(NBTTagCompound compound) {
-        NBTTagList list = ((NBTTagCompound)compound.getTag("inv."+name)).getTagList("inventoryContents");
+		NBTTagCompound c = ((NBTTagCompound)compound.getTag("inv."+name));
+		if( c == null ) return;
 
+        NBTTagList list = c.getTagList("inventoryContents");
         for (int i=0; i<list.tagCount(); i++) {
             NBTTagCompound tag = (NBTTagCompound) list.tagAt(i);
             int index = tag.getInteger("index");
