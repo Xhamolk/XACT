@@ -179,31 +179,6 @@ public abstract class CraftingHandler {
 
 
 	/**
-	 * A string listing the missing ingredients for the specified recipe.
-	 * Useful to tell the user what's missing.
-	 */
-	public String getMissingIngredients(CraftRecipe recipe) {
-		if( recipe == null )
-			return "<invalid recipe>";
-
-		String retValue = "";
-		ItemStack[] ingredients = recipe.getSimplifiedIngredients();
-		int[] missingCount = getMissingIngredientsCount(recipe);
-		boolean addCommas = false;
-		for( int i=0; i<ingredients.length; i++ ){
-			if( missingCount[i] > 0 ) {
-				ItemStack tempStack = ingredients[i].copy();
-				tempStack.stackSize = missingCount[i];
-				if( addCommas )
-					retValue += ", ";
-				retValue += InventoryUtils.stackDescription(tempStack);
-				addCommas = true;
-			}
-		}
-		return retValue.equals("") ? "none" : retValue;
-	}
-
-	/**
 	 * Gets the amount of items of the same kind of the passed stack on the available inventories.
 	 *
 	 * @param stack the stack to compare with.
@@ -311,6 +286,48 @@ public abstract class CraftingHandler {
 		return retValue;
 	}
 
-	// todo: boolean[] getMissingIngredients(CraftRecipe recipe)
+	/**
+	 * Provides a list of the missing ingredients.
+	 * @param recipe the CraftRecipe representation of the recipe.
+	 * @return an array of ItemStack, each of which has as stackSize the amount missing.
+	 * @see CraftingHandler#getMissingIngredientsCount(xk.xact.recipes.CraftRecipe)
+	 */
+	public ItemStack[] getMissingIngredients(CraftRecipe recipe) {
+		if( recipe == null )
+			return new ItemStack[0];
+
+		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+		int[] missingCount = getMissingIngredientsCount(recipe);
+		ItemStack[] ingredients = recipe.getSimplifiedIngredients().clone();
+
+		for( int i=0; i<missingCount.length; i++ ){
+			int missing = missingCount[i];
+			if( missing > 0 ){
+				ingredients[i].stackSize = missing;
+				list.add(ingredients[i]);
+			}
+		}
+
+		return list.toArray(new ItemStack[list.size()]);
+	}
+
+	/**
+	 * A string listing the missing ingredients for the specified recipe.
+	 * Useful to tell the user what's missing.
+	 */
+	public String getMissingIngredientsString(CraftRecipe recipe) {
+		if( recipe == null )
+			return "<invalid recipe>";
+
+		String retValue = "";
+		ItemStack[] ingredients = getMissingIngredients(recipe);
+
+		for( int i=0; i<ingredients.length; i++ ) {
+			if( i > 0 )
+				retValue += ", ";
+			retValue += InventoryUtils.stackDescription(ingredients[i]);
+		}
+		return retValue.equals("") ? "none." : retValue;
+	}
 
 }
