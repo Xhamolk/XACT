@@ -75,7 +75,7 @@ public abstract class CraftingHandler {
 
 		FakeCraftingInventory craftMatrix = generateTemporaryCraftingGridFor(recipe);
 		if( craftMatrix == null ) {
-			player.sendChatToPlayer("Can't craft: "+recipe+". Missing: "+recipe.ingredientsToString());
+			player.sendChatToPlayer("Can't craft: "+recipe+". Missing: "+getMissingIngredientsString(recipe));
 			return; // how could this possibly happen?
 		}
 
