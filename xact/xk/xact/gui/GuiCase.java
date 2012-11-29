@@ -19,7 +19,7 @@ public class GuiCase extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
-		int texture = this.mc.renderEngine.getTexture("/gfx/xact/gui/library.png");
+		int texture = this.mc.renderEngine.getTexture("/gfx/xact/gui/chip_case.png");
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.renderEngine.bindTexture(texture);
 		int cornerX = (this.width - this.xSize) / 2;
