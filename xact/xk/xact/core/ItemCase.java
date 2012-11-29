@@ -41,7 +41,8 @@ public class ItemCase extends Item {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-		player.openGui(XActMod.instance, 1, world, 0, 0, 0);
+        itemStack.setItemDamage(1);
+        player.openGui(XActMod.instance, 1, world, 0, 0, 0);
 		return itemStack;
 	}
 

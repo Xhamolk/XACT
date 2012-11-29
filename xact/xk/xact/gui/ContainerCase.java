@@ -60,10 +60,10 @@ public class ContainerCase extends Container {
 	@Override
 	public void onCraftGuiClosed(EntityPlayer player){
 		super.onCraftGuiClosed(player);
-		thing.saveContentsTo(player.inventory.getCurrentItem());
+        ItemStack current = player.inventory.getCurrentItem();
+		thing.saveContentsTo(current);
+        current.setItemDamage(0);
 	}
-
-	// todo: shift-clicking.
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
