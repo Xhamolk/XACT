@@ -72,19 +72,12 @@ public class ItemChip extends Item {
 	}
 
     @Override
-    public int getIconIndex(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining){
-        int retValue = -1;
-        if( stack != null && stack.getItem() instanceof ItemChip ){
-            if( ((ItemChip) stack.getItem()).encoded ){
-                retValue = 1;
-            } else {
-                retValue = 0;
-            }
-            // todo: un-comment after texture is properly set.
-//            if( stack.getItemDamage() == 1 )
-//                retValue += 2;
-        }
-        return retValue;
-    }
+	public int getIconFromDamage(int itemDamage){
+		int iconIndex = this.encoded ? 1 : 0;
+		// todo: un-comment after texture is properly set.
+//		if( itemDamage == 1 )
+//			iconIndex += 2;
+		return iconIndex;
+	}
 
 }
