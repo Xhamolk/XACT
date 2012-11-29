@@ -7,12 +7,12 @@ import xk.xact.recipes.CraftManager;
 
 public class ContainerCase extends Container {
 
-	private ChipCase thing;
+	private ChipCase chipCase;
 
-	public ContainerCase(ChipCase thing, EntityPlayer player) {
-		this.thing = thing;
+	public ContainerCase(ChipCase chipCase, EntityPlayer player) {
+		this.chipCase = chipCase;
 
-		buildContainer(thing.getInternalInventory(), player.inventory);
+		buildContainer(chipCase.getInternalInventory(), player.inventory);
 	}
 
 	@Override
@@ -61,8 +61,10 @@ public class ContainerCase extends Container {
 	public void onCraftGuiClosed(EntityPlayer player){
 		super.onCraftGuiClosed(player);
         ItemStack current = player.inventory.getCurrentItem();
-		thing.saveContentsTo(current);
-        current.setItemDamage(0);
+        if( current != null ) { // this should always be the case.
+            chipCase.saveContentsTo(current);
+            current.setItemDamage(0);
+        }
 	}
 
 	@Override

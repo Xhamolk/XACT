@@ -109,7 +109,7 @@ public class GuiCase extends GuiContainer {
     protected void handleMouseClick(Slot slot, int par2, int par3, int par4) {
         if( slot != null && slot.getHasStack() ){
             ItemStack stackInSlot = slot.getStack();
-            if( stackInSlot.itemID == XActMod.caseID && stackInSlot.getItemDamage() == 1 )
+            if( stackInSlot.itemID == XActMod.itemChipCase.shiftedIndex && stackInSlot.getItemDamage() == 1 )
                 return;
         }
         super.handleMouseClick(slot, par2, par3, par4);
