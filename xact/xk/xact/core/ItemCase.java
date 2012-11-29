@@ -16,7 +16,6 @@ public class ItemCase extends Item {
 	public ItemCase(int itemID) {
 		super(itemID);
 		this.setItemName("chipCase");
-		this.setIconIndex(2); // todo
 		this.setMaxStackSize(1);
 		this.setTextureFile(XActMod.TEXTURE_ITEMS);
 		this.setCreativeTab(XActMod.xactTab);
@@ -46,5 +45,12 @@ public class ItemCase extends Item {
 		return itemStack;
 	}
 
+    @Override
+    public int getIconFromDamage(int itemDamage) {
+        // todo: un-comment after texture is properly set.
+//        if( itemDamage == 1 )
+//            return 18;
+        return 16;
+    }
 
 }

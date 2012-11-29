@@ -26,7 +26,6 @@ public class ItemChip extends Item {
 		super(itemID);
 		this.encoded = encoded;
 		this.setItemName("recipeChip." + (encoded ? "encoded" : "blank"));
-		this.setIconIndex(encoded ? 18 : 17);
 		this.setTextureFile(XActMod.TEXTURE_ITEMS);
 		this.setCreativeTab(XActMod.xactTab);
 	}
@@ -72,5 +71,20 @@ public class ItemChip extends Item {
 		return itemStack;
 	}
 
+    @Override
+    public int getIconIndex(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining){
+        int retValue = -1;
+        if( stack != null && stack.getItem() instanceof ItemChip ){
+            if( ((ItemChip) stack.getItem()).encoded ){
+                retValue = 1;
+            } else {
+                retValue = 0;
+            }
+            // todo: un-comment after texture is properly set.
+//            if( stack.getItemDamage() == 1 )
+//                retValue += 2;
+        }
+        return retValue;
+    }
 
 }
