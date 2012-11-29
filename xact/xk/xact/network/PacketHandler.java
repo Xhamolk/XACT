@@ -9,6 +9,7 @@ import net.minecraft.src.World;
 import xk.xact.core.TileEncoder;
 import xk.xact.core.TileMachine;
 import xk.xact.gui.ContainerChip;
+import xk.xact.gui.ContainerPad;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -26,6 +27,14 @@ public class PacketHandler implements IPacketHandler {
 				ContainerChip chipContainer = (ContainerChip) ((EntityPlayer)packetSender).openContainer;
 				chipContainer.handlePacket(buttonID);
 				return;
+			}
+
+			// CraftPad button click
+			if( packet.data[0] == 0x02 ) {
+				int buttonID = packet.data[1];
+
+				ContainerPad padContainer = (ContainerPad) ((EntityPlayer)packetSender).openContainer;
+				padContainer.handlePacket(buttonID);
 			}
 		}
 

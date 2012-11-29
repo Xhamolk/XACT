@@ -41,11 +41,13 @@ public class XActMod {
 	public static int blankChipID;
 	public static int encodedChipID;
 	public static int caseID;
+    public static int padID; // pending
 
 	// Items
 	public static Item itemRecipeBlank;
 	public static Item itemRecipeEncoded;
 	public static Item itemChipCase;
+    public static Item itemCraftPad;
 
 	// Block
 	public static Block blockMachine;
@@ -62,6 +64,7 @@ public class XActMod {
 		blankChipID = config.getItem("blankChip", 9100).getInt();
 		encodedChipID =  config.getItem("encodedChip", 9101).getInt();
 		caseID = config.getItem("chipCase", 9102).getInt();
+        padID = config.getItem("craftPad", 9103).getInt();
 
 		config.save();
 	}
@@ -76,6 +79,7 @@ public class XActMod {
 		itemRecipeBlank = new ItemChip(blankChipID, false);
 		itemRecipeEncoded = new ItemChip(encodedChipID, true);
 		itemChipCase = new ItemCase(caseID);
+        itemCraftPad = new ItemPad(padID);
 
 		// Init Blocks
 		blockMachine = new BlockMachine(machineID);
@@ -91,6 +95,7 @@ public class XActMod {
 		LanguageRegistry.addName(itemRecipeBlank, "Recipe Chip");
 		LanguageRegistry.addName(itemRecipeEncoded, "\u00a72"+"Recipe Chip");
 		LanguageRegistry.addName(itemChipCase, "Chip Case");
+        LanguageRegistry.addName(itemCraftPad, "Craft Pad");
 			
 		// machine's names
 		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 0), "XACT Encoder");
@@ -121,6 +126,8 @@ public class XActMod {
 				chip, chip, chip
 		);
 		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(itemChipCase, 1)));
+
+        // todo Craft Pad recipe.
 
 		// Crafter
 		ingredients = ingredients(
