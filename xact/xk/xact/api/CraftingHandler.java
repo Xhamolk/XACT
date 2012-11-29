@@ -4,6 +4,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.src.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.oredict.OreDictionary;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.FakeCraftingInventory;
 import xk.xact.util.InvSlot;
@@ -190,18 +191,13 @@ public abstract class CraftingHandler {
 		int found = 0;
 		IInventory[] inventories = getAvailableInventories();
 		for( IInventory inv : inventories ) {
-			int size = inv.getSizeInventory();
-			for( int i=0; i<size; i++ ) {
+            for(InvSlot slot : inventoryIterator(inv)){
+                if( !countAll && found >= stack.stackSize )
+                    break; // prevent counting on more if found enough already.
 
-				if( !countAll && found >= stack.stackSize )
-					break; // prevent counting on more if found enough already.
-
-				ItemStack current = inv.getStackInSlot(i);
-				if( current != null && stack.itemID == current.itemID ){
-					if( stack.getItemDamage() == current.getItemDamage() )
-						found += current.stackSize;
-				}
-			}
+                if( slot != null && !slot.isEmpty() && slotContainsIngredient(slot, stack) )
+                    found += slot.stack.stackSize;
+            }
 		}
 		return found;
 	}
@@ -214,53 +210,12 @@ public abstract class CraftingHandler {
 	 * @return A FakeCraftingInventory
 	 */
 	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe) {
-		if( !canCraft(recipe) ) {
-			System.err.println("XACT: generateTemporaryCraftingGridFor: !canCraft");
-			return null;
-		}
-
-		ItemStack[] ingredients = recipe.getIngredients();
-		ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
-
-		items: for( int i=0; i<ingredients.length; i++) {
-			ItemStack ingredient = ingredients[i];
-			if( ingredient == null ) {
-				continue;
-			}
-
-			int required = ingredient.stackSize;
-
-			// iterate through every slot on every available inventory.
-			for( IInventory inv : getAvailableInventories() ) {
-				for( InvSlot slot : inventoryIterator(inv) ){
-					if( required <= 0 ) continue items;
-					if( slot == null )
-						continue;
-
-					if( slot.containsItemsFrom(ingredient) ) {
-						ItemStack stackInSlot = inv.getStackInSlot(slot.slotIndex);
-
-						if( stackInSlot.stackSize > required ){
-							contents[i] = inv.decrStackSize( slot.slotIndex, required );
-							inv.onInventoryChanged();
-							continue items;
-						} else {
-							if( contents[i] == null ){
-								contents[i] = stackInSlot;
-							} else {
-								contents[i].stackSize += stackInSlot.stackSize;
-							}
-							required -= stackInSlot.stackSize;
-							inv.setInventorySlotContents(slot.slotIndex, null);
-							inv.onInventoryChanged();
-						}
-					}
-				}
-			}
-			// should find the all items, since canCraft was true.
-		}
-
-		return FakeCraftingInventory.emulateContents(contents);
+        if( !canCraft(recipe) ) {
+            System.err.println("XACT: generateTemporaryCraftingGridFor: !canCraft");
+            return null;
+        }
+        ItemStack[] contents = findAndGetRecipeIngredients(recipe);
+        return FakeCraftingInventory.emulateContents(contents);
 	}
 
 	/**
@@ -329,5 +284,69 @@ public abstract class CraftingHandler {
 		}
 		return retValue.equals("") ? "none." : retValue;
 	}
+
+    protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe) {
+        ItemStack[] ingredients = recipe.getIngredients();
+        ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
+
+        items: for( int i=0; i<ingredients.length; i++) {
+            ItemStack ingredient = ingredients[i];
+            if( ingredient == null ) {
+                continue;
+            }
+
+            int required = ingredient.stackSize;
+
+            // iterate through every slot on every available inventory.
+            for( IInventory inv : getAvailableInventories() ) {
+                for( InvSlot slot : inventoryIterator(inv) ){
+                    if( required <= 0 ) continue items;
+                    if( slot == null )
+                        continue;
+
+                    if( slotContainsIngredient(slot, ingredient) ) {
+                        ItemStack stackInSlot = inv.getStackInSlot(slot.slotIndex);
+
+                        if( stackInSlot.stackSize > required ){
+                            contents[i] = inv.decrStackSize( slot.slotIndex, required );
+                            inv.onInventoryChanged();
+                            continue items;
+                        } else {
+                            if( contents[i] == null ){
+                                contents[i] = stackInSlot;
+                            } else {
+                                contents[i].stackSize += stackInSlot.stackSize;
+                            }
+                            required -= stackInSlot.stackSize;
+                            inv.setInventorySlotContents(slot.slotIndex, null);
+                            inv.onInventoryChanged();
+                        }
+                    }
+                }
+            }
+            // should find the all items, since canCraft was true.
+        }
+        return contents;
+    }
+
+    protected boolean slotContainsIngredient(InvSlot slot, ItemStack ingredient) {
+        if( slot == null || slot.isEmpty() )
+            return false;
+        if(slot.containsItemsFrom(ingredient))
+            return true;
+
+        int oreID = OreDictionary.getOreID(ingredient);
+        ArrayList<ItemStack> equivalences = OreDictionary.getOres(oreID);
+
+        for(ItemStack current : equivalences) {
+            if( slot.containsItemsFrom(current) ) // do I need this initial check?
+                return true;
+            if( slot.stack.itemID == current.itemID ) {
+                if( current.getItemDamage() == -1 || slot.stack.getItemDamage() == current.getItemDamage() )
+                    return true;
+            }
+        }
+        return false;
+    }
 
 }
