@@ -1,0 +1,17 @@
+[
+{
+  "modid": "xact",
+  "name": "X.A.C.T.",
+  "description": "Xhamolk_'s Advanced Crafting Table",
+  "credits": "",
+  "logoFile": "",
+  "mcversion": "1.4.5",
+  "url": "http://www.minecraftforum.net/topic/1551715-",
+  "updateUrl": "http://xhamolk.github.com/XACT/",
+  "authors": [ "Xhamolk_" ],
+  "screenshots": "",
+  "dependencies": [
+     "mod_MinecraftForge"
+  ]
+}
+]
