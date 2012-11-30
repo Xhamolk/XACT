@@ -41,9 +41,6 @@ public class ItemCase extends Item {
 
     @Override
     public int getIconFromDamage(int itemDamage) {
-        // todo: un-comment after texture is properly set.
-//        if( itemDamage == 1 )
-//            return 18;
         return 16;
     }
 

@@ -34,10 +34,9 @@ public class ItemPad extends Item {
 
 	@Override
 	public int getIconFromDamage(int itemDamage) {
-		// todo: un-comment after texture is properly set.
-//		if( itemDamage == 1 )
-//			return 19;
-		return 17;
+		if( itemDamage == 1 )
+			return 19;
+		return 18;
 	}
 
 }

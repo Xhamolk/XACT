@@ -73,11 +73,7 @@ public class ItemChip extends Item {
 
     @Override
 	public int getIconFromDamage(int itemDamage){
-		int iconIndex = this.encoded ? 1 : 0;
-		// todo: un-comment after texture is properly set.
-//		if( itemDamage == 1 )
-//			iconIndex += 2;
-		return iconIndex;
+		return this.encoded ? 1 : 0;
 	}
 
 }
