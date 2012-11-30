@@ -59,17 +59,17 @@ public class ItemChip extends Item {
 	private static boolean isEncoded(ItemStack stack) {
 		return CraftManager.decodeRecipe(stack) != null;
 	}
-
-	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-		if( itemStack.stackSize > 1 ) {
-			if( player.worldObj.isRemote)
-				player.sendChatToPlayer("Can't encode multiple chips at once.");
-			return itemStack;
-		}
-		player.openGui(XActMod.instance, 2, world, 0, 0, 0);
-		return itemStack;
-	}
+//
+//	@Override
+//	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+//		if( itemStack.stackSize > 1 ) {
+//			if( player.worldObj.isRemote)
+//				player.sendChatToPlayer("Can't encode multiple chips at once.");
+//			return itemStack;
+//		}
+//		player.openGui(XActMod.instance, 2, world, 0, 0, 0);
+//		return itemStack;
+//	}
 
     @Override
 	public int getIconFromDamage(int itemDamage){
