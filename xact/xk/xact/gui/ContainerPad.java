@@ -167,8 +167,6 @@ public class ContainerPad extends Container {
 		Otherwise: do the usual stuff.
 		 */
 
-		// todo: flag=2
-
 		if( 1 <= slotID && slotID < 10 ) {
 			Slot slot = ((Slot)this.inventorySlots.get(slotID));
 
