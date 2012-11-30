@@ -18,20 +18,7 @@ public class ItemMachine extends ItemBlock {
 
 	@Override
 	public String getItemNameIS(ItemStack itemStack) {
-		if( itemStack != null ){
-			int type = itemStack.getItemDamage();
-			if( type == 0 ){ // encoder
-				return "tile.xact.machine.encoder";
-			}
-			if( type == 1 ){ // crafter
-				return "tile.xact.machine.crafter";
-			}
-		}
-		return super.getItemNameIS(itemStack);
+		return "tile.xact.machine.crafter";
 	}
 
-	@Override
-	public int getMetadata(int stackDamage) {
-		return stackDamage & 1;
-	}
 }

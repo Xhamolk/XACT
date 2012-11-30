@@ -4,7 +4,6 @@ import net.minecraft.src.*;
 import xk.xact.XActMod;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -25,20 +24,17 @@ public class BlockMachine extends BlockContainer {
 	// update block when it's placed on the world.
 	@Override
 	public int func_85104_a(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff, int metadata) { //updateBlockMetadata
-		return side << 1 | metadata;
+		return side;
 	}
 
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living) {
 		EntityPlayer player = (EntityPlayer) living;
-		int meta = world.getBlockMetadata(x, y, z);
-		int side = (meta & MASK_FRONT) >> 1;
-		if( side == 0 || side == 1 ){
-			side = sideByAngles(player, x, z);
+		int frontSide = world.getBlockMetadata(x, y, z);
+		if( frontSide == 0 || frontSide == 1 ){
+			frontSide = sideByAngles(player, x, z);
 		}
-
-		meta = (side << 1) | (meta & 1);
-		world.setBlockMetadata(x, y, z, meta);
+		world.setBlockMetadata(x, y, z, frontSide);
 	}
 
 	@Override
@@ -98,36 +94,13 @@ public class BlockMachine extends BlockContainer {
 	@Override
 	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		list.add(new ItemStack(this, 1, metadata & MASK_TYPE));
+		list.add(new ItemStack(this, 1, 0));
 		return list;
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int metadata) {
-		int metaType = (metadata & MASK_TYPE);
-		if( metaType == 0 )
-			return new TileEncoder();
-		if( metaType == 1 )
-			return new TileCrafter();
-		return null;
-	}
-		
-	@Override // does nothing.
-	public TileEntity createNewTileEntity(World world) { return null; }
-
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void addCreativeItems(ArrayList itemList){
-		itemList.add(new ItemStack(this, 1, 0)); // encoder
-		itemList.add(new ItemStack(this, 1, 1)); // crafter
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void getSubBlocks(int itemID, CreativeTabs tab, List itemList){
-		itemList.add(new ItemStack(this, 1, 0)); // encoder
-		itemList.add(new ItemStack(this, 1, 1)); // crafter
+	public TileEntity createNewTileEntity(World world) {
+		return new TileCrafter();
 	}
 
 
@@ -153,50 +126,19 @@ public class BlockMachine extends BlockContainer {
 		return XActMod.TEXTURE_BLOCKS;
 	}
 
-	// Metadata: stores the machine type and the front side.
-	// Textures:
-		// [0]  top, front, side, bottom // encoder
-		// [16] top, front, side, bottom // crafter
 	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int metadata){
-		// top, front, side, bottom.
-		int base = (metadata & MASK_TYPE) * 16;
-		
 		switch (side){
 			case 0: // bottom
-				return base +3;
+				return 16+3;
 			case 1: // top
-				return base;
+				return 16;
 			default:
-				if( side == (metadata & MASK_FRONT) >> 1 ) // front
-					return base +1;
+				if( side == metadata ) // front
+					return 16+1;
 				else // any other side.
-					return base +2;
+					return 16+2;
 		}
 	}
 
-	private static final int MASK_TYPE = 0x1;
-	private static final int MASK_FRONT = 0xE;
-	
-	/*
-	Metadata problem:
-
-	I think i can't use the enum to differentiate between my two machines.
-	Maybe i should use metadata to store the type of machine, and also the front side?
-	As i currently only use metadata for the front side.
-
-
-	Possible Solution 1:
-	pack both numbers on a string. Use one byte for the machine type, and another for the side.
-	I only use two byte because the damage value on ItemStack is stored on NBT as a short (2 bytes).
-
-	According to the solution1, I need to create two masks, of 1 byte length both;
-		one for the front orientation, the other for the machine type value.
-	
-	Meta structure: <byte> <byte> <byte:type> <byte:front>
-		Type mask: 0xFF00
-		Front mask: 0xFF
-
-	 */
-	
 }

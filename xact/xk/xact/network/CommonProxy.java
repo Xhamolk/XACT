@@ -24,9 +24,6 @@ public class CommonProxy implements IGuiHandler {
             if( machine == null )
                 return null;
 
-            if( machine instanceof TileEncoder ) { // todo: remove
-                return new ContainerEncoder((TileEncoder) machine, player);
-            }
             if( machine instanceof TileCrafter ) {
                 return new ContainerCrafter((TileCrafter) machine, player);
             }
@@ -63,9 +60,6 @@ public class CommonProxy implements IGuiHandler {
             if( machine == null )
                 return null;
 
-            if( machine instanceof TileEncoder ) { // todo: remove
-                return new GuiEncoder((TileEncoder) machine, player);
-            }
             if( machine instanceof TileCrafter ) {
                 return new GuiCrafter((TileCrafter) machine, player);
             }
