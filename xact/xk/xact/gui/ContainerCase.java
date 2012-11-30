@@ -3,7 +3,7 @@ package xk.xact.gui;
 
 import net.minecraft.src.*;
 import xk.xact.core.ChipCase;
-import xk.xact.recipes.CraftManager;
+import xk.xact.core.ItemChip;
 
 public class ContainerCase extends Container {
 
@@ -32,7 +32,7 @@ public class ContainerCase extends Container {
 				this.addSlotToContainer(new Slot(storage, i*6 +e, e*18 +79, i*18 +10){
 					@Override
 					public boolean isItemValid(ItemStack stack){
-						return CraftManager.isEncoded(stack);
+						return stack != null && stack.getItem() instanceof ItemChip;
 					}
 
 					@Override

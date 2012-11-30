@@ -33,8 +33,9 @@ public class ChipCase {
 	private int getChipsCount(){
 		int count = 0;
 		for(InvSlot current : InventoryUtils.inventoryIterator(internalInventory) ){
-			if( current != null && !current.isEmpty() )
-				count++;
+			if( current != null && !current.isEmpty() ){
+				count += current.stack.stackSize;
+			}
 		}
 		return count;
 	}

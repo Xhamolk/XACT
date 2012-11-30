@@ -28,8 +28,8 @@ public class ItemCase extends Item {
 			return;
 
 		Integer count = itemStack.getTagCompound().getInteger("chipCount");
-		if (count != null)
-			list.add("Stored " + count +"/60 chips.");
+		if (count != null && count > 0)
+			list.add("Stored " + count +" chips.");
 	}
 
 	@Override

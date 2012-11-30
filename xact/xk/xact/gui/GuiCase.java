@@ -109,8 +109,10 @@ public class GuiCase extends GuiContainer {
     protected void handleMouseClick(Slot slot, int par2, int par3, int par4) {
         if( slot != null && slot.getHasStack() ){
             ItemStack stackInSlot = slot.getStack();
-            if( stackInSlot.itemID == XActMod.itemChipCase.shiftedIndex && stackInSlot.getItemDamage() == 1 )
+            if( stackInSlot.itemID == XActMod.itemChipCase.shiftedIndex && stackInSlot.getItemDamage() == 1 ) {
+				this.mc.thePlayer.sendChatMessage("Can't move the Chip Case while it's in use.");
                 return;
+			}
         }
         super.handleMouseClick(slot, par2, par3, par4);
     }
