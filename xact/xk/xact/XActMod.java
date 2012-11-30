@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.7pre2")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.1.7pre3")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = {"xact_channel"}, packetHandler = PacketHandler.class)
 public class XActMod {
@@ -41,7 +41,7 @@ public class XActMod {
 	public static int blankChipID;
 	public static int encodedChipID;
 	public static int caseID;
-    public static int padID; // pending
+    public static int padID;
 
 	// Items
 	public static Item itemRecipeBlank;
@@ -88,7 +88,6 @@ public class XActMod {
 		GameRegistry.registerBlock(blockMachine, ItemMachine.class);
 
 		// Register TileEntities
-		GameRegistry.registerTileEntity(TileEncoder.class, "tile.xact.Encoder");
 		GameRegistry.registerTileEntity(TileCrafter.class, "tile.xact.Crafter");
 
 		// Add names
@@ -98,8 +97,7 @@ public class XActMod {
         LanguageRegistry.addName(itemCraftPad, "Craft Pad");
 			
 		// machine's names
-		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 0), "XACT Encoder");
-		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 1), "XACT Crafter");
+		LanguageRegistry.addName(new ItemStack(blockMachine, 1, 0), "XACT Crafter");
 
 		// tab's name
 		LanguageRegistry.instance().addStringLocalization("itemGroup.xact", "XACT");
@@ -135,7 +133,7 @@ public class XActMod {
                 itemRecipeBlank, Block.workbench, 	itemRecipeBlank,
 				Item.ingotIron,  Block.chest, 		Item.ingotIron
 		);
-		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(blockMachine, 1, 1)));
+		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(blockMachine, 1, 0)));
 	}
 
 
