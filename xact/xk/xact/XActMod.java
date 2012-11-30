@@ -116,16 +116,22 @@ public class XActMod {
 		ingredients = ingredients(Item.ingotIron, Item.paper);
 		GameRegistry.addRecipe(shapelessRecipe(new ItemStack(itemRecipeBlank, 4), ingredients));
 
-		// Chip Case (temporary)
+		// Chip Case
 		ItemStack chip = new ItemStack(itemRecipeBlank);
 		ingredients = ingredients(
-				chip, chip, chip,
-				chip, null, chip,
-				chip, chip, chip
+				chip, 			Block.thinGlass, chip,
+				chip, 			null, 			chip,
+				Block.planks, 	Block.chest, 	Block.planks
 		);
 		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(itemChipCase, 1)));
 
-        // todo Craft Pad recipe.
+        // Craft Pad
+		ingredients = ingredients (
+				Item.ingotIron, Item.ingotIron, null,
+				Item.ingotIron, Block.workbench, chip,
+				null, null, null
+		);
+		GameRegistry.addRecipe(new ShapedRecipes(3, 2, ingredients, new ItemStack(itemCraftPad)));
 
 		// Crafter
 		ingredients = ingredients(
@@ -145,8 +151,9 @@ public class XActMod {
 		}
 		return new ShapelessRecipes(output, list);
 	}
+
 	private ItemStack[] ingredients(Object... objects){
-		ItemStack[] retValue = new ItemStack[9];
+		ItemStack[] retValue = new ItemStack[objects.length];
 		int index =-1;
 		for( Object o : objects ){
 			index++;
