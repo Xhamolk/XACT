@@ -6,7 +6,6 @@ import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 import xk.xact.XActMod;
-import xk.xact.util.Inventory;
 
 import java.util.List;
 
@@ -28,14 +27,9 @@ public class ItemCase extends Item {
 		if( itemStack == null || itemStack.stackTagCompound == null )
 			return;
 
-		Inventory internalInventory = new Inventory(30, "internalInventory");
-		internalInventory.readFromNBT(itemStack.stackTagCompound);
-		int amount = 0;
-		for( ItemStack s : internalInventory.getContents() ){
-			if( s != null )
-				amount++;
-		}
-		list.add("Stored " + amount +"/60 chips.");
+		Integer count = itemStack.getTagCompound().getInteger("chipCount");
+		if (count != null)
+			list.add("Stored " + count +"/60 chips.");
 	}
 
 	@Override
