@@ -271,8 +271,11 @@ public class ContainerPad extends Container {
 	@Override
 	public void onCraftGuiClosed(EntityPlayer player) {
 		super.onCraftGuiClosed(player);
-		if( player.inventory.getCurrentItem() != null )
-			craftPad.writeToNBT( player.inventory.getCurrentItem().getTagCompound() );
+		ItemStack current = player.inventory.getCurrentItem();
+		if( current != null ) {
+			craftPad.writeToNBT( current.getTagCompound() );
+			current.setItemDamage(0);
+		}
 	}
 
 
