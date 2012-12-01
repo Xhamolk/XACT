@@ -1,7 +1,10 @@
 package xk.xact.gui;
 
 
-import net.minecraft.src.*;
+import net.minecraft.src.Container;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.Slot;
 import xk.xact.core.CraftPad;
 import xk.xact.core.ItemChip;
 import xk.xact.recipes.CraftManager;

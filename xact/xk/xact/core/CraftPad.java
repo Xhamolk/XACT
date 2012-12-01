@@ -1,6 +1,5 @@
 package xk.xact.core;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
@@ -94,7 +93,7 @@ public class CraftPad implements ICraftingDevice {
 
 	@Override
 	public CraftRecipe getRecipe(int index) {
-		return lastRecipe = CraftManager.generateRecipe(gridInv.getContents(), Minecraft.getMinecraft().theWorld);
+		return lastRecipe = CraftManager.generateRecipe(gridInv.getContents(), player.worldObj);
 	}
 
 	@Override
