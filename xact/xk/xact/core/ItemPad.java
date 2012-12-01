@@ -28,7 +28,8 @@ public class ItemPad extends Item {
     @Override
     public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
         itemStack.setItemDamage(1);
-        player.openGui(XActMod.instance, 3, world, 0, 0, 0);
+		if( !world.isRemote )
+        	player.openGui(XActMod.instance, 3, world, 0, 0, 0);
         return itemStack;
     }
 

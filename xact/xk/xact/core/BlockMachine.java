@@ -43,7 +43,8 @@ public class BlockMachine extends BlockContainer {
 		if( player.isSneaking() ) {
 			return false;
 		}
-		player.openGui(XActMod.instance, 0, world, x, y, z);
+		if( !world.isRemote )
+			player.openGui(XActMod.instance, 0, world, x, y, z);
 
 		return true;
 	}
