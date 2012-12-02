@@ -46,7 +46,13 @@ public abstract class CraftingHandler {
 	 * @param recipe the recipe to check.
 	 * @return true if contains all the required ingredients.
 	 */
-	public boolean canCraft(CraftRecipe recipe){
+	public boolean canCraft(CraftRecipe recipe, EntityPlayer player) {
+		if( recipe == null )
+			return false;
+
+		if( player.capabilities.isCreativeMode )
+			return true;
+
 		ItemStack[] ingredients = recipe.getSimplifiedIngredients();
 		for(ItemStack cur : ingredients) {
 			if( cur == null ) continue;
@@ -74,7 +80,12 @@ public abstract class CraftingHandler {
 		///////////////
 		/// crafting event
 
-		FakeCraftingInventory craftMatrix = generateTemporaryCraftingGridFor(recipe);
+		FakeCraftingInventory craftMatrix;
+		if( player.capabilities.isCreativeMode )
+			craftMatrix = FakeCraftingInventory.emulateContents(recipe.getIngredients());
+		else
+			craftMatrix = generateTemporaryCraftingGridFor(recipe, player);
+
 		if( craftMatrix == null ) {
 			player.sendChatToPlayer("Can't craft: "+recipe+". Missing: "+getMissingIngredientsString(recipe));
 			return; // how could this possibly happen?
@@ -82,6 +93,9 @@ public abstract class CraftingHandler {
 
 		pulledStack.onCrafting(player.worldObj, player, pulledStack.stackSize);
 		GameRegistry.onItemCrafted(player, pulledStack, craftMatrix);
+
+		if( player.capabilities.isCreativeMode )
+			return;
 
 		//////////
 		/// consume the items
@@ -209,8 +223,8 @@ public abstract class CraftingHandler {
 	 * @param recipe the recipe from which to take the ingredients.
 	 * @return A FakeCraftingInventory
 	 */
-	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe) {
-        if( !canCraft(recipe) ) {
+	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe, EntityPlayer player) {
+        if( !canCraft(recipe, player) ) {
             System.err.println("XACT: generateTemporaryCraftingGridFor: !canCraft");
             return null;
         }

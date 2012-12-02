@@ -53,7 +53,7 @@ public class SlotCraft extends Slot {
 	public boolean canTakeStack(EntityPlayer player) {
 		CraftRecipe recipe = device.getRecipe(getSlotIndex());
 		if( recipe != null ) {
-			if( handler.canCraft(recipe) )
+			if( handler.canCraft(recipe, player) )
 				return true;
 			if( player.worldObj.isRemote )
 				player.sendChatToPlayer("Can't craft "+recipe+". Missing: "+handler.getMissingIngredientsString(recipe));
