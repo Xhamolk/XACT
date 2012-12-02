@@ -72,11 +72,11 @@ public class ContainerCase extends Container {
 		ItemStack stackInSlot = slot.getStack();
 		ItemStack stack = stackInSlot.copy();
 
-		if( slotID < 60 ) {
-			if (!mergeItemStack(stackInSlot, 60, inventorySlots.size(), false))
+		if( slotID < 30 ) {
+			if (!mergeItemStack(stackInSlot, 30, inventorySlots.size(), false))
 				return null;
 		} else {
-			if (!mergeItemStack(stackInSlot, 0, 60, false))
+			if (!mergeItemStack(stackInSlot, 0, 30, false))
 				return null;
 		}
 
