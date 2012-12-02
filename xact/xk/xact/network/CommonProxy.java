@@ -16,8 +16,8 @@ public class CommonProxy implements IGuiHandler {
 		// ID:
 			// 0: crafter
 			// 1: library
-			// 2: chip
-            // 3: craft pad
+			// 2: chip (removed)
+			// 3: craft pad
 
         if( ID == 0 ) { // Crafter
             TileMachine machine = (TileMachine) world.getBlockTileEntity(x, y, z);
@@ -34,11 +34,6 @@ public class CommonProxy implements IGuiHandler {
 			return new ContainerCase(chipCase, player);
 		}
 
-		if( ID == 2 ) { // Chip (unused)
-			ChipDevice chipDevice = new ChipDevice(player.inventory.getCurrentItem(), player);
-			return new ContainerChip(chipDevice, player);
-		}
-
         if( ID == 3 ) { // Craft Pad
             CraftPad craftPad = new CraftPad(player.inventory.getCurrentItem(), player);
             return new ContainerPad(craftPad, player);
@@ -50,10 +45,10 @@ public class CommonProxy implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		// ID:
-            // 0: crafter
-            // 1: library
-            // 2: chip
-            // 3: craft pad
+			// 0: crafter
+			// 1: library
+			// 2: chip (removed)
+			// 3: craft pad
 
 		if( ID == 0 ) { // Crafter
             TileMachine machine = (TileMachine) world.getBlockTileEntity(x, y, z);
@@ -68,11 +63,6 @@ public class CommonProxy implements IGuiHandler {
 		if( ID == 1 ) { // Chip Case
 			ChipCase chipCase = new ChipCase(player.inventory.getCurrentItem());
 			return new GuiCase(new ContainerCase(chipCase, player));
-		}
-
-		if( ID == 2 ) { // Chip (unused)
-			ChipDevice chipDevice = new ChipDevice(player.inventory.getCurrentItem(), player);
-			return new GuiChip(chipDevice, new ContainerChip(chipDevice, player));
 		}
 
         if( ID == 3 ) { // Craft Pad
