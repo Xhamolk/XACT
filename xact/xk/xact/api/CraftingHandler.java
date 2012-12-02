@@ -50,7 +50,7 @@ public abstract class CraftingHandler {
 		if( recipe == null )
 			return false;
 
-		if( player.capabilities.isCreativeMode )
+		if( player != null && player.capabilities.isCreativeMode )
 			return true;
 
 		ItemStack[] ingredients = recipe.getSimplifiedIngredients();

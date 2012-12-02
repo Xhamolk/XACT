@@ -76,7 +76,7 @@ public class GuiPad extends GuiContainer {
 
 
 	@Override
-	protected void handleMouseClick(Slot slot, int par2, int par3, int flag) {
+	public void handleMouseClick(Slot slot, int par2, int par3, int flag) {
 		if( slot != null && slot.getHasStack() ){
 			ItemStack stackInSlot = slot.getStack();
 			if( stackInSlot.itemID == XActMod.itemCraftPad.shiftedIndex && stackInSlot.getItemDamage() == 1 ){

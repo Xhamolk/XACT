@@ -106,7 +106,7 @@ public class GuiCase extends GuiContainer {
 	}
 
     @Override
-    protected void handleMouseClick(Slot slot, int par2, int par3, int par4) {
+    public void handleMouseClick(Slot slot, int par2, int par3, int par4) {
         if( slot != null && slot.getHasStack() ){
             ItemStack stackInSlot = slot.getStack();
             if( stackInSlot.itemID == XActMod.itemChipCase.shiftedIndex && stackInSlot.getItemDamage() == 1 ) {

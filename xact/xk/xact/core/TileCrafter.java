@@ -127,7 +127,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public void updateStates() {
 		for(int i=0;i<4; i++) {
 			// if there are not enough ingredients, color is red.
-			redState[i] = (recipes[i] != null) && !getHandler().canCraft(this.getRecipe(i));
+			redState[i] = (recipes[i] != null) && !getHandler().canCraft(this.getRecipe(i), null);
 		}
 	}
 
