@@ -34,11 +34,6 @@ public class ContainerCase extends Container {
 					public boolean isItemValid(ItemStack stack){
 						return stack != null && stack.getItem() instanceof ItemChip;
 					}
-
-					@Override
-					public int getSlotStackLimit() {
-						return 1;
-					}
 				});
 			}
 		}
