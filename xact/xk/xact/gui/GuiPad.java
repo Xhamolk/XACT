@@ -1,13 +1,17 @@
 package xk.xact.gui;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.src.*;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
+import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.CraftPad;
+import xk.xact.util.CustomPacket;
 
-public class GuiPad extends GuiContainer {
+import java.io.IOException;
 
+public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 	private CraftPad craftPad;
 
@@ -85,6 +89,26 @@ public class GuiPad extends GuiContainer {
 			}
 		}
 		super.handleMouseClick(slot, par2, par3, flag);
+	}
+
+	@Override
+	public void sendGridIngredients(ItemStack[] ingredients) {
+		NetClientHandler sendQueue = this.mc.getSendQueue();
+		if( sendQueue == null )
+			return;
+
+		for( int index = 0; index<ingredients.length; index++ ) {
+
+			ItemStack stack = ingredients[index];
+			byte slotID = (byte) (index +1);
+
+			try {
+				Packet250CustomPayload packet = new CustomPacket((byte)0x03).add(slotID, stack).toPacket();
+				sendQueue.addToSendQueue(packet);
+			}catch(IOException ioe) {
+				FMLCommonHandler.instance().raiseException(ioe, "GuiPad: custom packet", true);
+			}
+		}
 	}
 
 }

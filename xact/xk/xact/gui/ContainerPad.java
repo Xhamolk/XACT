@@ -1,16 +1,14 @@
 package xk.xact.gui;
 
 
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.src.*;
+import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.CraftPad;
 import xk.xact.core.ItemChip;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 
-public class ContainerPad extends Container {
+public class ContainerPad extends Container implements InteractiveCraftingContainer {
 
 	private CraftPad craftPad;
 	private EntityPlayer player;
@@ -142,9 +140,18 @@ public class ContainerPad extends Container {
 
 	}
 
-	public void handlePacket(int buttonID) {
+	public void buttonClicked(int buttonID) {
 		craftPad.buttonID = buttonID;
 		craftPad.buttonPressed();
+	}
+
+	@Override
+	public void setStack(int slotID, ItemStack stack) {
+
+		Slot slot = (Slot) this.inventorySlots.get(slotID);
+		if( slot != null ) {
+			slot.putStack(stack);
+		}
 	}
 
 	@Override
@@ -204,6 +211,8 @@ public class ContainerPad extends Container {
 			}
 
 		}
+
+		//todo: make my own slotCLick. (copy from ContainerCrafter)
 
 		return super.slotClick(slotID, buttomPressed, flag, player);
 	}

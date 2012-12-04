@@ -5,6 +5,6 @@ import net.minecraft.src.ItemStack;
 
 public interface InteractiveCraftingGui {
 
-	public void setGridIngredients(ItemStack[] ingredients);
+	public void sendGridIngredients(ItemStack[] ingredients);
 
 }

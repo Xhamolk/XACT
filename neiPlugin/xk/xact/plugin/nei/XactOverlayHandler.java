@@ -20,8 +20,8 @@ public class XactOverlayHandler implements IOverlayHandler {
 			// get the ingredients and align them to the grid.
 			ItemStack[] alignedIngredients = getAlignedIngredients(ingredients);
 
-			// send the ingredients to the Gui
-			((InteractiveCraftingGui) firstGui).setGridIngredients(alignedIngredients);
+			// send the ingredients to the Gui (client-side)
+			((InteractiveCraftingGui) firstGui).sendGridIngredients(alignedIngredients);
 		}
 
 	}
@@ -34,11 +34,10 @@ public class XactOverlayHandler implements IOverlayHandler {
 			if( current == null )
 				continue;
 
-			int row = (current.relx - 25) % 18;
-			int column = (current.rely - 6) % 18;
+			int row = (current.relx - 25) / 18;
+			int column = (current.rely - 6) / 18;
 
-			int index = column * 3 + row;
-			alignedIngredients[index] = current.items[0];
+			alignedIngredients[column*3 + row] = current.items[0];
 		}
 		return alignedIngredients;
 	}

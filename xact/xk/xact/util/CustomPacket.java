@@ -23,17 +23,14 @@ public class CustomPacket {
 
 	public CustomPacket add(Object... objects) throws IOException {
 		for( Object o : objects ) {
-			if( o == null )
-				continue;
-
-			if(o instanceof Byte) {
+			if(o == null || o instanceof ItemStack) {
+				addItemStack((ItemStack) o);
+			} else if(o instanceof Byte) {
 				dataStream.writeByte((Byte) o);
 			} else if(o instanceof Short) {
 				dataStream.writeShort((Short) o);
 			} else if(o instanceof Integer) {
 				dataStream.writeInt((Integer) o);
-			} else if(o instanceof ItemStack) {
-				addItemStack((ItemStack) o);
 			}
 		}
 		return this;
@@ -57,6 +54,10 @@ public class CustomPacket {
 			(short) nbtLength
 			(byte[]) compressedNBT
 		 */
+		if( stack == null ) {
+			dataStream.writeShort( -1 );
+			return;
+		}
 
 		dataStream.writeShort( (short) stack.itemID );
 		dataStream.writeByte( (byte) stack.stackSize );

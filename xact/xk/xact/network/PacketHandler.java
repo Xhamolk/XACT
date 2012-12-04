@@ -62,20 +62,23 @@ public class PacketHandler implements IPacketHandler {
 	}
 
 
-	private ItemStack getItemStack(DataInputStream packetData) throws IOException {
+	private ItemStack getItemStack(DataInputStream packetData) {
+		try {
+			short itemID = packetData.readShort();
+			if( itemID <= 0 )
+				return null;
 
-		short itemID = packetData.readShort();
-		if( itemID <= 0 )
+			byte stackSize = packetData.readByte();
+			short itemDamage = packetData.readShort();
+
+			ItemStack stack = new ItemStack(itemID, stackSize, itemDamage);
+			NBTTagCompound stackNbtTag = getNBT(packetData);
+			stack.setTagCompound(stackNbtTag);
+
+			return stack;
+		} catch (IOException e) {
 			return null;
-
-		byte stackSize = packetData.readByte();
-		short itemDamage = packetData.readShort();
-
-		ItemStack stack = new ItemStack(itemID, stackSize, itemDamage);
-		NBTTagCompound stackNbtTag = getNBT(packetData);
-		stack.setTagCompound(stackNbtTag);
-
-		return stack;
+		}
 	}
 
 	private NBTTagCompound getNBT(DataInputStream packetData) throws IOException {
