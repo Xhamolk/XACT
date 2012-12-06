@@ -23,14 +23,18 @@ import static xk.xact.util.InventoryUtils.inventoryIterator;
 public abstract class CraftingHandler {
 
 
-	protected CraftingHandler()	{}
+	protected final ICraftingDevice device;
+
+	protected CraftingHandler(ICraftingDevice device) {
+		this.device = device;
+	}
 
 	/**
 	 * Easy way to create a CraftingHandler.
 	 * @param device the ICraftingDevice from which to reference the AvailableInventories
 	 */
 	public static CraftingHandler createCraftingHandler(final ICraftingDevice device){
-		return new CraftingHandler() {
+		return new CraftingHandler(device) {
 			@Override
 			public IInventory[] getAvailableInventories() {
 				return device.getAvailableInventories();
@@ -57,7 +61,7 @@ public abstract class CraftingHandler {
 		for(ItemStack cur : ingredients) {
 			if( cur == null ) continue;
 
-			int found = getCountFor(cur, false);
+			int found = getCountFor(recipe, cur, false);
 			if( found < cur.stackSize )
 				return false;
 		}
@@ -196,12 +200,13 @@ public abstract class CraftingHandler {
 	/**
 	 * Gets the amount of items of the same kind of the passed stack on the available inventories.
 	 *
+	 * @param recipe the CraftRecipe to check
 	 * @param stack the stack to compare with.
 	 * @param countAll whether if this should keep counting after finding enough.
 	 *               Enough implies that the amount found is equal or higher than the amount required.
 	 * @return the count of the items found.
 	 */
-	public int getCountFor(ItemStack stack, boolean countAll) {
+	public int getCountFor(CraftRecipe recipe, ItemStack stack, boolean countAll) {
 		int found = 0;
 		IInventory[] inventories = getAvailableInventories();
 		for( IInventory inv : inventories ) {
@@ -209,7 +214,7 @@ public abstract class CraftingHandler {
                 if( !countAll && found >= stack.stackSize )
                     break; // prevent counting on more if found enough already.
 
-                if( slot != null && !slot.isEmpty() && slotContainsIngredient(slot, stack) )
+                if( slot != null && !slot.isEmpty() && slotContainsIngredient(slot, recipe, stack) )
                     found += slot.stack.stackSize;
             }
 		}
@@ -249,7 +254,7 @@ public abstract class CraftingHandler {
 				retValue[i] = 0;
 				continue;
 			}
-			int found = getCountFor(stack, false);
+			int found = getCountFor(recipe, stack, false);
 			retValue[i] = (found >= stack.stackSize) ? 0 : stack.stackSize - found;
 		}
 		return retValue;
@@ -318,7 +323,7 @@ public abstract class CraftingHandler {
                     if( slot == null )
                         continue;
 
-                    if( slotContainsIngredient(slot, ingredient) ) {
+                    if( slotContainsIngredient(slot, recipe, ingredient) ) {
                         ItemStack stackInSlot = inv.getStackInSlot(slot.slotIndex);
 
                         if( stackInSlot.stackSize > required ){
@@ -343,24 +348,34 @@ public abstract class CraftingHandler {
         return contents;
     }
 
-    protected boolean slotContainsIngredient(InvSlot slot, ItemStack ingredient) {
-        if( slot == null || slot.isEmpty() )
-            return false;
-        if(slot.containsItemsFrom(ingredient))
-            return true;
+    protected boolean slotContainsIngredient(InvSlot slot, CraftRecipe recipe, ItemStack ingredient) {
+		if( slot == null || slot.isEmpty() )
+			return false;
 
-        int oreID = OreDictionary.getOreID(ingredient);
-        ArrayList<ItemStack> equivalences = OreDictionary.getOres(oreID);
+		// the direct comparison.
+		if( slot.containsItemsFrom(ingredient) )
+			return true;
 
-        for(ItemStack current : equivalences) {
-            if( slot.containsItemsFrom(current) ) // do I need this initial check?
-                return true;
-            if( slot.stack.itemID == current.itemID ) {
-                if( current.getItemDamage() == -1 || slot.stack.getItemDamage() == current.getItemDamage() )
-                    return true;
-            }
-        }
-        return false;
+		// Ore dictionary?
+		if( recipe.isOreRecipe() ){
+			int oreID = OreDictionary.getOreID(ingredient);
+
+			if( oreID != -1 ) {
+				ArrayList<ItemStack> equivalencies = OreDictionary.getOres(oreID);
+
+				for(ItemStack current : equivalencies) {
+//					if( slot.containsItemsFrom(current) ) // do I need this initial check?
+//						return true;
+					if( slot.stack.itemID == current.itemID ) {
+						if( current.getItemDamage() == -1 || slot.stack.getItemDamage() == current.getItemDamage() )
+							return true;
+					}
+				}
+			}
+		}
+
+		// regular test: if replacing the item with that
+		return recipe.matchesIngredient(ingredient, slot.stack, device.getWorld());
     }
 
 }

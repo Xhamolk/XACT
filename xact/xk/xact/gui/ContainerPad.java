@@ -7,6 +7,7 @@ import xk.xact.core.CraftPad;
 import xk.xact.core.ItemChip;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 
 public class ContainerPad extends Container implements InteractiveCraftingContainer {
 
@@ -85,7 +86,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		// Placing an encoded chips will replace the current recipe, by design
 
 		if( slot.getHasStack() ) { // placed a chip
-			CraftRecipe recipe = CraftManager.decodeRecipe(slot.getStack());
+			CraftRecipe recipe = RecipeUtils.getRecipe(slot.getStack(), player.worldObj);
 
 			if( recipe != null ) { // placed an encoded chip
 				// update the crafting grid, without notifying it
@@ -204,12 +205,9 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 					slot.putStack(copy);
 					slot.onSlotChanged();
-
 					return invStack;
 				}
-
 			}
-
 		}
 
 		//todo: make my own slotCLick. (copy from ContainerCrafter)

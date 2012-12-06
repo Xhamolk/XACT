@@ -29,8 +29,17 @@ public class SlotCraft extends Slot {
 	}
 
 
+	// todo: use this on the clickSlot methods.
+	public ItemStack getCraftedStack(InventoryCrafting grid) {
+		try{
+			return getRecipe().getRecipePointer(device.getWorld()).getOutputFrom(grid);
+		}catch(NullPointerException npe){
+			return null;
+		}
+	}
+
 	@Override
-	public ItemStack getStack() {
+	public ItemStack getStack() { // this is only the one to show.
 		try {
 			return getRecipe().getResult();
 		}catch(Exception e) {

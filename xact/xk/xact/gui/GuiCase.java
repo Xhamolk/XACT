@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 
 public class GuiCase extends GuiContainer {
 
@@ -80,7 +81,9 @@ public class GuiCase extends GuiContainer {
 	protected void drawRecipe(ItemStack chip) {
 		if( chip == null )
 			return;
-		CraftRecipe recipe = CraftManager.decodeRecipe(chip);
+		CraftRecipe recipe = RecipeUtils.getRecipe(chip, this.mc.thePlayer.worldObj);
+		if( recipe == null )
+			return;
 
 		ItemStack result = recipe.getResult();
 		drawItem(result, 32, 17);

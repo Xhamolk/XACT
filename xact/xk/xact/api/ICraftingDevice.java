@@ -1,6 +1,7 @@
 package xk.xact.api;
 
 import net.minecraft.src.IInventory;
+import net.minecraft.src.World;
 import xk.xact.recipes.CraftRecipe;
 
 /**
@@ -23,5 +24,7 @@ public interface ICraftingDevice { // todo: javadoc.
 	public abstract CraftRecipe getRecipe(int index);
 
 	public abstract CraftingHandler getHandler();
+
+	public abstract World getWorld();
 
 }
