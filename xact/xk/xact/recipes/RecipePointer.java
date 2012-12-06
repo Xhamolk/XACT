@@ -28,8 +28,8 @@ public class RecipePointer {
 
 	public ItemStack getOutputFrom(InventoryCrafting craftingGrid) {
 		if( craftingGrid == null )
-			return recipe.getRecipeOutput();
-		return recipe.getCraftingResult(craftingGrid);
+			return getIRecipe().getRecipeOutput();
+		return getIRecipe().getCraftingResult(craftingGrid);
 	}
 
 	public IRecipe getIRecipe() {
@@ -48,6 +48,7 @@ public class RecipePointer {
 	public CraftRecipe getCraftRecipe(InventoryCrafting craftingGrid) {
 		ItemStack result = getOutputFrom(craftingGrid);
 		ItemStack[] ingredients;
+		getIRecipe(); // make sure recipe is instantiated.
 
 		if( recipe instanceof ShapedRecipes ) {
 			ingredients = ((ShapedRecipes) recipe).recipeItems;
@@ -62,7 +63,7 @@ public class RecipePointer {
 
 			for( int i=0; i<9; i++  ) {
 				if( tempIngredients[i] != null ) {
-					ingredients[i] = ingredients[i].copy();
+					ingredients[i] = tempIngredients[i].copy();
 					ingredients[i].stackSize = 1;
 				} else
 					ingredients[i] = null;
