@@ -183,9 +183,9 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 			if( flag == 0 ) { // regular clicking.
 				ItemStack playerStack = player.inventory.getItemStack();
-				if( buttomPressed == 1 || playerStack == null ){
+				if( buttomPressed == 0 || playerStack == null ){
 					slot.putStack(null);
-				} else if( buttomPressed == 0 ){
+				} else if( buttomPressed == 1 ){
 					ItemStack copy = playerStack.copy();
 					copy.stackSize = 1;
 					slot.putStack(copy);
