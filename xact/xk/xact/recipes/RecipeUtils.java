@@ -1,7 +1,6 @@
 package xk.xact.recipes;
 
 
-import net.minecraft.src.IInventory;
 import net.minecraft.src.IRecipe;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;

@@ -116,7 +116,7 @@ public class CraftRecipe {
 		this.recipeID = ( pointer == null ) ? -1 : pointer.recipeID;
 
 		// Make sure there's an IRecipe associated with this.
-		return recipeID != -1;
+		return result != null && recipeID != -1;
 	}
 
 	// the output's name.
