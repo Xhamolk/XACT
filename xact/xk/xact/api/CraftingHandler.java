@@ -70,39 +70,29 @@ public abstract class CraftingHandler {
 
 	/**
 	 * Manages the crafting of a recipe.
-	 * Finds the required ingredients, fires the crafting event,
-	 * consumes the ingredients, and returns the remaining items to the inventories.
+	 * Fires the crafting event with the ingredients provided.
 	 *
 	 * @param recipe the CraftRecipe from which to take ingredients of the recipe.
 	 * @param player the player that does the crafting.
-	 * @param pulledStack the item pulled from the crafting slot.
+	 * @param craftMatrix the crafting grid with the ingredients for this recipe.
 	 */
-	public void doCraft(CraftRecipe recipe, EntityPlayer player, ItemStack pulledStack) {
+	public ItemStack doCraft(CraftRecipe recipe, EntityPlayer player, InventoryCrafting craftMatrix) {
 		if( recipe == null )
-			return;
+			return null;
 
-		///////////////
-		/// crafting event
+		ItemStack craftedItem = recipe.getResult();
 
-		FakeCraftingInventory craftMatrix;
-		if( player.capabilities.isCreativeMode )
-			craftMatrix = FakeCraftingInventory.emulateContents(recipe.getIngredients());
-		else
-			craftMatrix = generateTemporaryCraftingGridFor(recipe, player);
+		if( craftMatrix != null )
+			craftedItem = recipe.getRecipePointer().getOutputFrom(craftMatrix);
 
-		if( craftMatrix == null ) {
-			player.sendChatToPlayer("Can't craft: "+recipe+". Missing: "+getMissingIngredientsString(recipe));
-			return; // how could this possibly happen?
-		}
+		craftedItem.onCrafting(player.worldObj, player, craftedItem.stackSize);
+		GameRegistry.onItemCrafted(player, craftedItem, craftMatrix);
 
-		pulledStack.onCrafting(player.worldObj, player, pulledStack.stackSize);
-		GameRegistry.onItemCrafted(player, pulledStack, craftMatrix);
+		return craftedItem;
+	}
 
-		if( player.capabilities.isCreativeMode )
-			return;
-
-		//////////
-		/// consume the items
+	public void consumeIngredients(InventoryCrafting craftMatrix, EntityPlayer player) {
+		// consume the items
 
 		ArrayList<ItemStack> remainingList = new ArrayList<ItemStack>();
 
@@ -133,20 +123,16 @@ public abstract class CraftingHandler {
 		}
 		craftMatrix.onInventoryChanged();
 
-
-		//////////
-		/// give back the remaining items
-
+		// give back the remaining items
 		for( ItemStack stack : remainingList ){
 			if(!addToInventories(stack) )
 				player.dropPlayerItem(stack);
 		}
-		ItemStack[] remainingItems = craftMatrix.getContents();
+		ItemStack[] remainingItems = InventoryUtils.getContents(craftMatrix);
 		for( ItemStack stack : remainingItems ){
 			if( !addToInventories(stack) )
 				player.dropPlayerItem(stack);
 		}
-
 	}
 
 	/**
@@ -233,7 +219,11 @@ public abstract class CraftingHandler {
             System.err.println("XACT: generateTemporaryCraftingGridFor: !canCraft");
             return null;
         }
-        ItemStack[] contents = findAndGetRecipeIngredients(recipe);
+		boolean creativeMod = player.capabilities.isCreativeMode;
+		if( creativeMod )
+			return FakeCraftingInventory.emulateContents( recipe.getIngredients() );
+
+        ItemStack[] contents = findAndGetRecipeIngredients(recipe, !creativeMod);
         return FakeCraftingInventory.emulateContents(contents);
 	}
 
@@ -304,7 +294,7 @@ public abstract class CraftingHandler {
 		return retValue.equals("") ? "none." : retValue;
 	}
 
-    protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe) {
+    protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe, boolean doRemove) {
         ItemStack[] ingredients = recipe.getIngredients();
         ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
 
@@ -326,19 +316,27 @@ public abstract class CraftingHandler {
                     if( slotContainsIngredient(slot, recipe, ingredient) ) {
                         ItemStack stackInSlot = inv.getStackInSlot(slot.slotIndex);
 
-                        if( stackInSlot.stackSize > required ){
-                            contents[i] = inv.decrStackSize( slot.slotIndex, required );
-                            inv.onInventoryChanged();
+                        if( stackInSlot.stackSize > required ) {
+
+							if( doRemove ) {
+								contents[i] = inv.decrStackSize( slot.slotIndex, required );
+								inv.onInventoryChanged();
+							} else {
+								contents[i] = stackInSlot.copy();
+								contents[i].stackSize = required;
+							}
                             continue items;
                         } else {
                             if( contents[i] == null ){
-                                contents[i] = stackInSlot;
+                                contents[i] = doRemove ? stackInSlot : stackInSlot.copy();
                             } else {
                                 contents[i].stackSize += stackInSlot.stackSize;
                             }
                             required -= stackInSlot.stackSize;
-                            inv.setInventorySlotContents(slot.slotIndex, null);
-                            inv.onInventoryChanged();
+							if( doRemove ) {
+								inv.setInventorySlotContents(slot.slotIndex, null);
+								inv.onInventoryChanged();
+							}
                         }
                     }
                 }

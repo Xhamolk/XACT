@@ -121,7 +121,7 @@ public class CraftRecipe {
 
 	// the output's name.
     public String toString() {
-        return this.result.getItem().getItemDisplayName(result);
+        return this.result.getItem().getItemDisplayName(result)+" ("+recipeID+")";
     }
 
 	/**

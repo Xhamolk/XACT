@@ -31,7 +31,7 @@ public class RecipeUtils {
 		ItemStack[] ingredients = recipe.getIngredients();
 		int size = ingredients.length;
 		for( int i=0; i<size; i++ ) {
-			if( ItemStack.areItemStacksEqual(ingredient, ingredients[i]) )
+			if( ingredients[i] != null && ingredients[i].isItemEqual(ingredient) )
 				return i;
 		}
 		return -1;

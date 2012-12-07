@@ -2,7 +2,6 @@ package xk.xact.gui;
 
 
 import net.minecraft.src.*;
-import net.minecraftforge.common.IArmorTextureProvider;
 import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
@@ -158,6 +157,11 @@ public class ContainerCrafter extends ContainerMachine {
 					return null;
 
 				stackInSlot = slot.getStack();
+				if( slot instanceof SlotCraft ) {
+					stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
+					// todo: copy the slotClick method from ContainerPad
+				}
+
 				ItemStack playerStack = inventoryPlayer.getItemStack();
 
 				if (stackInSlot != null) {
@@ -295,10 +299,6 @@ public class ContainerCrafter extends ContainerMachine {
 	}
 
 	private boolean equalsStacks( ItemStack stack1, ItemStack stack2 ){
-		if(stack1.getItem() instanceof ItemArmor)
-			if( stack1.getItem() instanceof IArmorTextureProvider )
-				((IArmorTextureProvider) stack1.getItem()).getArmorTextureFile(stack1);
-
 		return stack1.itemID == stack2.itemID
 				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())
 				&& ItemStack.areItemStackTagsEqual(stack1, stack2);

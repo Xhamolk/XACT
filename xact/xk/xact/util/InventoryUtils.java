@@ -150,4 +150,14 @@ public class InventoryUtils {
         return stack.stackSize +"x "+ stack.getItem().getItemDisplayName(stack);
     }
 
+
+	public static ItemStack[] getContents(IInventory inventory) {
+		int size = inventory.getSizeInventory();
+		ItemStack[] contents = new ItemStack[size];
+
+		for( int i=0; i<size; i++ )
+			contents[i] = inventory.getStackInSlot(i);
+
+		return contents;
+	}
 }
