@@ -1,6 +1,5 @@
 package xk.xact.api;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.src.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
@@ -73,10 +72,9 @@ public abstract class CraftingHandler {
 	 * Fires the crafting event with the ingredients provided.
 	 *
 	 * @param recipe the CraftRecipe from which to take ingredients of the recipe.
-	 * @param player the player that does the crafting.
 	 * @param craftMatrix the crafting grid with the ingredients for this recipe.
 	 */
-	public ItemStack doCraft(CraftRecipe recipe, EntityPlayer player, InventoryCrafting craftMatrix) {
+	public ItemStack getRecipeResult(CraftRecipe recipe, InventoryCrafting craftMatrix) {
 		if( recipe == null )
 			return null;
 
@@ -84,9 +82,6 @@ public abstract class CraftingHandler {
 
 		if( craftMatrix != null )
 			craftedItem = recipe.getRecipePointer().getOutputFrom(craftMatrix);
-
-		craftedItem.onCrafting(player.worldObj, player, craftedItem.stackSize);
-		GameRegistry.onItemCrafted(player, craftedItem, craftMatrix);
 
 		return craftedItem;
 	}
@@ -214,7 +209,7 @@ public abstract class CraftingHandler {
 	 * @param recipe the recipe from which to take the ingredients.
 	 * @return A FakeCraftingInventory
 	 */
-	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe, EntityPlayer player) {
+	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe, EntityPlayer player, boolean takeItems) {
         if( !canCraft(recipe, player) ) {
             System.err.println("XACT: generateTemporaryCraftingGridFor: !canCraft");
             return null;
@@ -223,7 +218,7 @@ public abstract class CraftingHandler {
 		if( creativeMod )
 			return FakeCraftingInventory.emulateContents( recipe.getIngredients() );
 
-        ItemStack[] contents = findAndGetRecipeIngredients(recipe, true);
+        ItemStack[] contents = findAndGetRecipeIngredients(recipe, takeItems);
         return FakeCraftingInventory.emulateContents(contents);
 	}
 

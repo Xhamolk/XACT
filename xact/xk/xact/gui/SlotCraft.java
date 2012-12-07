@@ -1,6 +1,7 @@
 package xk.xact.gui;
 
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.src.*;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.api.ICraftingDevice;
@@ -16,11 +17,11 @@ public class SlotCraft extends Slot {
 
 	private CraftingHandler handler;
 	private ICraftingDevice device;
+	private EntityPlayer player;
 
-	private FakeCraftingInventory currentGrid = null;
-
-	public SlotCraft(ICraftingDevice device, IInventory displayInventory, int index, int x, int y) {
+	public SlotCraft(ICraftingDevice device, IInventory displayInventory, EntityPlayer player, int index, int x, int y) {
 		super(displayInventory, index, x, y);
+		this.player = player;
 		this.device = device;
 		this.handler = device.getHandler();
 	}
@@ -40,13 +41,15 @@ public class SlotCraft extends Slot {
 		}
 	}
 
-	public ItemStack getCraftedStack(EntityPlayer player) {
+	public ItemStack getCraftedStack() {
 		CraftRecipe recipe = getRecipe();
 		if( recipe == null )
 			return null;
 
-		currentGrid = handler.generateTemporaryCraftingGridFor(recipe, player);
-		return handler.doCraft(recipe, player, currentGrid);
+		FakeCraftingInventory grid = handler.generateTemporaryCraftingGridFor(recipe, player, false);
+		ItemStack craftedItem = handler.getRecipeResult(recipe, grid);
+
+		return craftedItem == null ? null : craftedItem.copy();
 	}
 
 	@Override
@@ -74,17 +77,20 @@ public class SlotCraft extends Slot {
 
 
 	@Override
-	public void onPickupFromSlot(EntityPlayer player, ItemStack itemStack) {
+	public void onPickupFromSlot(EntityPlayer player, ItemStack craftedItem) {
+		if( player.capabilities.isCreativeMode || craftedItem == null )
+			return;
+
 		CraftRecipe recipe = getRecipe();
 		if( recipe == null ) return;
 
-		if( player.capabilities.isCreativeMode )
-			currentGrid = null;
+		FakeCraftingInventory craftMatrix = handler.generateTemporaryCraftingGridFor(recipe, player, true);
 
-		if( currentGrid != null ) {
-			handler.consumeIngredients(currentGrid, player);
-			currentGrid = null;
-		}
+		craftedItem.onCrafting(player.worldObj, player, craftedItem.stackSize);
+		GameRegistry.onItemCrafted(player, craftedItem, craftMatrix);
+
+		handler.consumeIngredients(craftMatrix, player);
+
 		// putStack(itemStack);
 	}
 

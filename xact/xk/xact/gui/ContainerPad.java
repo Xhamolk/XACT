@@ -30,7 +30,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 
 		// output slot
-		this.addSlotToContainer(new SlotCraft(craftPad, craftPad.outputInv, 0, 90, 35));
+		this.addSlotToContainer(new SlotCraft(craftPad, craftPad.outputInv, player, 0, 90, 35));
 
 		// grid
 		for (int i=0; i<3; i++) {
@@ -247,7 +247,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 					int amount = buttomPressed == 0 || craftingSlot ? stackInSlot.stackSize : (stackInSlot.stackSize + 1) / 2;
 
 					ItemStack itemStack = craftingSlot ?
-							((SlotCraft)slot).getCraftedStack(player) : slot.decrStackSize(amount);
+							((SlotCraft)slot).getCraftedStack() : slot.decrStackSize(amount);
 
 					inventoryPlayer.setItemStack( itemStack );
 
@@ -278,7 +278,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 					}
 
 				} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
-					stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
+					stackInSlot = ((SlotCraft)slot).getCraftedStack();
 					int amount = stackInSlot.stackSize;
 
 					if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {
@@ -326,7 +326,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 				}
 
 				if (slot.getHasStack() && var9) {
-					ItemStack slotStack = craftingSlot ? ((SlotCraft)slot).getCraftedStack(player) : slot.getStack();
+					ItemStack slotStack = craftingSlot ? ((SlotCraft)slot).getCraftedStack() : slot.getStack();
 					inventoryPlayer.setInventorySlotContents(buttomPressed, slotStack);
 
 					if ((slot.inventory != inventoryPlayer || !slot.isItemValid(itemStack)) && itemStack != null) {
@@ -365,11 +365,11 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 		// output's slot
 		if( slot instanceof SlotCraft ) {
-			stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
+			stackInSlot = ((SlotCraft)slot).getCraftedStack();
 			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
 
-			if ( mergeItemStack(stackInSlot, 11, inventorySlots.size(), false) ) {
-				slot.onPickupFromSlot(player, copy);
+			if ( mergeCraftedStack(stackInSlot, 11, inventorySlots.size()) ) {
+				slot.onPickupFromSlot(player, stackInSlot);
 				slot.onSlotChanged();
 				return copy;
 			}
@@ -409,6 +409,88 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		slot.onSlotChanged();
 
 		return retValue;
+	}
+
+	protected boolean mergeCraftedStack(ItemStack itemStack, int indexMin, int indexMax) {
+
+		// First, check if the stack can fit.
+		int missingSpace = itemStack.stackSize;
+		int emptySlots = 0;
+
+		for(int i = indexMin; i < indexMax && missingSpace <= 0; i++ ) {
+			Slot tempSlot = (Slot) this.inventorySlots.get(i);
+			ItemStack stackInSlot = tempSlot.getStack();
+
+			if( stackInSlot == null ) {
+				emptySlots++;
+				continue;
+			}
+
+			if( stackInSlot.itemID == itemStack.itemID
+					&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
+					&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+
+				missingSpace -= Math.min(stackInSlot.getMaxStackSize(), tempSlot.getSlotStackLimit()) - stackInSlot.stackSize;
+			}
+		}
+
+		// prevent crafting if there is no space for the crafted item.
+		if( missingSpace > 0 )
+			if( emptySlots == 0 )
+				return false;
+
+		// Try to merge with existing stacks.
+		if( itemStack.isStackable() ) {
+
+			for( int i = indexMin; i < indexMax; i++ ) {
+				if( itemStack.stackSize <= 0 )
+					break;
+
+				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				ItemStack stackInSlot = targetSlot.getStack();
+
+				if( stackInSlot == null )
+					continue;
+
+				if( stackInSlot.itemID == itemStack.itemID
+						&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
+						&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+
+					int sum = itemStack.stackSize + stackInSlot.stackSize;
+					int maxStackSize = Math.min(stackInSlot.getMaxStackSize(), targetSlot.getSlotStackLimit());
+
+					if( sum <= maxStackSize ) {
+						stackInSlot.stackSize = sum;
+						targetSlot.onSlotChanged();
+						return true;
+					}
+					else if( stackInSlot.stackSize < maxStackSize  ) {
+						itemStack.stackSize -= maxStackSize - stackInSlot.stackSize;
+						stackInSlot.stackSize = maxStackSize;
+						targetSlot.onSlotChanged();
+					}
+				}
+			}
+		}
+
+		// Add to an empty slot.
+		if (itemStack.stackSize > 0) {
+
+			for( int i = indexMin; i < indexMax; i++ ) {
+
+				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				ItemStack stackInSlot = targetSlot.getStack();
+
+				if( stackInSlot != null )
+					continue;
+
+				targetSlot.putStack( itemStack );
+				targetSlot.onSlotChanged();
+				return true;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
