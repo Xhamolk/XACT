@@ -417,7 +417,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		int missingSpace = itemStack.stackSize;
 		int emptySlots = 0;
 
-		for(int i = indexMin; i < indexMax && missingSpace <= 0; i++ ) {
+		for( int i = indexMin; i < indexMax && missingSpace > 0; i++ ) {
 			Slot tempSlot = (Slot) this.inventorySlots.get(i);
 			ItemStack stackInSlot = tempSlot.getStack();
 
