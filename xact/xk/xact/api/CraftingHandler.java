@@ -223,7 +223,7 @@ public abstract class CraftingHandler {
 		if( creativeMod )
 			return FakeCraftingInventory.emulateContents( recipe.getIngredients() );
 
-        ItemStack[] contents = findAndGetRecipeIngredients(recipe, !creativeMod);
+        ItemStack[] contents = findAndGetRecipeIngredients(recipe, false);
         return FakeCraftingInventory.emulateContents(contents);
 	}
 

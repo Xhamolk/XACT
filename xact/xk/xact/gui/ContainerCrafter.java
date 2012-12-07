@@ -77,12 +77,14 @@ public class ContainerCrafter extends ContainerMachine {
 
 		if( slot instanceof SlotCraft ) {
 			// add to the resources buffer.
-			if (mergeItemStack(stackInSlot, 8, 8+18, false)) {
-				slot.onPickupFromSlot(player, stack);
-				slot.onSlotChanged();
-				return stack;
-			}
+			stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
+			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
 
+			if ( mergeItemStack(stackInSlot, 8, 8+18, false) ) {
+				slot.onPickupFromSlot(player, copy);
+				slot.onSlotChanged();
+				return copy;
+			}
 			return null;
 		}
 
@@ -118,128 +120,127 @@ public class ContainerCrafter extends ContainerMachine {
 
 	@Override
 	public ItemStack slotClick(int slotID, int buttomPressed, int flag, EntityPlayer player) {
-		ItemStack retValue = null;
 		InventoryPlayer inventoryPlayer = player.inventory;
-		Slot slot;
-		ItemStack stackInSlot;
-		int amount;
 
-		if ((flag == 0 || flag == 1) && (buttomPressed == 0 || buttomPressed == 1)) { // normal actions.
-			if (slotID == -999) { // out of the GUI.
-				if ( inventoryPlayer.getItemStack() != null ) {
-					if (buttomPressed == 0) {
-						player.dropPlayerItem(inventoryPlayer.getItemStack());
+		// clicking out of the GUI. drop stuff.
+		if (slotID == -999) {
+			if ( inventoryPlayer.getItemStack() != null ) {
+				if (buttomPressed == 0) {
+					player.dropPlayerItem(inventoryPlayer.getItemStack());
+					inventoryPlayer.setItemStack(null);
+				}
+				if (buttomPressed == 1) {
+					player.dropPlayerItem(inventoryPlayer.getItemStack().splitStack(1));
+					if (inventoryPlayer.getItemStack().stackSize == 0) {
 						inventoryPlayer.setItemStack(null);
 					}
-					if (buttomPressed == 1) {
-						player.dropPlayerItem(inventoryPlayer.getItemStack().splitStack(1));
-						if (inventoryPlayer.getItemStack().stackSize == 0) {
-							inventoryPlayer.setItemStack(null);
-						}
+				}
+			}
+			return null;
+		}
+
+		Slot slot = ((Slot)this.inventorySlots.get(slotID));
+		if( slot == null )
+			return null;
+		boolean craftingSlot = slot instanceof SlotCraft;
+
+		ItemStack stackInSlot = slot.getStack(),
+				playerStack = inventoryPlayer.getItemStack(),
+				retValue = null;
+
+		// Default behaviour
+		if( flag == 0 && (buttomPressed == 0 || buttomPressed == 1) ) {
+
+			if( stackInSlot == null ) { // Placing player's stack on empty slot.
+
+				if( playerStack != null && slot.isItemValid(playerStack) ) {
+					int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
+
+					if (amount > slot.getSlotStackLimit()) {
+						amount = slot.getSlotStackLimit();
+					}
+
+					slot.putStack(playerStack.splitStack(amount));
+
+					if (playerStack.stackSize == 0) {
+						inventoryPlayer.setItemStack(null);
 					}
 				}
-			} else if (flag == 1) { // pressing shift
-				slot = (Slot)this.inventorySlots.get(slotID);
 
-				if (slot != null && slot.canTakeStack(player)) {
-					stackInSlot = this.transferStackInSlot(player, slotID);
+			} else if( slot.canTakeStack(player) ) {  // interact with the slot.
 
-					if (stackInSlot != null) {
-						retValue = stackInSlot.copy();
+				if( playerStack == null ) { // Full extraction from slot.
+					int amount = buttomPressed == 0 || craftingSlot ? stackInSlot.stackSize : (stackInSlot.stackSize + 1) / 2;
 
-						if ( slot.getStack() != null && slot.getStack().itemID == stackInSlot.itemID) {
-							this.retrySlotClick(slotID, buttomPressed, true, player);
-						}
-					}
-				}
-			} else {
-				if( slotID < 0 || (slot = (Slot)this.inventorySlots.get(slotID)) == null )
-					return null;
+					ItemStack itemStack = craftingSlot ?
+							((SlotCraft)slot).getCraftedStack(player) : slot.decrStackSize(amount);
 
-				stackInSlot = slot.getStack();
-				if( slot instanceof SlotCraft ) {
-					stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
-					// todo: copy the slotClick method from ContainerPad
-				}
+					inventoryPlayer.setItemStack( itemStack );
 
-				ItemStack playerStack = inventoryPlayer.getItemStack();
+					if( stackInSlot.stackSize == 0 )
+						slot.putStack(null);
 
-				if (stackInSlot != null) {
-					retValue = stackInSlot.copy();
-				}
+					slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
 
-				if (stackInSlot == null) { // Placing player's stack on empty slot.
+				} else if( slot.isItemValid(playerStack) ) { // Merge to slot
 
-					if (playerStack != null && slot.isItemValid(playerStack)) {
-						amount = buttomPressed == 0 ? playerStack.stackSize : 1;
+					if( equalsStacks(stackInSlot, playerStack) ) { // split player's into slot.
+						int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
 
-						if (amount > slot.getSlotStackLimit()) {
-							amount = slot.getSlotStackLimit();
-						}
+						int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize);
+						if( amount > max )
+							amount = max;
 
-						slot.putStack(playerStack.splitStack(amount));
+						playerStack.splitStack(amount);
+						stackInSlot.stackSize += amount;
 
 						if (playerStack.stackSize == 0) {
 							inventoryPlayer.setItemStack(null);
 						}
+
+					} else if( playerStack.stackSize <= slot.getSlotStackLimit() ) { // swap stacks.
+						slot.putStack(playerStack);
+						inventoryPlayer.setItemStack(stackInSlot);
 					}
 
-				} else if (slot.canTakeStack(player)) {  // interact with the slot.
+				} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
+					stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
+					int amount = stackInSlot.stackSize;
 
-					if (playerStack == null) { // Full extraction from slot.
-						amount = buttomPressed == 0 ? stackInSlot.stackSize : (stackInSlot.stackSize + 1) / 2;
-						inventoryPlayer.setItemStack( slot.decrStackSize(amount) );
+					if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {
+						playerStack.stackSize += amount;
+						if( !craftingSlot )
+							stackInSlot = slot.decrStackSize(amount);
 
 						if (stackInSlot.stackSize == 0) {
 							slot.putStack(null);
 						}
 
 						slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
-
-					} else if (slot.isItemValid(playerStack)) { // Merge to slot
-
-						if (equalsStacks(stackInSlot, playerStack)) { // split player's into slot.
-							amount = buttomPressed == 0 ? playerStack.stackSize : 1;
-
-							int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize);
-							if( amount > max )
-								amount = max;
-
-							playerStack.splitStack(amount);
-							stackInSlot.stackSize += amount;
-
-							if (playerStack.stackSize == 0) {
-								inventoryPlayer.setItemStack(null);
-							}
-
-						} else if (playerStack.stackSize <= slot.getSlotStackLimit()) { // swap stacks.
-							slot.putStack(playerStack);
-							inventoryPlayer.setItemStack(stackInSlot);
-						}
-
-					} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
-						amount = stackInSlot.stackSize;
-
-						if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {
-							playerStack.stackSize += amount;
-							stackInSlot = slot.decrStackSize(amount);
-
-							if (stackInSlot.stackSize == 0) {
-								slot.putStack(null);
-							}
-
-							slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
-						}
 					}
 				}
+			}
 
-				slot.onSlotChanged();
+			slot.onSlotChanged();
+
+		}
+		// Shift-clicking
+		else if( flag == 1 && (buttomPressed == 0 || buttomPressed == 1) ) {
+			if (slot != null && slot.canTakeStack(player)) {
+				ItemStack stack = this.transferStackInSlot(player, slotID);
+
+				if (stack != null) {
+					retValue = stack.copy();
+
+					if( craftingSlot || ( slot.getStack() != null && slot.getStack().itemID == stack.itemID) ) {
+						this.retrySlotClick(slotID, buttomPressed, true, player);
+					}
+				}
+				return retValue;
 			}
 		}
-		else if (flag == 2 && buttomPressed >= 0 && buttomPressed < 9) { // Interact with the hot-bar.
-
-			slot = (Slot)this.inventorySlots.get(slotID);
-
+		// Interacting with the hot bar.
+		else if( flag == 2 ) {
 			if (slot.canTakeStack(player)) {
 				ItemStack itemStack = inventoryPlayer.getStackInSlot(buttomPressed);
 				boolean var9 = itemStack == null || slot.inventory == inventoryPlayer && slot.isItemValid(itemStack);
@@ -251,13 +252,14 @@ public class ContainerCrafter extends ContainerMachine {
 				}
 
 				if (slot.getHasStack() && var9) {
-					ItemStack slotStack = slot.getStack();
+					ItemStack slotStack = craftingSlot ? ((SlotCraft)slot).getCraftedStack(player) : slot.getStack();
 					inventoryPlayer.setInventorySlotContents(buttomPressed, slotStack);
 
 					if ((slot.inventory != inventoryPlayer || !slot.isItemValid(itemStack)) && itemStack != null) {
 						if (index > -1) {
 							inventoryPlayer.addItemStackToInventory(itemStack);
-							slot.putStack(null);
+							if( !craftingSlot )
+								slot.putStack(null);
 							slot.onPickupFromSlot(player, slotStack);
 						}
 					} else {
@@ -272,20 +274,8 @@ public class ContainerCrafter extends ContainerMachine {
 				}
 			}
 		}
-		else if (flag == 3 && player.capabilities.isCreativeMode && inventoryPlayer.getItemStack() == null && slotID > 0) {
-			// Shift-clicking on the creative inventory.
 
-			slot = (Slot)this.inventorySlots.get(slotID);
-
-			if (slot != null && slot.getHasStack())
-			{
-				stackInSlot = slot.getStack().copy();
-				stackInSlot.stackSize = stackInSlot.getMaxStackSize();
-				inventoryPlayer.setItemStack(stackInSlot);
-			}
-		}
-
-		return retValue;
+		return null;
 	}
 
 

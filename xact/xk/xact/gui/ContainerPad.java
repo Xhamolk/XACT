@@ -326,7 +326,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 				}
 
 				if (slot.getHasStack() && var9) {
-					ItemStack slotStack = craftingSlot ? stackInSlot : slot.getStack();
+					ItemStack slotStack = craftingSlot ? ((SlotCraft)slot).getCraftedStack(player) : slot.getStack();
 					inventoryPlayer.setInventorySlotContents(buttomPressed, slotStack);
 
 					if ((slot.inventory != inventoryPlayer || !slot.isItemValid(itemStack)) && itemStack != null) {
@@ -363,6 +363,19 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		ItemStack stackInSlot = slot.getStack();
 		ItemStack retValue = stackInSlot.copy();
 
+		// output's slot
+		if( slot instanceof SlotCraft ) {
+			stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
+			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
+
+			if ( mergeItemStack(stackInSlot, 11, inventorySlots.size(), false) ) {
+				slot.onPickupFromSlot(player, copy);
+				slot.onSlotChanged();
+				return copy;
+			}
+			return null;
+		}
+
 		// Special treatment for chips.
 		if( stackInSlot.getItem() instanceof ItemChip ) {
 			if( slotID == 10 ) { // chip slot
@@ -386,14 +399,6 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 					chipSlot.onSlotChanged();
 				}
 			}
-		}
-
-		// output's slot
-		if( slot instanceof SlotCraft ) {
-			stackInSlot = ((SlotCraft)slot).getCraftedStack(player);
-			if (!mergeItemStack(stackInSlot, 11, inventorySlots.size(), false))
-				return null;
-			return stackInSlot;
 		}
 
 		if( stackInSlot.stackSize == 0 ) {
