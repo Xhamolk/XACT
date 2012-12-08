@@ -5,6 +5,8 @@ import xk.xact.core.ItemChip;
 import xk.xact.XActMod;
 import xk.xact.util.FakeCraftingInventory;
 
+import java.util.ArrayList;
+
 /**
  * Handles the encoding/decoding of CraftRecipes.
  * @author Xhamolk_
@@ -35,11 +37,17 @@ public class CraftManager {
 		// Ingredients
 		NBTTagList listIngredients = new NBTTagList();
 		ItemStack[] ingredients = recipe.ingredients;
-		for(int i=0; i<9; i++) {
+		int i;
+		for( i = 0; i<ingredients.length; i++ ) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("index", i);
 			if( ingredients[i] != null )
 				ingredients[i].writeToNBT(tag);
+			listIngredients.appendTag(tag);
+		}
+		for( ; i < 9; i++ ) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setInteger("index", i);
 			listIngredients.appendTag(tag);
 		}
 
@@ -74,27 +82,18 @@ public class CraftManager {
      * @return null if invalid or recipe not found. Else, a CraftRecipe representation.
      */
     public static CraftRecipe generateRecipe(ItemStack[] ingredients, World world) {
-        if(ingredients == null || ingredients.length != 9)
-            return null;
+		if(ingredients == null || ingredients.length != 9)
+			return null;
 
-        FakeCraftingInventory craftGrid = FakeCraftingInventory.emulateContents(ingredients);
-        if( craftGrid == null )
-            return null;
-        ItemStack output = CraftingManager.getInstance().findMatchingRecipe(craftGrid, world);
-        if( output == null )
-            return null;
+		FakeCraftingInventory craftGrid = FakeCraftingInventory.emulateContents(ingredients);
+		if( craftGrid == null )
+			return null;
 
-        ItemStack[] realIngredients = new ItemStack[9];
-        for( int i=0; i<9; i++  ) {
-            if( ingredients[i] != null ) {
-                realIngredients[i] = ingredients[i].copy();
-                realIngredients[i].stackSize = 1;
-				// System.out.println("gen: "+ realIngredients[i].getItem().getItemDisplayName(realIngredients[i]));
-            } else
-                realIngredients[i] = null;
-        }
+		RecipePointer pointer = getRecipeFrom(craftGrid, world);
+		if( pointer == null )
+			return null;
 
-        return new CraftRecipe(output, ingredients);
+		return pointer.getCraftRecipe(craftGrid);
     }
 
 	////////////////////
@@ -127,5 +126,17 @@ public class CraftManager {
 	 */
 	public static boolean isEncoded(ItemStack stack){
 		return isValid(stack) && ((ItemChip) stack.getItem()).encoded;
+	}
+
+
+	public static RecipePointer getRecipeFrom(InventoryCrafting gridInv, World world) {
+		ArrayList recipeList = (ArrayList) CraftingManager.getInstance().getRecipeList();
+
+		for( int i=0; i<recipeList.size(); i ++ ) {
+			IRecipe currentRecipe = (IRecipe) recipeList.get(i);
+			if( currentRecipe.matches(gridInv, world) )
+				return RecipePointer.getRecipe(i);
+		}
+		return null;
 	}
 }
