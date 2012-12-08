@@ -1,14 +1,12 @@
 package xk.xact.core;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.*;
 import xk.xact.XActMod;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Inventory;
 
 /**
@@ -93,12 +91,17 @@ public class CraftPad implements ICraftingDevice {
 
 	@Override
 	public CraftRecipe getRecipe(int index) {
-		return lastRecipe = CraftManager.generateRecipe(gridInv.getContents(), player.worldObj);
+		return lastRecipe = RecipeUtils.getRecipe(gridInv.getContents(), player.worldObj);
 	}
 
 	@Override
 	public CraftingHandler getHandler() {
 		return handler;
+	}
+
+	@Override
+	public World getWorld() {
+		return player.worldObj;
 	}
 
 	////////////

@@ -3,20 +3,26 @@ package xk.xact.recipes;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
+import net.minecraft.src.World;
+import xk.xact.util.FakeCraftingInventory;
+import xk.xact.util.InventoryUtils;
 import xk.xact.util.StackList;
 
 /**
  * The representation of a crafting recipe.
+ * Is the one stored on the
  */
 public class CraftRecipe {
 
-	protected final ItemStack result;
+	protected final ItemStack result; // suggested result.
 
-	protected final ItemStack[] ingredients;
+	protected final ItemStack[] ingredients; // template's ingredients.
 
     private ItemStack[] simpleIngredients = null;
 	
 	public final int size;
+
+	public int recipeID = -1;
 
 	// protected so it can only be accessed by CraftManager
     protected CraftRecipe(ItemStack result, ItemStack[] ingredients) {
@@ -29,7 +35,7 @@ public class CraftRecipe {
 	 * Gets a copy of the output item of this recipe.
 	 * @return an ItemStack representation.
 	 */
-	public ItemStack getResult() {
+	public ItemStack getResult() {  // get suggested output.
 		if( result == null )
 			return null;
 		return result.copy();
@@ -71,6 +77,51 @@ public class CraftRecipe {
 		return simpleIngredients = list.toArray();
 	}
 
+	/**
+	 * Whether this represents an OreDictionary recipe.
+	 */
+	public boolean isOreRecipe() {
+		try {
+			return getRecipePointer().isOreRecipe();
+		} catch( NegativeArraySizeException npe ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Gets the pointer for this recipe.
+	 * Note: this recipe must be validated for this to work.
+	 */
+	public RecipePointer getRecipePointer() {
+		if( recipeID == -1 )
+			return null;
+		return RecipePointer.getRecipe(recipeID);
+	}
+
+	public RecipePointer getRecipePointer(World world) {
+		if( recipeID == -1 ) {
+			RecipePointer pointer = CraftManager.getRecipeFrom(FakeCraftingInventory.emulateContents(ingredients), world);
+			if( pointer == null )
+				return null;
+			this.recipeID = pointer.recipeID;
+			return pointer;
+		}
+		return RecipePointer.getRecipe(recipeID);
+	}
+
+
+	public boolean matchesIngredient(ItemStack ingredient, ItemStack otherStack, World world) {
+		return RecipeUtils.matchesIngredient(this, ingredient, otherStack, world);
+	}
+
+	public boolean validate(World world) {
+		RecipePointer pointer = getRecipePointer(world);
+		this.recipeID = ( pointer == null ) ? -1 : pointer.recipeID;
+
+		// Make sure there's an IRecipe associated with this.
+		return result != null && recipeID != -1;
+	}
+
 	// the output's name.
     public String toString() {
         return this.result.getItem().getItemDisplayName(result);
@@ -109,13 +160,18 @@ public class CraftRecipe {
 
 		ItemStack[] ingredients = new ItemStack[9];
 		NBTTagList tagList = compound.getTagList("recipeIngredients");
-		if( tagList == null ) return null;
-		for(int i=0; i<9; i++) {
+		if( tagList == null )
+			return null;
+		for( int i = 0; i < 9; i++ ) {
 			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			ingredients[i] = ItemStack.loadItemStackFromNBT(tag);
+			ingredients[i] = InventoryUtils.readStackFromNBT(tag);
 		}
 
-		ItemStack result = ItemStack.loadItemStackFromNBT((NBTTagCompound) compound.getTag("recipeResult"));
+		NBTTagCompound stackTag = (NBTTagCompound) compound.getTag("recipeResult");
+		if( stackTag == null )
+			return null;
+
+		ItemStack result = InventoryUtils.readStackFromNBT(stackTag);
 
 		return new CraftRecipe(result, ingredients);
 	}

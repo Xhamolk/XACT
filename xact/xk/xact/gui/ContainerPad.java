@@ -2,11 +2,13 @@ package xk.xact.gui;
 
 
 import net.minecraft.src.*;
+import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.CraftPad;
 import xk.xact.core.ItemChip;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 
 public class ContainerPad extends Container implements InteractiveCraftingContainer {
 
@@ -29,7 +31,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 
 		// output slot
-		this.addSlotToContainer(new SlotCraft(craftPad, craftPad.outputInv, 0, 90, 35));
+		this.addSlotToContainer(new SlotCraft(craftPad, craftPad.outputInv, player, 0, 90, 35));
 
 		// grid
 		for (int i=0; i<3; i++) {
@@ -85,7 +87,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		// Placing an encoded chips will replace the current recipe, by design
 
 		if( slot.getHasStack() ) { // placed a chip
-			CraftRecipe recipe = CraftManager.decodeRecipe(slot.getStack());
+			CraftRecipe recipe = RecipeUtils.getRecipe(slot.getStack(), player.worldObj);
 
 			if( recipe != null ) { // placed an encoded chip
 				// update the crafting grid, without notifying it
@@ -102,6 +104,11 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 				CraftRecipe currentRecipe = craftPad.getRecipe(0);
 				if( currentRecipe != null )
 					craftPad.buttonID = CraftPad.MODE_WRITE;
+
+				// Automatically clear invalid chips.
+				if( CraftManager.isEncoded(slot.getStack()) ) {
+					slot.putStack( new ItemStack(XActMod.itemRecipeBlank) );
+				}
 			}
 
 		} else { // removed a chip
@@ -161,30 +168,41 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 	@Override
 	public ItemStack slotClick(int slotID, int buttomPressed, int flag, EntityPlayer player) {
-		/*
-		Special handle for the Grid slots (applies only to the grid's 9 slots).
+		InventoryPlayer inventoryPlayer = player.inventory;
 
-		On regular clicks:
-			- left click: copies the player's stack to the slot (null stacks also apply)
-			- right click:
+		// clicking out of the GUI. drop stuff.
+		if (slotID == -999) {
+			if ( inventoryPlayer.getItemStack() != null ) {
+				if (buttomPressed == 0) {
+					player.dropPlayerItem(inventoryPlayer.getItemStack());
+					inventoryPlayer.setItemStack(null);
+				}
+				if (buttomPressed == 1) {
+					player.dropPlayerItem(inventoryPlayer.getItemStack().splitStack(1));
+					if (inventoryPlayer.getItemStack().stackSize == 0) {
+						inventoryPlayer.setItemStack(null);
+					}
+				}
+			}
+			return null;
+		}
 
-		On shift-clicking:
-			do nothing. Users shouldn't shift click on the grid.
+		Slot slot = ((Slot)this.inventorySlots.get(slotID));
+		if( slot == null )
+			return null;
+		boolean craftingSlot = slot instanceof SlotCraft;
 
-		Keyboard number:
-			copy what ever is on that hot-bar slot.
+		ItemStack stackInSlot = slot.getStack(),
+				playerStack = inventoryPlayer.getItemStack(),
+				retValue = null;
 
-		Otherwise: do the usual stuff.
-		 */
-
+		// Special Handle for the grid slot.
 		if( 1 <= slotID && slotID < 10 ) {
-			Slot slot = ((Slot)this.inventorySlots.get(slotID));
 
 			if( flag == 0 ) { // regular clicking.
-				ItemStack playerStack = player.inventory.getItemStack();
-				if( buttomPressed == 1 || playerStack == null ){
+				if( buttomPressed == 0 || playerStack == null ){
 					slot.putStack(null);
-				} else if( buttomPressed == 0 ){
+				} else if( buttomPressed == 1 ){
 					ItemStack copy = playerStack.copy();
 					copy.stackSize = 1;
 					slot.putStack(copy);
@@ -204,17 +222,140 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 					slot.putStack(copy);
 					slot.onSlotChanged();
-
 					return invStack;
 				}
-
 			}
-
+			return null;
 		}
 
-		//todo: make my own slotCLick. (copy from ContainerCrafter)
+		// Default behaviour
+		if( flag == 0 && (buttomPressed == 0 || buttomPressed == 1) ) {
 
-		return super.slotClick(slotID, buttomPressed, flag, player);
+			if( stackInSlot == null ) { // Placing player's stack on empty slot.
+
+				if( playerStack != null && slot.isItemValid(playerStack) ) {
+					int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
+
+					if (amount > slot.getSlotStackLimit()) {
+						amount = slot.getSlotStackLimit();
+					}
+
+					slot.putStack(playerStack.splitStack(amount));
+
+					if (playerStack.stackSize == 0) {
+						inventoryPlayer.setItemStack(null);
+					}
+				}
+
+			} else if( slot.canTakeStack(player) ) {  // interact with the slot.
+
+				if( playerStack == null ) { // Full extraction from slot.
+					int amount = buttomPressed == 0 || craftingSlot ? stackInSlot.stackSize : (stackInSlot.stackSize + 1) / 2;
+
+					ItemStack itemStack = craftingSlot ?
+							((SlotCraft)slot).getCraftedStack() : slot.decrStackSize(amount);
+
+					inventoryPlayer.setItemStack( itemStack );
+
+					if( stackInSlot.stackSize == 0 )
+						slot.putStack(null);
+
+					slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
+
+				} else if( slot.isItemValid(playerStack) ) { // Merge to slot
+
+					if( equalsStacks(stackInSlot, playerStack) ) { // split player's into slot.
+						int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
+
+						int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize);
+						if( amount > max )
+							amount = max;
+
+						playerStack.splitStack(amount);
+						stackInSlot.stackSize += amount;
+
+						if (playerStack.stackSize == 0) {
+							inventoryPlayer.setItemStack(null);
+						}
+
+					} else if( playerStack.stackSize <= slot.getSlotStackLimit() ) { // swap stacks.
+						slot.putStack(playerStack);
+						inventoryPlayer.setItemStack(stackInSlot);
+					}
+
+				} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
+					stackInSlot = ((SlotCraft)slot).getCraftedStack();
+					int amount = stackInSlot.stackSize;
+
+					if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {
+						playerStack.stackSize += amount;
+						if( !craftingSlot )
+							stackInSlot = slot.decrStackSize(amount);
+
+						if (stackInSlot.stackSize == 0) {
+							slot.putStack(null);
+						}
+
+						slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
+					}
+				}
+			}
+
+			slot.onSlotChanged();
+
+		}
+		// Shift-clicking
+		else if( flag == 1 && (buttomPressed == 0 || buttomPressed == 1) ) {
+			if (slot != null && slot.canTakeStack(player)) {
+				ItemStack stack = this.transferStackInSlot(player, slotID);
+
+				if (stack != null) {
+					retValue = stack.copy();
+
+					if( craftingSlot || ( slot.getStack() != null && slot.getStack().itemID == stack.itemID) ) {
+						this.retrySlotClick(slotID, buttomPressed, true, player);
+					}
+				}
+				return retValue;
+			}
+		}
+		// Interacting with the hot bar.
+		else if( flag == 2 ) {
+			if (slot.canTakeStack(player)) {
+				ItemStack itemStack = inventoryPlayer.getStackInSlot(buttomPressed);
+				boolean var9 = itemStack == null || slot.inventory == inventoryPlayer && slot.isItemValid(itemStack);
+				int index = -1;
+
+				if (!var9) {
+					index = inventoryPlayer.getFirstEmptyStack();
+					var9 = index > -1;
+				}
+
+				if (slot.getHasStack() && var9) {
+					ItemStack slotStack = craftingSlot ? ((SlotCraft)slot).getCraftedStack() : slot.getStack();
+					inventoryPlayer.setInventorySlotContents(buttomPressed, slotStack);
+
+					if ((slot.inventory != inventoryPlayer || !slot.isItemValid(itemStack)) && itemStack != null) {
+						if (index > -1) {
+							inventoryPlayer.addItemStackToInventory(itemStack);
+							if( !craftingSlot )
+								slot.putStack(null);
+							slot.onPickupFromSlot(player, slotStack);
+						}
+					} else {
+						slot.putStack(itemStack);
+						slot.onPickupFromSlot(player, slotStack);
+					}
+				}
+				else if (!slot.getHasStack() && itemStack != null && slot.isItemValid(itemStack))
+				{
+					inventoryPlayer.setInventorySlotContents(buttomPressed, null);
+					slot.putStack(itemStack);
+				}
+			}
+		}
+
+		return null;
 	}
 
 	@Override
@@ -227,6 +368,19 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 		ItemStack stackInSlot = slot.getStack();
 		ItemStack retValue = stackInSlot.copy();
+
+		// output's slot
+		if( slot instanceof SlotCraft ) {
+			stackInSlot = ((SlotCraft)slot).getCraftedStack();
+			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
+
+			if ( mergeCraftedStack(stackInSlot, 11, inventorySlots.size()) ) {
+				slot.onPickupFromSlot(player, stackInSlot);
+				slot.onSlotChanged();
+				return copy;
+			}
+			return null;
+		}
 
 		// Special treatment for chips.
 		if( stackInSlot.getItem() instanceof ItemChip ) {
@@ -253,12 +407,6 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 			}
 		}
 
-		// output's slot
-		if( slotID == 0 ) {
-			if (!mergeItemStack(stackInSlot, 11, inventorySlots.size(), false))
-				return null;
-		}
-
 		if( stackInSlot.stackSize == 0 ) {
 			slot.putStack(null);
 		}
@@ -267,6 +415,88 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		slot.onSlotChanged();
 
 		return retValue;
+	}
+
+	protected boolean mergeCraftedStack(ItemStack itemStack, int indexMin, int indexMax) {
+
+		// First, check if the stack can fit.
+		int missingSpace = itemStack.stackSize;
+		int emptySlots = 0;
+
+		for( int i = indexMin; i < indexMax && missingSpace > 0; i++ ) {
+			Slot tempSlot = (Slot) this.inventorySlots.get(i);
+			ItemStack stackInSlot = tempSlot.getStack();
+
+			if( stackInSlot == null ) {
+				emptySlots++;
+				continue;
+			}
+
+			if( stackInSlot.itemID == itemStack.itemID
+					&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
+					&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+
+				missingSpace -= Math.min(stackInSlot.getMaxStackSize(), tempSlot.getSlotStackLimit()) - stackInSlot.stackSize;
+			}
+		}
+
+		// prevent crafting if there is no space for the crafted item.
+		if( missingSpace > 0 )
+			if( emptySlots == 0 )
+				return false;
+
+		// Try to merge with existing stacks.
+		if( itemStack.isStackable() ) {
+
+			for( int i = indexMin; i < indexMax; i++ ) {
+				if( itemStack.stackSize <= 0 )
+					break;
+
+				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				ItemStack stackInSlot = targetSlot.getStack();
+
+				if( stackInSlot == null )
+					continue;
+
+				if( stackInSlot.itemID == itemStack.itemID
+						&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
+						&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+
+					int sum = itemStack.stackSize + stackInSlot.stackSize;
+					int maxStackSize = Math.min(stackInSlot.getMaxStackSize(), targetSlot.getSlotStackLimit());
+
+					if( sum <= maxStackSize ) {
+						stackInSlot.stackSize = sum;
+						targetSlot.onSlotChanged();
+						return true;
+					}
+					else if( stackInSlot.stackSize < maxStackSize  ) {
+						itemStack.stackSize -= maxStackSize - stackInSlot.stackSize;
+						stackInSlot.stackSize = maxStackSize;
+						targetSlot.onSlotChanged();
+					}
+				}
+			}
+		}
+
+		// Add to an empty slot.
+		if (itemStack.stackSize > 0) {
+
+			for( int i = indexMin; i < indexMax; i++ ) {
+
+				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				ItemStack stackInSlot = targetSlot.getStack();
+
+				if( stackInSlot != null )
+					continue;
+
+				targetSlot.putStack( itemStack );
+				targetSlot.onSlotChanged();
+				return true;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
@@ -290,7 +520,11 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		}
 	}
 
-
+	private boolean equalsStacks( ItemStack stack1, ItemStack stack2 ){
+		return stack1.itemID == stack2.itemID
+				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())
+				&& ItemStack.areItemStackTagsEqual(stack1, stack2);
+	}
 
 
 }

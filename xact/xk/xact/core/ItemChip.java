@@ -4,7 +4,8 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import xk.xact.XActMod;
-import xk.xact.recipes.CraftManager;
+import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 
 import java.util.List;
 
@@ -40,8 +41,9 @@ public class ItemChip extends Item {
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
 		if( itemStack.getItem() instanceof ItemChip){
 			if( ((ItemChip)itemStack.getItem()).encoded ){
-				if( isEncoded(itemStack) ) {
-					ItemStack result = CraftManager.decodeRecipe(itemStack).getResult();
+				CraftRecipe recipe = RecipeUtils.getRecipe(itemStack, player.worldObj);
+				if( recipe != null ) {
+					ItemStack result = recipe.getResult();
 
 					String itemName = result.getItem().getItemDisplayName(result);
 					list.add("\u00a73" + "Recipe: "+ itemName);
@@ -53,10 +55,6 @@ public class ItemChip extends Item {
 				list.add("\u00a77" + "<blank>");
 			}
 		}
-	}
-
-	private static boolean isEncoded(ItemStack stack) {
-		return CraftManager.decodeRecipe(stack) != null;
 	}
 
     @Override

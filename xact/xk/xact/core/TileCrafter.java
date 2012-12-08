@@ -1,13 +1,10 @@
 package xk.xact.core;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.*;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
-import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Inventory;
 
 import java.util.ArrayList;
@@ -115,7 +112,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			if( stack == null )
 				recipes[i] = null;
 			else
-				recipes[i] = CraftManager.decodeRecipe( stack );
+				recipes[i] = RecipeUtils.getRecipe( stack, this.worldObj );
 		}
 
 		for(int i=0; i<4; i++) {
@@ -157,7 +154,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		if( recipes[index] == null ) {
 			ItemStack stack = this.circuits.getStackInSlot(index);
 			if( stack != null )
-				recipes[index] = CraftManager.decodeRecipe(stack);
+				recipes[index] = RecipeUtils.getRecipe( stack, this.worldObj );
 		}
 		return recipes[index];
 	}
@@ -170,6 +167,11 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		if( handler == null )
 			handler = CraftingHandler.createCraftingHandler(this);
 		return handler;
+	}
+
+	@Override
+	public World getWorld() {
+		return this.getWorldObj();
 	}
 
 	///////////////
