@@ -37,11 +37,17 @@ public class CraftManager {
 		// Ingredients
 		NBTTagList listIngredients = new NBTTagList();
 		ItemStack[] ingredients = recipe.ingredients;
-		for(int i=0; i<9; i++) {
+		int i;
+		for( i = 0; i<ingredients.length; i++ ) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("index", i);
 			if( ingredients[i] != null )
 				ingredients[i].writeToNBT(tag);
+			listIngredients.appendTag(tag);
+		}
+		for( ; i < 9; i++ ) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setInteger("index", i);
 			listIngredients.appendTag(tag);
 		}
 

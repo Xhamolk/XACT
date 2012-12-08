@@ -3,6 +3,7 @@ package xk.xact.util;
 
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.NBTTagCompound;
 
 public class InventoryUtils {
 
@@ -159,5 +160,15 @@ public class InventoryUtils {
 			contents[i] = inventory.getStackInSlot(i);
 
 		return contents;
+	}
+
+
+	public static ItemStack readStackFromNBT(NBTTagCompound nbt) {
+		try {
+			return ItemStack.loadItemStackFromNBT(nbt);
+		}catch (NullPointerException npe) {
+			return null;
+		}
+
 	}
 }

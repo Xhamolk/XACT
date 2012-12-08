@@ -5,6 +5,7 @@ import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.World;
 import xk.xact.util.FakeCraftingInventory;
+import xk.xact.util.InventoryUtils;
 import xk.xact.util.StackList;
 
 /**
@@ -159,13 +160,18 @@ public class CraftRecipe {
 
 		ItemStack[] ingredients = new ItemStack[9];
 		NBTTagList tagList = compound.getTagList("recipeIngredients");
-		if( tagList == null ) return null;
-		for(int i=0; i<9; i++) {
+		if( tagList == null )
+			return null;
+		for( int i = 0; i < 9; i++ ) {
 			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			ingredients[i] = ItemStack.loadItemStackFromNBT(tag);
+			ingredients[i] = InventoryUtils.readStackFromNBT(tag);
 		}
 
-		ItemStack result = ItemStack.loadItemStackFromNBT((NBTTagCompound) compound.getTag("recipeResult"));
+		NBTTagCompound stackTag = (NBTTagCompound) compound.getTag("recipeResult");
+		if( stackTag == null )
+			return null;
+
+		ItemStack result = InventoryUtils.readStackFromNBT(stackTag);
 
 		return new CraftRecipe(result, ingredients);
 	}
