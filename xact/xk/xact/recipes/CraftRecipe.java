@@ -100,6 +100,8 @@ public class CraftRecipe {
 	public RecipePointer getRecipePointer(World world) {
 		if( recipeID == -1 ) {
 			RecipePointer pointer = CraftManager.getRecipeFrom(FakeCraftingInventory.emulateContents(ingredients), world);
+			if( pointer == null )
+				return null;
 			this.recipeID = pointer.recipeID;
 			return pointer;
 		}
