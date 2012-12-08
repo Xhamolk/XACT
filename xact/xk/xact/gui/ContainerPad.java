@@ -2,6 +2,7 @@ package xk.xact.gui;
 
 
 import net.minecraft.src.*;
+import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.CraftPad;
 import xk.xact.core.ItemChip;
@@ -103,6 +104,11 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 				CraftRecipe currentRecipe = craftPad.getRecipe(0);
 				if( currentRecipe != null )
 					craftPad.buttonID = CraftPad.MODE_WRITE;
+
+				// Automatically clear invalid chips.
+				if( CraftManager.isEncoded(slot.getStack()) ) {
+					slot.putStack( new ItemStack(XActMod.itemRecipeBlank) );
+				}
 			}
 
 		} else { // removed a chip
