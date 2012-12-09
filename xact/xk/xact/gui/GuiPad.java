@@ -34,20 +34,19 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 		// draw the button
 		if( craftPad.buttonID != -1 )
 			this.drawTexturedModalRect(cornerX+97, cornerY+63, 	176, craftPad.buttonID*14, 	14, 14);
-
-		// draw the text box?
-
-		// todo: paint a red overlay if can't craft the items, or something like that.
 	}
 
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
-		// the title
+		// the titles
 		int xPos = 11 + (112 - fontRenderer.getStringWidth("Craft Pad")) / 2;
 		this.fontRenderer.drawString("Craft Pad", xPos, 8, 4210752);
 
 		xPos = 126 + (40 - fontRenderer.getStringWidth("Chip")) /2;
 		this.fontRenderer.drawString("Chip", xPos, 23, 4210752);
+
+		// Paint the grid's overlays.
+		paintSlotOverlays();
 	}
 
 	@Override
@@ -109,6 +108,32 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 				FMLCommonHandler.instance().raiseException(ioe, "GuiPad: custom packet", true);
 			}
 		}
+	}
+
+
+	private void paintSlotOverlays() {
+
+		// Items overlay: (alpha 50%)
+			// normal = gray
+			// missing = red
+
+		int gray = GuiUtils.COLOR_GRAY | 128;
+		int red = GuiUtils.COLOR_RED | 128;
+
+		boolean[] missingIngredients = craftPad.getHandler().getMissingIngredientsArray( craftPad.getRecipe(0) );
+
+		for( int index = 1; index <= 9; index++ ) {
+			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( index );
+			if( slot == null )
+				continue;
+
+			int color = missingIngredients[index-1] ? red : gray;
+
+			GuiUtils.paintSlotOverlay(slot, 16, color);
+		}
+
+		// todo: paint the overlay on the output slot.
+
 	}
 
 }

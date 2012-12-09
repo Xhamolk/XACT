@@ -289,6 +289,32 @@ public abstract class CraftingHandler {
 		return retValue.equals("") ? "none." : retValue;
 	}
 
+	public boolean[] getMissingIngredientsArray(CraftRecipe recipe) {
+		boolean[] missingArray = new boolean[9];
+		if( recipe == null ) {
+			return missingArray;
+		}
+
+		ItemStack[] ingredients = recipe.getIngredients();
+		ItemStack[] missingIngredients = getMissingIngredients( recipe ).clone();
+
+		for( ItemStack currentMissed : missingIngredients ) {
+			if( currentMissed == null )
+				continue;
+
+			int remaining = currentMissed.stackSize;
+			for( int i = 0; remaining > 0 && i < ingredients.length; i++ ) {
+			    if( ingredients[i] != null && ingredients[i].isItemEqual( currentMissed ) ) {
+					remaining--;
+					missingArray[i] = true;
+				}
+
+			}
+		}
+
+		return missingArray;
+	}
+
     protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe, boolean doRemove) {
         ItemStack[] ingredients = recipe.getIngredients();
         ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
