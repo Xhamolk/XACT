@@ -117,8 +117,10 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			// normal = gray
 			// missing = red
 
-		int gray = GuiUtils.COLOR_GRAY | 128;
-		int red = GuiUtils.COLOR_RED | 128;
+		int transparency = 128 << 24;
+
+		int gray =  transparency | GuiUtils.COLOR_GRAY;
+		int red = transparency | GuiUtils.COLOR_RED;
 
 		boolean[] missingIngredients = craftPad.getHandler().getMissingIngredientsArray( craftPad.getRecipe(0) );
 

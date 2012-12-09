@@ -9,10 +9,10 @@ public class GuiUtils {
 
 	private static int grayTone = 139;
 
-	public static final int COLOR_RED = 255 << 8;
-	public static final int COLOR_GREEN = 255 << 16;
-	public static final int COLOR_BLUE = 255 << 24;
-	public static final int COLOR_GRAY = (grayTone << 24) | (grayTone << 16) | (grayTone << 8);
+	public static final int COLOR_RED = 255 << 16;
+	public static final int COLOR_GREEN = 255 << 8;
+	public static final int COLOR_BLUE = 255;
+	public static final int COLOR_GRAY = (grayTone << 16) | (grayTone << 8) | grayTone << 8;
 
 	public static void paintSlotOverlay(Slot slot, int size, int color) {
 		if( slot == null )
