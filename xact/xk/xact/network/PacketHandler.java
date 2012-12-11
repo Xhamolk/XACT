@@ -4,6 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import net.minecraft.src.*;
+import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.gui.ContainerPad;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +19,7 @@ public class PacketHandler implements IPacketHandler {
 
 		// 0x01: chip (removed)
 		// 0x02: craft pad
-		// 0x03: GuiPad sending an ItemStack
+		// 0x03: GuiPad/GuiRecipe sending an ItemStack
 
 		byte action = -1;
 		if( packet.channel.equals("xact_channel") ) {
@@ -35,22 +36,22 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
-				// GuiPad sending an ItemStack
+				// GuiPad/GuiRecipe sending an ItemStack
 				if( action == 0x03 ) {
 					int slotID = packetData.readByte();
-					ContainerPad padContainer = (ContainerPad) ((EntityPlayer)packetSender).openContainer;
+					InteractiveCraftingContainer container = (InteractiveCraftingContainer) ((EntityPlayer)packetSender).openContainer;
 
-					// clear the grid before placing the stacks.
+					// special command used to clear the grid.
 					if( slotID == -1 ) {
 						for( int i = 1; i <= 9; i++ ) {
-							padContainer.setStack(i, null);
+							container.setStack(i, null);
 						}
 						return;
 					}
 
 					// place a recipe on the slot.
 					ItemStack stack = getItemStack(packetData);
-					padContainer.setStack(slotID, stack);
+					container.setStack(slotID, stack);
 				}
 
 
