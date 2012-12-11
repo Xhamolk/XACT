@@ -66,7 +66,7 @@ public class CraftRecipe {
         for( ItemStack current : getIngredients() ){
             try {
                 if( current != null ) {
-					list.addStack(current.copy());
+					list.addStack(current.copy(), 1);
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -120,6 +120,10 @@ public class CraftRecipe {
 
 		// Make sure there's an IRecipe associated with this.
 		return result != null && recipeID != -1;
+	}
+
+	public boolean isValid() {
+		return recipeID != -1;
 	}
 
 	// the output's name.
