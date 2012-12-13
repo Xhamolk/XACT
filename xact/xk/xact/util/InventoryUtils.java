@@ -162,6 +162,11 @@ public class InventoryUtils {
 		return contents;
 	}
 
+	public static void writeItemStackToNBT(NBTTagCompound compound, ItemStack item, String tagName) {
+		NBTTagCompound itemTag = new NBTTagCompound();
+		item.writeToNBT( itemTag );
+		compound.setTag( tagName, itemTag );
+	}
 
 	public static ItemStack readStackFromNBT(NBTTagCompound nbt) {
 		try {
