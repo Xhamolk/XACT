@@ -71,24 +71,29 @@ public class CraftingProject {
 	public ArrayList<Integer> getRawMaterialsCount() {
 		ArrayList<Integer> retValue = new ArrayList<Integer>();
 		for( ItemStack current : getRawMaterials() ) {
-			retValue.add( countIngredientRequirement( current ) );
+			retValue.add( countIngredientRequirement( current, 1 ) );
 		}
 
 		return retValue;
 	}
 
-	public int countIngredientRequirement(ItemStack item) {
-		return count(item, getMainRecipe(), 1); // this '1' could be changed.
+	public int countIngredientRequirement(ItemStack item, int amount) {
+		CraftRecipe recipe = getMainRecipe();
+		double multiplier = amount / recipe.getResult().stackSize;
+		return (int) Math.ceil( count(item, recipe, multiplier) );
 	}
 
-	private int count(ItemStack item, CraftRecipe recipe, int multiplier) {
+	private double count(ItemStack item, CraftRecipe recipe, double multiplier) {
 		int count = 0;
 		for( ItemStack ingredient : recipe.getSimplifiedIngredients() ) {
 			int amount = ingredient.stackSize;
 			if( InventoryUtils.similarStacks( ingredient, item) ) {
 				count += amount;
 			} else if( list.hasRecipe( ingredient ) ) {
-				count += count( item, list.getRecipe(item), multiplier * amount);
+				CraftRecipe recipe2 = list.getRecipe(item);
+				double nextMultiplier = multiplier * amount / recipe2.getResult().stackSize;
+
+				count += count( item, recipe2, nextMultiplier );
 			}
 		}
 		return count * multiplier;
@@ -115,6 +120,9 @@ public class CraftingProject {
 
 	public static CraftingProject readFromNBT( NBTTagCompound compound ) {
 		CraftingProject project = new CraftingProject();
+
+		if( compound == null )
+			return project;
 
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag("craftingProject");
 		if( nbt == null )
