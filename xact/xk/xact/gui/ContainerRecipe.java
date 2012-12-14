@@ -1,34 +1,36 @@
 package xk.xact.gui;
 
 
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.src.*;
 import xk.xact.api.InteractiveCraftingContainer;
+import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.FakeCraftingInventory;
+import xk.xact.util.Inventory;
+
+import java.util.Arrays;
 
 public class ContainerRecipe extends Container implements InteractiveCraftingContainer {
 
 
 	private EntityPlayer player;
-	public final ItemStack target; // todo: this is the objective.
 
+	public Inventory internalInventory = new Inventory(10, "recipeInv");
 
-	public ContainerRecipe(EntityPlayer player, ItemStack target) {
+	public ContainerRecipe(EntityPlayer player) {
 		this.player = player;
-		this.target = target;
 		buildContainer();
 	}
 
 	private void buildContainer() {
 		// grid: 44, 24
 		// output: 110, 35
-		// inv: 7, 97
-		// hot-bar: 7, 155
+		// inv: 8, 98
+		// hot-bar: 8, 156
 
 
 		// output slot
-		this.addSlotToContainer(new Slot(null, 0, 110, 35) { // todo: replace null with IInventory
+		this.addSlotToContainer(new Slot(internalInventory, 9, 110, 35) {
 			@Override
 			public boolean isItemValid(ItemStack item){
 				return false;
@@ -42,15 +44,14 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 		// grid
 		for (int i=0; i<3; i++) {
 			for (int e=0; e<3; e++) {
-				this.addSlotToContainer(new Slot(null, i*3 + e, e*18 +44, i*18 +24) { // todo: replace null with IInventory
+				this.addSlotToContainer(new Slot(internalInventory, i*3 + e, e*18 +44, i*18 +24) {
 					@Override
 					public boolean canTakeStack(EntityPlayer player) {
 						return false;
 					}
 					@Override
 					public void onSlotChanged() {
-						// todo: update the output slot.
-							// if the recipe is valid, then
+						updateOutputSlot();
 					}
 				});
 			}
@@ -122,6 +123,19 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 	@Override
 	public boolean canInteractWith(EntityPlayer var1) {
 		return true;
+	}
+
+	private void updateOutputSlot() {
+		ItemStack[] gridContents = Arrays.copyOf(internalInventory.getContents(), 9);
+		CraftRecipe recipe = RecipeUtils.getRecipe(gridContents, player.worldObj);
+
+		Slot outputSlot = (Slot) inventorySlots.get(0);
+		ItemStack item = null;
+		if( recipe != null ) {
+			FakeCraftingInventory grid = FakeCraftingInventory.emulateContents( gridContents );
+			item = recipe.getRecipePointer().getOutputFrom( grid );
+		}
+		outputSlot.putStack( item );
 	}
 
 	@Override
