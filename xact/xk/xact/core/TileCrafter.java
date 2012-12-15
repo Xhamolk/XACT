@@ -171,7 +171,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	@Override
 	public World getWorld() {
-		return this.getWorldObj();
+		return this.worldObj;
 	}
 
 	///////////////
