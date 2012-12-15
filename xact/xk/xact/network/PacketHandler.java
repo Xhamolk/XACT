@@ -4,8 +4,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import net.minecraft.src.*;
+import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.gui.ContainerPad;
+import xk.xact.gui.GuiRecipe;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -20,6 +22,8 @@ public class PacketHandler implements IPacketHandler {
 		// 0x01: chip (removed)
 		// 0x02: craft pad
 		// 0x03: GuiPad/GuiRecipe sending an ItemStack
+		// 0x04: GuiPlan: requesting a recipe.
+		// 0x05: ContainerRecipe notifying the client, the recipe has changed.
 
 		byte action = -1;
 		if( packet.channel.equals("xact_channel") ) {
@@ -27,7 +31,7 @@ public class PacketHandler implements IPacketHandler {
 				DataInputStream packetData = new DataInputStream(new ByteArrayInputStream( packet.data ));
 				action = packetData.readByte();
 
-				// CraftPad button click
+				// CraftPad button click (server side)
 				if( action == 0x02 ) {
 					byte buttonID = packetData.readByte();
 
@@ -36,7 +40,7 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
-				// GuiPad/GuiRecipe sending an ItemStack
+				// GuiPad/GuiRecipe sending an ItemStack (server side)
 				if( action == 0x03 ) {
 					int slotID = packetData.readByte();
 					InteractiveCraftingContainer container = (InteractiveCraftingContainer) ((EntityPlayer)packetSender).openContainer;
@@ -52,8 +56,26 @@ public class PacketHandler implements IPacketHandler {
 					// place a recipe on the slot.
 					ItemStack stack = getItemStack(packetData);
 					container.setStack(slotID, stack);
+					return;
 				}
 
+				// GuiPlan requesting a recipe (server side)
+				if ( action == 0x04 ) {
+					// must open the recipe gui.
+					EntityPlayer player = (EntityPlayer) packetSender;
+					player.openGui(XActMod.instance, 5, player.worldObj, 0, 0, 0);
+					return;
+				}
+
+				// ContainerRecipe notifying GuiRecipe that the recipe has changed (client side)
+				if ( action == 0x05 ) {
+					GuiScreen screen = CommonProxy.getCurrentScreen();
+					if( screen instanceof GuiRecipe ) {
+						GuiRecipe gui = (GuiRecipe) screen;
+						gui.buttonID = packetData.readByte(); // todo: recheck this.
+					}
+					return;
+				}
 
 			} catch (IOException e) {
 				FMLCommonHandler.instance().raiseException(e, "XACT Packet Handler: "+action, true);

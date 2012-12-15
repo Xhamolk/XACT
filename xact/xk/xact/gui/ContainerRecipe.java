@@ -136,6 +136,9 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 			item = recipe.getRecipePointer().getOutputFrom( grid );
 		}
 		outputSlot.putStack( item );
+
+		int notify = item == null ? 1 : 0;
+		// todo: notify the GuiRecipe that the recipe has changed. 0 means has recipe, 1 means no recipe. (packet 0x05)
 	}
 
 	@Override

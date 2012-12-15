@@ -49,6 +49,10 @@ public class CraftingProject {
 		list.removeRecipe(item);
 	}
 
+	public CraftRecipe getRecipeFor(ItemStack itemStack) {
+		return list.getRecipe( itemStack );
+	}
+
 
 	/**
 	 * Gets an ordered list of all the raw materials involved in this Crafting Project.
@@ -99,6 +103,9 @@ public class CraftingProject {
 		return count * multiplier;
 	}
 
+	public boolean itemHasRecipe(ItemStack item) {
+		return list.hasRecipe( item );
+	}
 
 	///////////////
 	///// NBT

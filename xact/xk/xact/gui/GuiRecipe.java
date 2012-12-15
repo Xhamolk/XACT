@@ -14,16 +14,21 @@ import java.io.IOException;
 public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 
 	private EntityPlayer player;
+	private GuiPlan plan;
 
-	public GuiRecipe(EntityPlayer player, Container container) {
+	public GuiRecipe(EntityPlayer player, GuiPlan plan, Container container) {
 		super(container);
 		this.player = player;
+		this.plan = plan;
 	}
 
 	private ItemStack target = null;
 
 	public void setTarget(ItemStack target) {
 		this.target = target;
+		if( plan.getCurrentRecipe() != null ) {
+			buttonID = 2;
+		}
 	}
 
 	@Override
@@ -42,6 +47,8 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 			// Paint the target.
 			paintTarget();
 		}
+
+		// todo: draw slot overlays.
 	}
 
 	@Override
@@ -58,7 +65,8 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 
 		if( matching && cornerX+ 117 <= x && x < cornerX+ 117+14 ) {
 			if( cornerY+ 63 <= y && y < cornerY+ 63+14 ) {
-				this.mc.thePlayer.sendQueue.addToSendQueue( createPacket(1) );
+				// todo: either 1 or 2.
+				buttonClicked( 1 );
 				return;
 			}
 		}
@@ -67,7 +75,7 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 
 	protected void keyTyped(char par1, int par2) {
 		if( par2 == 1 ) {
-			this.mc.thePlayer.sendQueue.addToSendQueue( createPacket(0) );
+			buttonClicked(0);
 			return;
 		}
 
@@ -104,13 +112,13 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 		GuiUtils.paintSlotOverlay(slot, 16, color);
 	}
 
-	private Packet250CustomPayload createPacket(int instruction) {
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel = "xact_channel";
-		packet.data = new byte[] { 0x05, (byte) instruction, (byte) this.mc.thePlayer.inventory.currentItem};
-		packet.length = packet.data.length;
+	public int buttonID = -1; // todo: implement the clear button.
 
-		return packet;
+	public boolean hadRecipe = false; // todo: this is changed when creating the gui, at CommonProxy
+	public boolean recipeModified = false; // todo: this is changed with the packets.
+
+	private void buttonClicked(int i) {
+		// todo: 0 is cancel, 1 is accept, 2 is clear.
 	}
 
 	@Override

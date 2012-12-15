@@ -1,11 +1,19 @@
 package xk.xact.network;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.common.network.IGuiHandler;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.src.*;
 import xk.xact.core.*;
 import xk.xact.gui.*;
+import xk.xact.project.CraftingProject;
+import xk.xact.recipes.CraftRecipe;
+import xk.xact.util.CustomPacket;
+
+import java.io.IOException;
 
 public class CommonProxy implements IGuiHandler {
 
@@ -18,6 +26,8 @@ public class CommonProxy implements IGuiHandler {
 			// 1: library
 			// 2: chip (removed)
 			// 3: craft pad
+			// 4: <none> (client only)
+			// 5: recipe
 
         if( ID == 0 ) { // Crafter
             TileMachine machine = (TileMachine) world.getBlockTileEntity(x, y, z);
@@ -39,6 +49,12 @@ public class CommonProxy implements IGuiHandler {
             return new ContainerPad(craftPad, player);
         }
 
+		// no ID == 4. GuiPlan, client-side only.
+
+		if( ID == 5 ) { // Set a recipe
+			return new ContainerRecipe(player);
+		}
+
 		return null;
 	}
 
@@ -49,6 +65,8 @@ public class CommonProxy implements IGuiHandler {
 			// 1: library
 			// 2: chip (removed)
 			// 3: craft pad
+			// 4: plan (client only)
+			// 5: recipe
 
 		if( ID == 0 ) { // Crafter
             TileMachine machine = (TileMachine) world.getBlockTileEntity(x, y, z);
@@ -70,7 +88,51 @@ public class CommonProxy implements IGuiHandler {
             return new GuiPad(craftPad, new ContainerPad(craftPad, player));
         }
 
+		if( ID == 4 ) { // Open the plan.
+			ItemStack item = player.inventory.getCurrentItem();
+			if( item != null && item.getItem() instanceof ItemPlan ) {
+				CraftingProject project = CraftingProject.readFromNBT( item.getTagCompound() );
+				return new GuiPlan(project);
+			}
+		}
+
+		if( ID == 5 ) { // Set a recipe
+
+			GuiScreen screen = getCurrentScreen();
+			if( screen instanceof GuiPlan ) {
+				GuiPlan plan = (GuiPlan) screen;
+				CraftRecipe recipe = plan.getCurrentRecipe();
+				GuiRecipe gui = new GuiRecipe(player, plan, new ContainerRecipe(player));
+
+				// Is there a recipe already set?
+				if( recipe != null ) {
+					// Yes, so send the recipe's ingredients to the ContainerRecipe
+					ItemStack[] ingredients = recipe.getIngredients();
+					for( int i = 0; i < 9; i++ ) {
+						try{
+							Packet250CustomPayload packet = new CustomPacket((byte)0x03).add(i + 1, ingredients).toPacket();
+							Minecraft.getMinecraft().getSendQueue().addToSendQueue( packet );
+						}catch (IOException ioe) {
+							FMLCommonHandler.instance().raiseException(ioe, "GuiRecipe: proxy - custom packet", true);
+						}
+					}
+				} else {
+					// Is there a target item to paint?
+					ItemStack target = plan.getTarget();
+					if( target != null )
+						gui.setTarget( target );
+				}
+
+				return gui;
+			}
+		}
+
 		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static GuiScreen getCurrentScreen() {
+		return Minecraft.getMinecraft().currentScreen;
 	}
 
 }
