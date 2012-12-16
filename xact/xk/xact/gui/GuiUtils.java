@@ -3,6 +3,7 @@ package xk.xact.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
@@ -33,13 +34,13 @@ public class GuiUtils {
 		GL11.glDepthFunc(GL11.GL_GREATER);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDepthMask(false);
-		renderEngine.bindTexture(renderEngine.getTexture("%blur%/misc/glint.png"));
+		renderEngine.bindTexture(renderEngine.getTexture("%blur%/misc/glint.png")); // do I want to change this to something else?
 
 		itemRenderer.zLevel -= 50.0F;
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
 		GL11.glColor4f(red, green, blue, alpha);
-		effect(itemRenderer.zLevel, x - 2, y - 2, 20, 20);
+		effect(itemRenderer.zLevel, x - 1, y - 1, 18, 18);
 
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDepthMask(true);
@@ -70,6 +71,10 @@ public class GuiUtils {
 			var11.addVertexWithUV((double) x, (double) y, (double)zLevel, (double)((var9 + 0.0F) * var7), (double)((var10 + 0.0F) * var8));
 			var11.draw();
 		}
+	}
+
+	public static boolean isShiftKeyPressed() {
+		return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 	}
 
 }

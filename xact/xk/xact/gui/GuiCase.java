@@ -57,7 +57,7 @@ public class GuiCase extends GuiContainer {
 	@Override
 	protected void drawSlotInventory(Slot slot) {
 		// special handle for the chips in the grid.
-		if( slot.slotNumber < 30 && slot.getHasStack() ) {
+		if( GuiUtils.isShiftKeyPressed() && slot.getHasStack() ) {
 			ItemStack stack = slot.getStack();
 			if( CraftManager.isEncoded( stack ) ) {
 				CraftRecipe recipe = RecipeUtils.getRecipe( stack, this.mc.theWorld );
@@ -125,7 +125,7 @@ public class GuiCase extends GuiContainer {
 	}
 
 	private void paintGreenEffect( Slot slot ) {
-		GuiUtils.paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, this.mc.renderEngine, itemRenderer, 0.25f, 0.5f, 0.3f, 1.0f);
+		GuiUtils.paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, this.mc.renderEngine, itemRenderer, 0.25f, 0.55f, 0.3f, 0.75f);
 	}
 
     @Override
