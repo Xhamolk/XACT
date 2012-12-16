@@ -62,23 +62,12 @@ public class GuiCase extends GuiContainer {
 			if( CraftManager.isEncoded( stack ) ) {
 				CraftRecipe recipe = RecipeUtils.getRecipe( stack, this.mc.theWorld );
 				if( recipe != null ) {
-					paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition );
+					drawItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition );
 					return;
 				}
 			}
 		}
 		super.drawSlotInventory( slot );
-	}
-
-	private void paintItem( ItemStack item, int x, int y ) {
-		this.zLevel = 100.0F;
-		itemRenderer.zLevel = 100.0F;
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		itemRenderer.renderItemAndEffectIntoGUI(this.fontRenderer, this.mc.renderEngine, item, x, y);
-		itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, item, x, y);
-
-		itemRenderer.zLevel = 0.0F;
-		this.zLevel = 0.0F;
 	}
 
 	private Slot findSlotAt(int x, int y) {
