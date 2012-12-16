@@ -63,6 +63,7 @@ public class GuiCase extends GuiContainer {
 				CraftRecipe recipe = RecipeUtils.getRecipe( stack, this.mc.theWorld );
 				if( recipe != null ) {
 					drawItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition );
+					paintGreenEffect( slot );
 					return;
 				}
 			}
@@ -121,6 +122,10 @@ public class GuiCase extends GuiContainer {
 		itemRenderer.renderItemAndEffectIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
 		itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
 		itemRenderer.zLevel = 0.0F;
+	}
+
+	private void paintGreenEffect( Slot slot ) {
+		GuiUtils.paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, this.mc.renderEngine, itemRenderer, 0.25f, 0.5f, 0.3f, 1.0f);
 	}
 
     @Override

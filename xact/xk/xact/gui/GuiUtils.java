@@ -1,8 +1,8 @@
 package xk.xact.gui;
 
 
-import net.minecraft.src.Gui;
-import net.minecraft.src.Slot;
+import net.minecraft.client.Minecraft;
+import net.minecraft.src.*;
 import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
@@ -27,6 +27,49 @@ public class GuiUtils {
 		Gui.drawRect(minX, minY, minX + size, minY + size, color);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+	}
+
+	public static void paintEffectOverlay( int x, int y, RenderEngine renderEngine, RenderItem itemRenderer, float red, float green, float blue, float alpha) {
+		GL11.glDepthFunc(GL11.GL_GREATER);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDepthMask(false);
+		renderEngine.bindTexture(renderEngine.getTexture("%blur%/misc/glint.png"));
+
+		itemRenderer.zLevel -= 50.0F;
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
+		GL11.glColor4f(red, green, blue, alpha);
+		effect(itemRenderer.zLevel, x - 2, y - 2, 20, 20);
+
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glDepthMask(true);
+		itemRenderer.zLevel += 50.0F;
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
+	}
+
+	private static void effect(float zLevel, int x, int y, int width, int height) {
+
+		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+
+		for( int i = 0; i < 2; i++ ) {
+			float var7 = 0.00390625F;
+			float var8 = 0.00390625F;
+			float var9 = (float)(Minecraft.getSystemTime() % (long)(3000 + i * 1873)) / (3000.0F + (float)(i * 1873)) * 256.0F;
+			float var10 = 0.0F;
+			Tessellator var11 = Tessellator.instance;
+			float var12 = 4.0F;
+
+			if (i == 1)
+				var12 = -1.0F;
+
+			var11.startDrawingQuads();
+			var11.addVertexWithUV((double) x, (double)(y + height), (double)zLevel, (double)((var9 + (float)height * var12) * var7), (double)((var10 + (float)height) * var8));
+			var11.addVertexWithUV((double)(x + width), (double)(y + height), (double)zLevel, (double)((var9 + (float)width + (float)height * var12) * var7), (double)((var10 + (float)height) * var8));
+			var11.addVertexWithUV((double)(x + width), (double) y, (double)zLevel, (double)((var9 + (float)width) * var7), (double)((var10 + 0.0F) * var8));
+			var11.addVertexWithUV((double) x, (double) y, (double)zLevel, (double)((var9 + 0.0F) * var7), (double)((var10 + 0.0F) * var8));
+			var11.draw();
+		}
 	}
 
 }
