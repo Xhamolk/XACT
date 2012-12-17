@@ -40,15 +40,11 @@ public class CraftManager {
 		int i;
 		for( i = 0; i<ingredients.length; i++ ) {
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("index", i);
-			if( ingredients[i] != null )
+			if( ingredients[i] != null ) {
+				tag.setInteger("index", i);
 				ingredients[i].writeToNBT(tag);
-			listIngredients.appendTag(tag);
-		}
-		for( ; i < 9; i++ ) {
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("index", i);
-			listIngredients.appendTag(tag);
+				listIngredients.appendTag(tag);
+			}
 		}
 
 		// Actual encoding

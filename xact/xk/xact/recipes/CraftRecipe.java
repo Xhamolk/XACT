@@ -29,6 +29,12 @@ public class CraftRecipe {
 		this.result = result;
 		this.ingredients = ingredients.clone();
 		this.size = ingredients.length;
+
+		// ensure that all the ingredients have stack size 1:
+		for( ItemStack current : ingredients ) {
+			if( current != null )
+				current.stackSize = 1;
+		}
 	}
 
 	/**
@@ -162,9 +168,10 @@ public class CraftRecipe {
 		NBTTagList tagList = compound.getTagList("recipeIngredients");
 		if( tagList == null )
 			return null;
-		for( int i = 0; i < 9; i++ ) {
+		for( int i = 0; i < tagList.tagCount(); i++ ) {
 			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			ingredients[i] = InventoryUtils.readStackFromNBT(tag);
+			int index = tag.getInteger("index");
+			ingredients[index] = InventoryUtils.readStackFromNBT(tag);
 		}
 
 		NBTTagCompound stackTag = (NBTTagCompound) compound.getTag("recipeResult");

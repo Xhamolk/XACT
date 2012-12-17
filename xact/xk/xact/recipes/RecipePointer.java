@@ -6,8 +6,6 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import xk.xact.util.FakeCraftingInventory;
 
-import java.util.List;
-
 public class RecipePointer {
 
 	public final int recipeID;
@@ -50,29 +48,19 @@ public class RecipePointer {
 		ItemStack[] ingredients;
 		getIRecipe(); // make sure recipe is instantiated.
 
-		if( recipe instanceof ShapedRecipes ) {
-			ingredients = ((ShapedRecipes) recipe).recipeItems;
+		ingredients = new ItemStack[9];
+		ItemStack[] tempIngredients = ((FakeCraftingInventory)craftingGrid).getContents();
 
-		} else if( recipe instanceof ShapelessRecipes ) {
-			List list = ((ShapelessRecipes) recipe).recipeItems;
-			ingredients = (ItemStack[]) list.toArray(new ItemStack[list.size()]);
-
-		} else {
-			ingredients = new ItemStack[9];
-			ItemStack[] tempIngredients = ((FakeCraftingInventory)craftingGrid).getContents();
-
-			for( int i=0; i<9; i++  ) {
-				if( tempIngredients[i] != null ) {
-					ingredients[i] = tempIngredients[i].copy();
-					ingredients[i].stackSize = 1;
-				} else
-					ingredients[i] = null;
-			}
+		for( int i=0; i<9; i++  ) {
+			if( tempIngredients[i] != null ) {
+				ingredients[i] = tempIngredients[i].copy();
+				ingredients[i].stackSize = 1;
+			} else
+				ingredients[i] = null;
 		}
 
 		CraftRecipe craftRecipe = new CraftRecipe(result, ingredients);
 		craftRecipe.recipeID = this.recipeID;
-
 		return craftRecipe;
 	}
 
