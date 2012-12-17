@@ -3,8 +3,10 @@ package xk.xact.network;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import xk.xact.gui.ContainerPad;
+import xk.xact.gui.GuiPad;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -19,6 +21,7 @@ public class PacketHandler implements IPacketHandler {
 		// 0x01: chip (removed)
 		// 0x02: craft pad
 		// 0x03: GuiPad sending an ItemStack
+		// 0x07: ContainerPad notifying the GuiPad that the contents have changed (client side)
 
 		byte action = -1;
 		if( packet.channel.equals("xact_channel") ) {
@@ -54,6 +57,13 @@ public class PacketHandler implements IPacketHandler {
 				}
 
 
+				// ContainerPad notifying the GuiPad that the inventory has changed (client side)
+				if( action == 0x07 ) {
+					GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+					if( screen != null && screen instanceof GuiPad ) {
+						((GuiPad)screen).updateScheduled = true;
+					}
+				}
 			} catch (IOException e) {
 				FMLCommonHandler.instance().raiseException(e, "XACT Packet Handler: "+action, true);
 			}

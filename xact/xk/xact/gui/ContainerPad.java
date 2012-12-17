@@ -1,6 +1,9 @@
 package xk.xact.gui;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import net.minecraft.src.*;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
@@ -9,6 +12,9 @@ import xk.xact.core.ItemChip;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.CustomPacket;
+
+import java.io.IOException;
 
 public class ContainerPad extends Container implements InteractiveCraftingContainer {
 
@@ -73,13 +79,23 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		// main player inv
 		for (int i=0; i<3; i++) {
 			for (int e=0; e<9; e++) {
-				this.addSlotToContainer(new Slot(player.inventory, (i+1)*9 +e, e*18 +8, i*18 +98));
+				this.addSlotToContainer(new Slot(player.inventory, (i+1)*9 +e, e*18 +8, i*18 +98) {
+					@Override
+					public void onSlotChanged() {
+						ContainerPad.this.notifyOfChange();
+					}
+				});
 			}
 		}
 
 		// hot-bar
 		for (int i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(player.inventory, i, 	i*18 +8,  156));
+			this.addSlotToContainer(new Slot(player.inventory, i, 	i*18 +8,  156) {
+				@Override
+				public void onSlotChanged() {
+					ContainerPad.this.notifyOfChange();
+				}
+			});
 		}
 	}
 
@@ -117,6 +133,8 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 			else
 				craftPad.buttonID = CraftPad.MODE_CLEAR;
 		}
+
+		this.notifyOfChange();
 	}
 
 	private void onGridChanged() {
@@ -145,11 +163,23 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 			}
 		}
 
+		this.notifyOfChange();
 	}
 
 	public void buttonClicked(int buttonID) {
 		craftPad.buttonID = buttonID;
 		craftPad.buttonPressed();
+	}
+
+	private void notifyOfChange() {
+		// send packet to set GuiPad.updateScheduled = true.
+		try {
+			Packet250CustomPayload packet = new CustomPacket((byte)0x07).toPacket();
+			PacketDispatcher.sendPacketToPlayer(packet, (Player) player);
+		} catch (IOException e) {
+			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x07", true);
+		}
+
 	}
 
 	@Override

@@ -15,6 +15,11 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 	private CraftPad craftPad;
 
+	public boolean updateScheduled = true;
+
+	private boolean[] missingIngredients = new boolean[9];
+
+
 	public GuiPad(CraftPad pad, Container container){
 		super(container);
 		this.ySize = 180;
@@ -110,6 +115,14 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 		}
 	}
 
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		if( updateScheduled ) {
+			missingIngredients = craftPad.getMissingIngredients();
+			updateScheduled = false;
+		}
+	}
 
 	private void paintSlotOverlays() {
 
@@ -121,8 +134,6 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 		int gray =  transparency | GuiUtils.COLOR_GRAY;
 		int red = transparency | GuiUtils.COLOR_RED;
-
-		boolean[] missingIngredients = craftPad.getHandler().getMissingIngredientsArray( craftPad.getRecipe(0) );
 
 		for( int index = 1; index <= 9; index++ ) {
 			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( index );

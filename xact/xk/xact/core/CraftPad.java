@@ -1,5 +1,7 @@
 package xk.xact.core;
 
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.*;
 import xk.xact.XActMod;
 import xk.xact.api.CraftingHandler;
@@ -75,6 +77,10 @@ public class CraftPad implements ICraftingDevice {
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
+	public boolean[] getMissingIngredients() {
+		return getHandler().getMissingIngredientsArray( lastRecipe );
+	}
 
 	////////////
 	/// ICraftingDevice
