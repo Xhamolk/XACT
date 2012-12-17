@@ -44,7 +44,7 @@ public class ContainerCrafter extends ContainerMachine {
 		}
 
 		// resources
-		for(int i=0; i<2; i++){
+		for(int i=0; i<3; i++){
 			for(int e=0; e<9; e++){
 				int x = 18*e + 8, y = 18*i + 71;
 				addSlotToContainer(new Slot(crafter.resources, e + i*9, x, y));
@@ -54,13 +54,13 @@ public class ContainerCrafter extends ContainerMachine {
 		// player's inventory
 		for(int i=0; i<3; i++) {
 			for(int e=0; e<9; e++){
-				int x = 18*e + 8, y = 18*i + 117;
+				int x = 18*e + 8, y = 18*i + 138;
 				addSlotToContainer(new Slot(player.inventory, e + i*9 + 9, x, y));
 			}
 		}
 		// player's hot bar
 		for(int i=0; i<9; i++){
-			addSlotToContainer(new Slot(player.inventory, i, 18*i + 8, 175));
+			addSlotToContainer(new Slot(player.inventory, i, 18*i + 8, 196));
 		}
 		
 	}
@@ -80,7 +80,7 @@ public class ContainerCrafter extends ContainerMachine {
 			stackInSlot = ((SlotCraft)slot).getCraftedStack();
 			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
 
-			if ( mergeCraftedStack(stackInSlot, 8, 8+18) ) {
+			if ( mergeCraftedStack(stackInSlot, 8, 8+27) ) {
 				slot.onPickupFromSlot(player, copy);
 				slot.onSlotChanged();
 				return copy;
@@ -90,23 +90,23 @@ public class ContainerCrafter extends ContainerMachine {
 
 		// From the crafter to the resources buffer.
 		if( slotID < 8 ) {
-			if (!mergeItemStack(stackInSlot, 8, 18+8, false))
+			if (!mergeItemStack(stackInSlot, 8, 8+27, false))
 				return null;
 			
-		} else if( slotID < 8+18 ){ // from the resources buffer
+		} else if( slotID < 8+27 ){ // from the resources buffer
 			// chips first try to go to the chip slots.
 			if( stackInSlot.getItem() instanceof ItemChip){
 				if (!mergeItemStack(stackInSlot, 4, 8, false)) // try add to the chip slots.
-					if (!mergeItemStack(stackInSlot, 8+18, inventorySlots.size(), false)) // add to the player's inv.
+					if (!mergeItemStack(stackInSlot, 8+27, inventorySlots.size(), false)) // add to the player's inv.
 						return null;
 
 			} else { // any other item goes to the player's inventory.
-				if (!mergeItemStack(stackInSlot, 8+18, inventorySlots.size(), false))
+				if (!mergeItemStack(stackInSlot, 8+27, inventorySlots.size(), false))
 					return null;
 			}
 
 		} else { // From the player's inventory to the resources buffer.
-			if (!mergeItemStack(stackInSlot, 8, 8+18, false))
+			if (!mergeItemStack(stackInSlot, 8, 8+27, false))
 				return null;
 		}
 

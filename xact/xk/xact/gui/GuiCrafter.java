@@ -12,7 +12,7 @@ public class GuiCrafter extends GuiMachine {
 	public GuiCrafter(TileCrafter crafter, EntityPlayer player){
 		super(new ContainerCrafter(crafter, player));
 		this.crafter = crafter;
-		this.ySize = 198;
+		this.ySize = 220;
 	}
 
 	public void onInit() {
@@ -24,12 +24,12 @@ public class GuiCrafter extends GuiMachine {
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		int xPos = (this.xSize - fontRenderer.getStringWidth("X.A.C.T. Crafter")) / 2;
 		this.fontRenderer.drawString("X.A.C.T. Crafter", xPos, 6, 4210752);
-		this.fontRenderer.drawString("Player's Inventory", 8, this.ySize - 92, 4210752);
+		this.fontRenderer.drawString("Player's Inventory", 8, this.ySize - 94, 4210752);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int texture = this.mc.renderEngine.getTexture("/gfx/xact/gui/crafter.png");
+		int texture = this.mc.renderEngine.getTexture("/gfx/xact/gui/crafter_2.png");
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.renderEngine.bindTexture(texture);
 		int cornerX = (this.width - this.xSize) / 2;

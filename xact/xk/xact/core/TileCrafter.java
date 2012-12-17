@@ -41,7 +41,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 * The resources inventory.
 	 * You can access this inventory through pipes/tubes.
 	 */
-	public final Inventory resources; // size = 2*9 = 18
+	public final Inventory resources; // size = 3*9 = 27
 
 
 	public TileCrafter() {
@@ -60,7 +60,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				TileCrafter.this.updateStates();
 			}
 		};
-		this.resources = new Inventory(2*9, "Resources") {
+		this.resources = new Inventory(3*9, "Resources") {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateStates();
