@@ -2,8 +2,13 @@ package xk.xact.gui;
 
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.Slot;
 import org.lwjgl.opengl.GL11;
 import xk.xact.core.TileCrafter;
+import xk.xact.recipes.CraftManager;
+import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 
 public class GuiCrafter extends GuiMachine {
 
@@ -35,40 +40,60 @@ public class GuiCrafter extends GuiMachine {
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(cornerX, cornerY, 0, 0, this.xSize, this.ySize);
-
-		// paint the overlays
-		for( int i=0; i<4; i++ ) {
-			paintOverlay(i, cornerX, cornerY);
-		}
 	}
 
-	// next versions will add more colors (yellow)
-	private void paintOverlay(int index, int cornerX, int cornerY) {
-		int overlayIndex = getOverlayIndex(index);
-		if( overlayIndex == -1 )
-			return;
-
-		// coordinates: x= 21+36*index; y=20
-		int x = cornerX + 21 + 36*index;
-		int y = cornerY + 20;
-
-		// textures: green(176,0) red(176,52); sizes 26x26
-		int textureX = 176;
-		int textureY = 26*overlayIndex;
-
-		this.drawTexturedModalRect( x, y,  textureX, textureY,  26, 26 );
-	}
-
-	private int getOverlayIndex(int recipeIndex){
-		if( crafter.getRecipeResult(recipeIndex) != null ){
-			if( crafter.isRedState(recipeIndex) ) {
-				return 2; // red state
-			} else {
-				// next version will also use yellow overlay.
-				return 0; // green.
+	@Override
+	protected void drawSlotInventory(Slot slot) {
+		if( slot.getHasStack() ) {
+			// output slots.
+			if( slot.slotNumber < 4 ) {
+				// paint slot's colored underlay.
+				GuiUtils.paintSlotOverlay(slot, 24, getColorFor( slot.getSlotIndex() ));
+			}
+			else if( slot.slotNumber >= 8 && GuiUtils.isShiftKeyPressed() ) {
+				ItemStack stack = slot.getStack();
+				if( CraftManager.isEncoded(stack) ) {
+					// paint chip's recipe's result
+					CraftRecipe recipe = RecipeUtils.getRecipe(stack, this.mc.theWorld);
+					if( recipe != null ) {
+						drawItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition );
+						paintGreenEffect( slot );
+						return;
+					}
+				}
 			}
 		}
-		return -1; // none
+
+		super.drawSlotInventory( slot );
+	}
+
+	private int getColorFor(int recipeIndex) {
+		int color;
+		if( this.mc.thePlayer.capabilities.isCreativeMode ) {
+			color = GuiUtils.COLOR_BLUE;
+		} else if( crafter.isRedState( recipeIndex )) {
+			color = GuiUtils.COLOR_RED;
+		} else {
+			color = GuiUtils.COLOR_GREEN;
+		}
+		color |= ( 128 << 24 ); // transparency layer.
+
+		return color;
+	}
+
+	private void drawItem(ItemStack itemStack, int x, int y) {
+		if( itemStack == null )
+			return; // I might want to have a "null" image, like background image.
+
+		itemRenderer.zLevel = 100.0F;
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		itemRenderer.renderItemAndEffectIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
+		itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
+		itemRenderer.zLevel = 0.0F;
+	}
+
+	private void paintGreenEffect( Slot slot ) {
+		GuiUtils.paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, this.mc.renderEngine, itemRenderer, 0.25f, 0.55f, 0.3f, 0.75f);
 	}
 
 }
