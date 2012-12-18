@@ -7,6 +7,9 @@ import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.CraftPad;
+import xk.xact.recipes.CraftManager;
+import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.CustomPacket;
 
 import java.io.IOException;
@@ -66,6 +69,22 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			}
 		}
 		super.mouseClicked(x, y, mouseButton);
+	}
+
+	@Override
+	protected void drawSlotInventory(Slot slot) {
+		if( GuiUtils.isShiftKeyPressed() && slot.getHasStack() ) {
+			ItemStack stack = slot.getStack();
+			if( CraftManager.isEncoded(stack) ) {
+				CraftRecipe recipe = RecipeUtils.getRecipe(stack, this.mc.theWorld);
+				if( recipe != null ) {
+					GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
+					GuiUtils.paintGreenEffect( slot, itemRenderer );
+					return;
+				}
+			}
+		}
+		super.drawSlotInventory( slot );
 	}
 
 	private Packet250CustomPayload createPacket() {

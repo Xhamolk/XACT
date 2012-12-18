@@ -56,8 +56,8 @@ public class GuiCrafter extends GuiMachine {
 					// paint chip's recipe's result
 					CraftRecipe recipe = RecipeUtils.getRecipe(stack, this.mc.theWorld);
 					if( recipe != null ) {
-						drawItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition );
-						paintGreenEffect( slot );
+						GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
+						GuiUtils.paintGreenEffect( slot, itemRenderer );
 						return;
 					}
 				}

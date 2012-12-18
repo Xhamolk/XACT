@@ -30,6 +30,21 @@ public class GuiUtils {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
 
+	public static void paintItem(ItemStack itemStack, int x, int y, Minecraft mc, RenderItem itemRenderer) {
+		if( itemStack == null )
+			return; // I might want to have a "null" image, like background image.
+
+		itemRenderer.zLevel = 100.0F;
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
+		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
+		itemRenderer.zLevel = 0.0F;
+	}
+
+	public static void paintGreenEffect(Slot slot, RenderItem itemRenderer) {
+		paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, Minecraft.getMinecraft().renderEngine, itemRenderer, 0.25f, 0.55f, 0.3f, 0.75f);
+	}
+
 	public static void paintEffectOverlay( int x, int y, RenderEngine renderEngine, RenderItem itemRenderer, float red, float green, float blue, float alpha) {
 		GL11.glDepthFunc(GL11.GL_GREATER);
 		GL11.glDisable(GL11.GL_LIGHTING);

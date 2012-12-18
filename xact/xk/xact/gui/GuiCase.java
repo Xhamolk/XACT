@@ -56,14 +56,13 @@ public class GuiCase extends GuiContainer {
 
 	@Override
 	protected void drawSlotInventory(Slot slot) {
-		// special handle for the chips in the grid.
 		if( GuiUtils.isShiftKeyPressed() && slot.getHasStack() ) {
 			ItemStack stack = slot.getStack();
 			if( CraftManager.isEncoded( stack ) ) {
 				CraftRecipe recipe = RecipeUtils.getRecipe( stack, this.mc.theWorld );
 				if( recipe != null ) {
-					drawItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition );
-					paintGreenEffect( slot );
+					GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
+					GuiUtils.paintGreenEffect( slot, itemRenderer );
 					return;
 				}
 			}
@@ -102,30 +101,15 @@ public class GuiCase extends GuiContainer {
 			return;
 
 		ItemStack result = recipe.getResult();
-		drawItem(result, 32, 17);
+		GuiUtils.paintItem(result, 32, 17, this.mc, itemRenderer);
 
 		ItemStack[] ingredients = recipe.getIngredients();
 		for( int i=0; i<3; i++ ){
 			for( int e=0; e<3; e++ ){
 				int index = i*3 +e;
-				drawItem(ingredients[index], e*18 + 14, i*18 +41);
+				GuiUtils.paintItem(ingredients[index], e*18 + 14, i*18 +41, this.mc, itemRenderer);
 			}
 		}
-	}
-
-	private void drawItem(ItemStack itemStack, int x, int y) {
-		if( itemStack == null )
-			return; // I might want to have a "null" image, like background image.
-
-		itemRenderer.zLevel = 100.0F;
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		itemRenderer.renderItemAndEffectIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
-		itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
-		itemRenderer.zLevel = 0.0F;
-	}
-
-	private void paintGreenEffect( Slot slot ) {
-		GuiUtils.paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, this.mc.renderEngine, itemRenderer, 0.25f, 0.55f, 0.3f, 0.75f);
 	}
 
     @Override
