@@ -81,19 +81,4 @@ public class GuiCrafter extends GuiMachine {
 		return color;
 	}
 
-	private void drawItem(ItemStack itemStack, int x, int y) {
-		if( itemStack == null )
-			return; // I might want to have a "null" image, like background image.
-
-		itemRenderer.zLevel = 100.0F;
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		itemRenderer.renderItemAndEffectIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
-		itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, itemStack, x, y);
-		itemRenderer.zLevel = 0.0F;
-	}
-
-	private void paintGreenEffect( Slot slot ) {
-		GuiUtils.paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, this.mc.renderEngine, itemRenderer, 0.25f, 0.55f, 0.3f, 0.75f);
-	}
-
 }
