@@ -383,8 +383,8 @@ public abstract class CraftingHandler {
 				ArrayList<ItemStack> equivalencies = OreDictionary.getOres(oreID);
 
 				for(ItemStack current : equivalencies) {
-//					if( slot.containsItemsFrom(current) ) // do I need this initial check?
-//						return true;
+					if( slot.containsItemsFrom(current) ) // do I need this initial check?
+						return true;
 					if( slot.stack.itemID == current.itemID ) {
 						if( current.getItemDamage() == -1 || slot.stack.getItemDamage() == current.getItemDamage() )
 							return true;
