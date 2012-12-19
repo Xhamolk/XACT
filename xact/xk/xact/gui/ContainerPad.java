@@ -189,6 +189,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		if( slot != null ) {
 			slot.putStack(stack);
 		}
+		this.notifyOfChange();
 	}
 
 	@Override
