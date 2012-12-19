@@ -56,6 +56,8 @@ public class XActMod {
 
     public static XactTab xactTab;
 
+	// debugging information.
+	public static boolean DEBUG_MODE = false;
 
 	@Mod.PreInit
 	public void preInit(FMLPreInitializationEvent event){

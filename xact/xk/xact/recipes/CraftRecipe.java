@@ -4,6 +4,7 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.World;
+import xk.xact.XActMod;
 import xk.xact.util.FakeCraftingInventory;
 import xk.xact.util.InventoryUtils;
 import xk.xact.util.StackList;
@@ -130,7 +131,10 @@ public class CraftRecipe {
 
 	// the output's name.
     public String toString() {
-        return this.result.getItem().getItemDisplayName(result);
+		String string = this.result.getItem().getItemDisplayName(result);
+		if( XActMod.DEBUG_MODE )
+			string += " ("+recipeID+ ( this.isOreRecipe() ? " ore" : "" ) +") ";
+        return string;
     }
 
 	/**
