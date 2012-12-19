@@ -117,7 +117,7 @@ public class GuiCase extends GuiContainer {
         if( slot != null && slot.getHasStack() ){
             ItemStack stackInSlot = slot.getStack();
             if( stackInSlot.itemID == XActMod.itemChipCase.shiftedIndex && stackInSlot.getItemDamage() == 1 ) {
-				this.mc.thePlayer.sendChatMessage("Can't move the Chip Case while it's in use.");
+				this.mc.thePlayer.sendChatToPlayer("Can't move the Chip Case while it's in use.");
                 return;
 			}
         }

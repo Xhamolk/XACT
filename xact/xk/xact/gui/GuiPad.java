@@ -107,7 +107,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 		if( slot != null && slot.getHasStack() ){
 			ItemStack stackInSlot = slot.getStack();
 			if( stackInSlot.itemID == XActMod.itemCraftPad.shiftedIndex && stackInSlot.getItemDamage() == 1 ){
-				this.mc.thePlayer.sendChatMessage("Can't move the Craft Pad while it's in use.");
+				this.mc.thePlayer.sendChatToPlayer("Can't move the Craft Pad while it's in use.");
 				return;
 			}
 		}
