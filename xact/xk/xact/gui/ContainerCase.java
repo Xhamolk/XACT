@@ -75,9 +75,11 @@ public class ContainerCase extends Container {
 		if( slotID < 30 ) {
 			if (!mergeItemStack(stackInSlot, 30, inventorySlots.size(), false))
 				return null;
-		} else {
+		} else if( stackInSlot.getItem() instanceof ItemChip ) {
 			if (!mergeItemStack(stackInSlot, 0, 30, false))
 				return null;
+		} else {
+			return null;
 		}
 
 		if ( stackInSlot.stackSize == 0 )
