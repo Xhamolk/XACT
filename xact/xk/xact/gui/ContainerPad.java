@@ -169,6 +169,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 	public void buttonClicked(int buttonID) {
 		craftPad.buttonID = buttonID;
 		craftPad.buttonPressed();
+		notifyOfChange();
 	}
 
 	private void notifyOfChange() {
