@@ -11,6 +11,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.src.*;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import xk.xact.core.*;
 import xk.xact.gui.XactTab;
 import xk.xact.network.CommonProxy;
@@ -125,12 +126,13 @@ public class XActMod {
 
 		// Chip Case
 		ItemStack chip = new ItemStack(itemRecipeBlank);
-		ingredients = ingredients(
-				chip, 			Block.thinGlass, chip,
-				chip, 			null, 			chip,
-				Block.planks, 	Block.chest, 	Block.planks
-		);
-		GameRegistry.addRecipe(new ShapedRecipes(3, 3, ingredients, new ItemStack(itemChipCase, 1)));
+		GameRegistry.addRecipe( new ShapedOreRecipe( itemChipCase,
+				new String[] { "cgc", "c c", "wCw" },
+					'c', chip,
+					'g', Block.thinGlass,
+					'w', "plankWood",
+					'C', Block.chest
+		));
 
         // Craft Pad
 		ingredients = ingredients (
