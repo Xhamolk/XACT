@@ -11,8 +11,10 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import xk.xact.XActMod;
 import xk.xact.gui.ContainerPad;
 import xk.xact.gui.GuiPad;
+import xk.xact.gui.GuiRecipe;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -62,6 +64,23 @@ public class PacketHandler implements IPacketHandler {
 					padContainer.setStack(slotID, stack);
 				}
 
+				// GuiPlan requesting a recipe (server side)
+				if ( action == 0x04 ) {
+					// must open the recipe gui.
+					EntityPlayer player = (EntityPlayer) packetSender;
+					player.openGui(XActMod.instance, 5, player.worldObj, 0, 0, 0);
+					return;
+				}
+
+				// ContainerRecipe notifying GuiRecipe that the recipe has changed (client side)
+				if ( action == 0x05 ) {
+					GuiScreen screen = ClientProxy.getCurrentScreen();
+					if( screen instanceof GuiRecipe ) {
+						GuiRecipe gui = (GuiRecipe) screen;
+						// gui.buttonID = packetData.readByte(); // todo: recheck this.
+					}
+					return;
+				}
 
 				// ContainerPad notifying the GuiPad that the inventory has changed (client side)
 				if( action == 0x07 ) {
