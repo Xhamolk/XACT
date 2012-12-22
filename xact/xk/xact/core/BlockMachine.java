@@ -1,6 +1,14 @@
 package xk.xact.core;
 
-import net.minecraft.src.*;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import xk.xact.XActMod;
 
 import java.util.ArrayList;
@@ -69,12 +77,10 @@ public class BlockMachine extends BlockContainer {
 		float var11 = random.nextFloat() * 0.8F + 0.1F;
 		EntityItem item;
 
-		for (float var12 = random.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(item))
-		{
+		for( float var12 = random.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(item) ) {
 			int var13 = random.nextInt(21) + 10;
 
-			if (var13 > stack.stackSize)
-			{
+			if (var13 > stack.stackSize) {
 				var13 = stack.stackSize;
 			}
 
@@ -85,9 +91,8 @@ public class BlockMachine extends BlockContainer {
 			item.motionY = (random.nextGaussian() * var15 + 0.2F);
 			item.motionZ = (random.nextGaussian() * var15);
 
-			if (stack.hasTagCompound())
-			{
-				item.item.setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
+			if (stack.hasTagCompound()) {
+				item.func_92014_d().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
 			}
 		}
 	}

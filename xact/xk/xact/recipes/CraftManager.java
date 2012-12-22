@@ -1,6 +1,12 @@
 package xk.xact.recipes;
 
-import net.minecraft.src.*;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import xk.xact.core.ItemChip;
 import xk.xact.XActMod;
 import xk.xact.util.FakeCraftingInventory;

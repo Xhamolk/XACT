@@ -1,9 +1,9 @@
 package xk.xact.gui;
 
 
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 
 
 public abstract class ContainerMachine extends Container {

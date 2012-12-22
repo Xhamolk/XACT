@@ -8,7 +8,12 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -90,7 +95,7 @@ public class XActMod {
 		blockMachine = new BlockMachine(machineID);
 
 		// Register Blocks
-		GameRegistry.registerBlock(blockMachine, ItemMachine.class);
+		GameRegistry.registerBlock(blockMachine, ItemMachine.class, "XACT Mod");
 
 		// Register TileEntities
 		GameRegistry.registerTileEntity(TileCrafter.class, "tile.xact.Crafter");
@@ -111,7 +116,7 @@ public class XActMod {
 		NetworkRegistry.instance().registerGuiHandler(XActMod.instance, proxy);
 
 		// Register Event Handler
-		MinecraftForge.EVENT_BUS.register( new EventHandler() );
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
 
 		// Add the recipes
 		addRecipes();

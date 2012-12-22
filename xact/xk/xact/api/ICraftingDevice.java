@@ -1,7 +1,7 @@
 package xk.xact.api;
 
-import net.minecraft.src.IInventory;
-import net.minecraft.src.World;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.world.World;
 import xk.xact.recipes.CraftRecipe;
 
 /**

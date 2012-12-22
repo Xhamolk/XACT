@@ -1,9 +1,9 @@
 package xk.xact.util;
 
 
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryUtils {
 
@@ -39,10 +39,8 @@ public class InventoryUtils {
                 return false;
 		}
         // Compare stacks tags.
-        if( stack1.hasTagCompound() )
-            return stack2.hasTagCompound() && stack1.getTagCompound().equals(stack2.getTagCompound());
+		return !stack1.hasTagCompound() || stack2.hasTagCompound() && stack1.getTagCompound().equals(stack2.getTagCompound());
 
-        return true;
 	}
 
 	/**
