@@ -1,7 +1,10 @@
 package xk.xact.gui;
 
 
-import net.minecraft.src.*;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
 import xk.xact.recipes.CraftManager;

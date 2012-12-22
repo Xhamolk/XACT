@@ -1,9 +1,9 @@
 package xk.xact.gui;
 
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
@@ -64,7 +64,7 @@ public class GuiCrafter extends GuiMachine {
 			}
 		}
 
-		super.drawSlotInventory( slot );
+		super.drawSlotInventory(slot);
 	}
 
 	private int getColorFor(int recipeIndex) {

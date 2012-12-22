@@ -1,7 +1,10 @@
 package xk.xact.recipes;
 
 
-import net.minecraft.src.*;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import xk.xact.util.FakeCraftingInventory;

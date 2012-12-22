@@ -1,9 +1,9 @@
 package xk.xact.util;
 
 
-import net.minecraft.src.CompressedStreamTools;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Packet250CustomPayload;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.network.packet.Packet250CustomPayload;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

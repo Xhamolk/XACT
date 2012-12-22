@@ -1,7 +1,7 @@
 package xk.xact.gui;
 
-import net.minecraft.src.Container;
-import net.minecraft.src.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
 
 /**
  *

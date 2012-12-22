@@ -1,6 +1,6 @@
 package xk.xact.util;
 
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.ItemStack;
 
 
 /**
