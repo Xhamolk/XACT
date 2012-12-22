@@ -3,8 +3,8 @@ package xk.xact.plugin.nei;
 
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.ItemStack;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingGui;
 
 import java.util.List;

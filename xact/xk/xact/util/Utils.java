@@ -1,7 +1,7 @@
 package xk.xact.util;
 
 
-import net.minecraft.src.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class Utils {
 

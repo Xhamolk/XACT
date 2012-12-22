@@ -2,8 +2,8 @@ package xk.xact.network;
 
 
 import cpw.mods.fml.common.network.IGuiHandler;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.World;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import xk.xact.core.*;
 import xk.xact.gui.*;
 

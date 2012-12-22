@@ -2,7 +2,12 @@ package xk.xact.gui;
 
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.src.*;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.multiplayer.NetClientHandler;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingGui;
