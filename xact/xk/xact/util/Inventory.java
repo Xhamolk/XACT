@@ -173,7 +173,7 @@ public class Inventory implements IInventory {
 		if( c == null ) return;
 
         NBTTagList list = c.getTagList("inventoryContents");
-        for (int i=0; i<list.tagCount(); i++) {
+        for( int i = 0; i < list.tagCount() && i < internalInv.length; i++) {
             NBTTagCompound tag = (NBTTagCompound) list.tagAt(i);
             int index = tag.getInteger("index");
             internalInv[index] = InventoryUtils.readStackFromNBT(tag);
