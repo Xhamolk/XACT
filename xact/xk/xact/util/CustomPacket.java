@@ -31,6 +31,8 @@ public class CustomPacket {
 				dataStream.writeShort((Short) o);
 			} else if(o instanceof Integer) {
 				dataStream.writeInt((Integer) o);
+			} else if(o instanceof Boolean) {
+				dataStream.writeBoolean((Boolean) o);
 			}
 		}
 		return this;
