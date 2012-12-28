@@ -28,9 +28,13 @@ public class GuiUtils {
 		int minX = slot.xDisplayPosition - off;
 		int minY = slot.yDisplayPosition - off;
 
+		paintOverlay( minX, minY, size, color );
+	}
+
+	public static void paintOverlay(int x, int y, int size, int color) {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		Gui.drawRect(minX, minY, minX + size, minY + size, color);
+		Gui.drawRect( x, y,  x + size, y + size,  color );
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}

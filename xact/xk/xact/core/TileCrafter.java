@@ -42,6 +42,11 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public final Inventory circuits; // size = 4
 
 	/**
+	 * The inventory that holds the crafting grid's contents.
+	 */
+	public final Inventory craftGrid;
+
+	/**
 	 * The resources inventory.
 	 * You can access this inventory through pipes/tubes.
 	 */
@@ -64,6 +69,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				TileCrafter.this.updateStates();
 			}
 		};
+		this.craftGrid = new Inventory(10, "CraftingGrid");
 		this.resources = new Inventory(3*9, "Resources") {
 			@Override
 			public void onInventoryChanged() {
@@ -82,6 +88,11 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		}
 		for(int i=0; i<this.resources.getSizeInventory(); i++){
 			ItemStack stack = resources.getStackInSlotOnClosing(i);
+			if( stack != null )
+				list.add( stack );
+		}
+		for(int i=0; i<this.craftGrid.getSizeInventory(); i++){
+			ItemStack stack = craftGrid.getStackInSlotOnClosing(i);
 			if( stack != null )
 				list.add( stack );
 		}
@@ -238,6 +249,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		super.readFromNBT(compound);
 		resources.readFromNBT(compound);
 		circuits.readFromNBT(compound);
+		craftGrid.readFromNBT(compound);
 	}
 
 	@Override
@@ -245,6 +257,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		super.writeToNBT(compound);
 		resources.writeToNBT(compound);
 		circuits.writeToNBT(compound);
+		craftGrid.writeToNBT(compound);
 	}
 
 }

@@ -1,6 +1,9 @@
 package xk.xact.gui;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -8,6 +11,10 @@ import net.minecraft.item.ItemStack;
 import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
+import xk.xact.recipes.CraftRecipe;
+import xk.xact.util.CustomPacket;
+
+import java.io.IOException;
 
 
 /**
@@ -25,16 +32,22 @@ public class ContainerCrafter extends ContainerMachine {
 		buildContainer();
 	}
 
+	private Slot outputSlot;
 
 	private void buildContainer() {
 		// craft results
 		for(int i=0; i<4; i++) {
-			addSlotToContainer(new SlotCraft(crafter, crafter.results, player, i, 26 + 36*i, 25));
+			int x = 20 + (i % 2) * 120;
+			int y = 20 + (i / 2) * 44;
+			addSlotToContainer(new SlotCraft(crafter, crafter.results, player, i, x, y));
 		}
 
 		// circuits
-		for(int i=0; i<4; i++){
-			addSlotToContainer(new Slot(crafter.circuits, i, 26 + 36*i, 47) {
+		for(int i=0; i<4; i++) {
+			int x = 20 + (i % 2) * 120;
+			int y = 40 + (i / 2) * 44;
+
+			addSlotToContainer(new Slot(crafter.circuits, i, x, y) {
 				@Override
 				public boolean isItemValid(ItemStack stack) {
 					return CraftManager.isEncoded(stack);
@@ -46,24 +59,42 @@ public class ContainerCrafter extends ContainerMachine {
 			});
 		}
 
-		// resources
+		// crafting grid (62,17) 3x3 (18x18)
+		for(int i=0; i<3; i++) {
+			for(int e=0; e<3; e++){
+				int x = 18*e + 62, y = 18*i + 17, index = e + i*3;
+				addSlotToContainer(new Slot(crafter.craftGrid, index, x, y){
+					@Override
+					public void onSlotChanged() {
+						// update the output slot.
+						outputSlot.onSlotChanged();
+					}
+				});
+			}
+		}
+
+		// grid's output (80,78)
+		addSlotToContainer(outputSlot = new SlotVanillaCraft(player, crafter.craftGrid, 80, 78));
+
+
+		// resources (8,107) 3x9 (18x18)
 		for(int i=0; i<3; i++){
 			for(int e=0; e<9; e++){
-				int x = 18*e + 8, y = 18*i + 71;
+				int x = 18*e + 8, y = 18*i + 107;
 				addSlotToContainer(new Slot(crafter.resources, e + i*9, x, y));
 			}
 		}
 		
-		// player's inventory
+		// player's inventory (8,174) 3x9 (18x18)
 		for(int i=0; i<3; i++) {
 			for(int e=0; e<9; e++){
-				int x = 18*e + 8, y = 18*i + 138;
+				int x = 18*e + 8, y = 18*i + 174;
 				addSlotToContainer(new Slot(player.inventory, e + i*9 + 9, x, y));
 			}
 		}
-		// player's hot bar
+		// player's hot bar (8,232) 1x9 (18x18)
 		for(int i=0; i<9; i++){
-			addSlotToContainer(new Slot(player.inventory, i, 18*i + 8, 196));
+			addSlotToContainer(new Slot(player.inventory, i, 18*i + 8, 232));
 		}
 		
 	}
@@ -83,7 +114,18 @@ public class ContainerCrafter extends ContainerMachine {
 			stackInSlot = ((SlotCraft)slot).getCraftedStack();
 			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
 
-			if ( mergeCraftedStack(stackInSlot, 8, 8+27) ) {
+			if( mergeCraftedStack(stackInSlot, 8+10, 8+10+27) ) {
+				slot.onPickupFromSlot(player, copy);
+				slot.onSlotChanged();
+				return copy;
+			}
+			return null;
+		}
+
+		if( slot instanceof SlotVanillaCraft ) {
+			ItemStack copy = stackInSlot.copy();
+
+			if ( mergeCraftedStack(stackInSlot, 8+10, 8+10+27) ) {
 				slot.onPickupFromSlot(player, copy);
 				slot.onSlotChanged();
 				return copy;
@@ -93,23 +135,27 @@ public class ContainerCrafter extends ContainerMachine {
 
 		// From the crafter to the resources buffer.
 		if( slotID < 8 ) {
-			if (!mergeItemStack(stackInSlot, 8, 8+27, false))
+			if (!mergeItemStack(stackInSlot, 8+10, 8+10+27, false))
 				return null;
 			
-		} else if( slotID < 8+27 ){ // from the resources buffer
+		} else if( slotID < 8+10 ) { // from the crafting grid.
+			if (!mergeItemStack(stackInSlot, 8+10, inventorySlots.size(), false))
+				return null;
+
+		} else if( slotID < 8+10+27 ) { // from the resources buffer
 			// chips first try to go to the chip slots.
-			if( stackInSlot.getItem() instanceof ItemChip){
+			if( stackInSlot.getItem() instanceof ItemChip ) {
 				if (!mergeItemStack(stackInSlot, 4, 8, false)) // try add to the chip slots.
-					if (!mergeItemStack(stackInSlot, 8+27, inventorySlots.size(), false)) // add to the player's inv.
+					if (!mergeItemStack(stackInSlot, 8+10+27, inventorySlots.size(), false)) // add to the player's inv.
 						return null;
 
 			} else { // any other item goes to the player's inventory.
-				if (!mergeItemStack(stackInSlot, 8+27, inventorySlots.size(), false))
+				if (!mergeItemStack(stackInSlot, 8+10+27, inventorySlots.size(), false))
 					return null;
 			}
 
 		} else { // From the player's inventory to the resources buffer.
-			if (!mergeItemStack(stackInSlot, 8, 8+27, false))
+			if (!mergeItemStack(stackInSlot, 8+10, 8+10+27, false))
 				return null;
 		}
 
@@ -365,7 +411,7 @@ public class ContainerCrafter extends ContainerMachine {
 
 	protected void retrySlotClick(int slotID, int mouseClick, boolean flag, EntityPlayer player) {
 		Slot slot = (Slot)this.inventorySlots.get(slotID);
-		if(slot instanceof SlotCraft) {
+		if( slot instanceof SlotCraft || slot instanceof SlotVanillaCraft ) {
 			if( mouseClick == 1 )
 				return;
 		}
@@ -376,6 +422,25 @@ public class ContainerCrafter extends ContainerMachine {
 		return stack1.itemID == stack2.itemID
 				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())
 				&& ItemStack.areItemStackTagsEqual(stack1, stack2);
+	}
+
+	public void respondGhostUpdate(byte recipeIndex) {
+		CraftRecipe recipe = crafter.getRecipe( recipeIndex );
+
+		ItemStack[] gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
+		boolean[] missingIngredients = crafter.getHandler().getMissingIngredientsArray( recipe );
+
+		try {
+			CustomPacket cPacket = new CustomPacket((byte) 0x09);
+			for( int i = 0; i < 9; i++ )
+				cPacket.add( gridContents[i] );
+			for( int i = 0; i < 9; i++ )
+				cPacket.add( missingIngredients[i] );
+
+			PacketDispatcher.sendPacketToPlayer(cPacket.toPacket(), (Player) player);
+		} catch (IOException e) {
+			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x09", true);
+		}
 	}
 
 }

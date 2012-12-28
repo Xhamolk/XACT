@@ -12,9 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import xk.xact.XActMod;
-import xk.xact.gui.ContainerPad;
-import xk.xact.gui.GuiPad;
-import xk.xact.gui.GuiRecipe;
+import xk.xact.gui.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -30,6 +28,8 @@ public class PacketHandler implements IPacketHandler {
 		// 0x02: craft pad
 		// 0x03: GuiPad sending an ItemStack
 		// 0x07: ContainerPad notifying the GuiPad that the contents have changed (client side)
+		// 0x08: GuiCrafter requesting "ghost items" update.
+		// 0x09: ContainerCrafter responding "ghost items" update.
 
 		byte action = -1;
 		if( packet.channel.equals("xact_channel") ) {
@@ -88,7 +88,49 @@ public class PacketHandler implements IPacketHandler {
 					if( screen != null && screen instanceof GuiPad ) {
 						((GuiPad)screen).updateScheduled = true;
 					}
+					return;
 				}
+
+				// GuiCrafter requesting "ghost items" update (server side)
+				if( action == 0x08 ) {
+					EntityPlayer player = (EntityPlayer) packetSender;
+					Object openContainer = player.openContainer;
+					if( openContainer instanceof ContainerCrafter ) {
+						ContainerCrafter container = (ContainerCrafter) openContainer;
+
+						byte recipeIndex = packetData.readByte();
+						container.respondGhostUpdate( recipeIndex );
+					}
+					return;
+				}
+
+				// ContainerCrafter responding "ghost items" update (client side)
+				if( action == 0x09 ) {
+					GuiScreen screen = ClientProxy.getCurrentScreen();
+
+					if( screen instanceof GuiCrafter ) {
+						GuiCrafter gui = (GuiCrafter) screen;
+
+						// read the stacks
+						ItemStack[] contents = new ItemStack[9];
+						for( int i = 0; i < 9; i++ ) {
+							contents[i] = getItemStack( packetData );
+						}
+						// read the booleans
+						boolean[] missing = new boolean[9];
+						String booleanTest = "";
+						for( int i = 0; i < 9; i++ ) {
+							missing[i] = packetData.readBoolean();
+							booleanTest += missing[i] ? '1' : '0';
+						}
+						System.out.println(booleanTest);
+
+						// set them to the GUI.
+						gui.missingIngredients = missing;
+						gui.gridContents = contents;
+					}
+				}
+
 			} catch (IOException e) {
 				FMLCommonHandler.instance().raiseException(e, "XACT Packet Handler: "+action, true);
 			}
