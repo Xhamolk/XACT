@@ -14,6 +14,7 @@ import xk.xact.util.InventoryUtils;
 
 import java.util.ArrayList;
 
+import static xk.xact.util.InventoryUtils.copyArray;
 import static xk.xact.util.InventoryUtils.inventoryIterator;
 
 // Used to craft, check if can craft, etc.
@@ -260,11 +261,11 @@ public abstract class CraftingHandler {
 
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		int[] missingCount = getMissingIngredientsCount(recipe);
-		ItemStack[] ingredients = recipe.getSimplifiedIngredients().clone();
+		ItemStack[] ingredients = copyArray( recipe.getSimplifiedIngredients() );
 
 		for( int i=0; i<missingCount.length; i++ ){
 			int missing = missingCount[i];
-			if( missing > 0 ){
+			if( missing > 0 ) {
 				ingredients[i].stackSize = missing;
 				list.add(ingredients[i]);
 			}

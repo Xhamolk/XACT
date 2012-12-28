@@ -174,4 +174,13 @@ public class InventoryUtils {
 		}
 
 	}
+
+	public static ItemStack[] copyArray(ItemStack... oldArray) {
+		int length = oldArray.length;
+		ItemStack[] newArray = new ItemStack[length];
+		for( int i = 0; i < length; i++ ) {
+			newArray[i] = oldArray[i] == null ? null : oldArray[i].copy();
+		}
+		return newArray;
+	}
 }

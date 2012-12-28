@@ -118,12 +118,9 @@ public class PacketHandler implements IPacketHandler {
 						}
 						// read the booleans
 						boolean[] missing = new boolean[9];
-						String booleanTest = "";
 						for( int i = 0; i < 9; i++ ) {
 							missing[i] = packetData.readBoolean();
-							booleanTest += missing[i] ? '1' : '0';
 						}
-						System.out.println(booleanTest);
 
 						// set them to the GUI.
 						gui.missingIngredients = missing;
