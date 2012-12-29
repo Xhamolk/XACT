@@ -66,13 +66,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				TileCrafter.this.updateStates();
 			}
 		};
 		this.craftGrid = new Inventory(9, "CraftingGrid") {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
+				TileCrafter.this.updateStates();
 			}
 		};
 		this.resources = new Inventory(3*9, "Resources") {
@@ -113,6 +113,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	private CraftRecipe[] recipes = new CraftRecipe[getRecipeCount()];
 
+	public boolean[] missingIngredients = new boolean[9];
 
 	// whether if the recipe's state must be red.
 	public boolean isRedState( int i ) {
@@ -130,6 +131,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		for( int i = 0; i < getRecipeCount(); i++ ) {
 			if( i == 4 ) {
 				recipes[i] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
+				this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[i] );
 			} else {
 				ItemStack stack = this.circuits.getStackInSlot(i);
 				if( stack == null )
@@ -150,6 +152,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			// if there are not enough ingredients, color is red.
 			redState[i] = (recipes[i] != null) && !getHandler().canCraft(this.getRecipe(i), null);
 		}
+		this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[4] );
 	}
 
 	///////////////

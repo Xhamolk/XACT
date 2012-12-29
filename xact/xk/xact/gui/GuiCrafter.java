@@ -56,10 +56,12 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 		// grid's contents.
 		if( 8 <= slot.slotNumber && slot.slotNumber < 18-1 ) {
 			int index = slot.slotNumber - 8;
+			int color;
 
 			// only paint the grid's real contents if there is no recipe being hovered.
 			if( hoveredRecipe == -1 ) {
 				super.drawSlotInventory( slot );
+				color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 			}
 			// If a recipe is being hovered, paint those ingredients instead.
 			else {
@@ -67,10 +69,10 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 				// Paint the "ghost item"
 				GuiUtils.paintItem( itemToPaint, slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
+				color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 			}
 
 			// Paint the item's overlay.
-			int color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 			color |= TRANSPARENCY;
 			GuiUtils.paintOverlay( slot.xDisplayPosition, slot.yDisplayPosition, 16, color );
 
@@ -152,7 +154,8 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 		}
 
 		gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
-		missingIngredients = crafter.getHandler().getMissingIngredientsArray( recipe );
+		missingIngredients = hoveredRecipe == -1 ? crafter.missingIngredients :
+				crafter.getHandler().getMissingIngredientsArray( recipe );
 	}
 
 

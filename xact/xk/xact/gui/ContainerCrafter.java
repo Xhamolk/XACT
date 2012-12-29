@@ -26,8 +26,6 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		buildContainer();
 	}
 
-	private Slot outputSlot;
-
 	private void buildContainer() {
 		// craft results
 		for(int i=0; i<4; i++) {
@@ -57,19 +55,12 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		for(int i=0; i<3; i++) {
 			for(int e=0; e<3; e++){
 				int x = 18*e + 62, y = 18*i + 17, index = e + i*3;
-				addSlotToContainer(new Slot(crafter.craftGrid, index, x, y){
-					@Override
-					public void onSlotChanged() {
-						// update the output slot.
-						outputSlot.onSlotChanged();
-						super.onSlotChanged();
-					}
-				});
+				addSlotToContainer(new Slot(crafter.craftGrid, index, x, y));
 			}
 		}
 
 		// grid's output (80,78)
-		addSlotToContainer(outputSlot = new SlotCraft(crafter, crafter.results, player, 4, 80, 78));
+		addSlotToContainer(new SlotCraft(crafter, crafter.results, player, 4, 80, 78));
 
 
 		// resources (8,107) 3x9 (18x18)
