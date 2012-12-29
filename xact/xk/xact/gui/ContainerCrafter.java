@@ -1,9 +1,6 @@
 package xk.xact.gui;
 
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -12,11 +9,6 @@ import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
-import xk.xact.recipes.CraftRecipe;
-import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.CustomPacket;
-
-import java.io.IOException;
 
 
 /**
@@ -24,7 +16,7 @@ import java.io.IOException;
  */
 public class ContainerCrafter extends ContainerMachine implements InteractiveCraftingContainer {
 
-	private TileCrafter crafter;
+	TileCrafter crafter;
 	
 	private EntityPlayer player;
 
@@ -447,30 +439,6 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		return stack1.itemID == stack2.itemID
 				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())
 				&& ItemStack.areItemStackTagsEqual(stack1, stack2);
-	}
-
-	public void respondGhostUpdate(byte recipeIndex) {
-		CraftRecipe recipe;
-		if( recipeIndex == -1 ) {
-			recipe = RecipeUtils.getRecipe(crafter.craftGrid.getContents(), crafter.worldObj);
-		} else {
-			recipe = crafter.getRecipe( recipeIndex );
-		}
-
-		ItemStack[] gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
-		boolean[] missingIngredients = crafter.getHandler().getMissingIngredientsArray( recipe );
-
-		try {
-			CustomPacket cPacket = new CustomPacket((byte) 0x09);
-			for( int i = 0; i < 9; i++ )
-				cPacket.add( gridContents[i] );
-			for( int i = 0; i < 9; i++ )
-				cPacket.add( missingIngredients[i] );
-
-			PacketDispatcher.sendPacketToPlayer(cPacket.toPacket(), (Player) player);
-		} catch (IOException e) {
-			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x09", true);
-		}
 	}
 
 

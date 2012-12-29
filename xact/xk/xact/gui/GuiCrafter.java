@@ -1,7 +1,6 @@
 package xk.xact.gui;
 
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -11,9 +10,6 @@ import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.CustomPacket;
-
-import java.io.IOException;
 
 public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
@@ -28,6 +24,7 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 	public void onInit() {
 		crafter.updateRecipes();
 		crafter.updateStates();
+		updateGhostContents( -1 );
 	}
 
 	@Override
@@ -138,17 +135,26 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 	private void updateGhostContents( int newIndex ) {
 		this.hoveredRecipe = newIndex == -1 ? -1 : newIndex % 4;
-		gridContents = new ItemStack[9];
-		missingIngredients = new boolean[9];
-
-		// request the update from the server.
-		try {
-			CustomPacket cPacket = new CustomPacket((byte) 0x08).add( (byte) hoveredRecipe );
-			this.mc.getSendQueue().addToSendQueue( cPacket.toPacket() );
-		} catch (IOException e) {
-			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x08", true);
-		}
+		doGhostUpdateLocally();
 	}
+
+	private void doGhostUpdateLocally() {
+		ContainerCrafter container = (ContainerCrafter) this.inventorySlots;
+		TileCrafter crafter = container.crafter;
+
+		CraftRecipe recipe;
+		if( hoveredRecipe == -1 ) {
+			recipe = RecipeUtils.getRecipe(crafter.craftGrid.getContents(), crafter.worldObj);
+		} else if( hoveredRecipe < crafter.getRecipeCount() ) {
+			recipe = crafter.getRecipe( hoveredRecipe );
+		} else {
+			throw new IllegalStateException("XACT-GuiCrafter: invalid hoveredRecipe index");
+		}
+
+		gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
+		missingIngredients = crafter.getHandler().getMissingIngredientsArray( recipe );
+	}
+
 
 	// InteractiveCraftingGui
 	@Override

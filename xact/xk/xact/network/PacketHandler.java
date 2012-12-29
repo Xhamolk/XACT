@@ -28,8 +28,6 @@ public class PacketHandler implements IPacketHandler {
 		// 0x02: craft pad
 		// 0x03: GuiPad sending an ItemStack
 		// 0x07: ContainerPad notifying the GuiPad that the contents have changed (client side)
-		// 0x08: GuiCrafter requesting "ghost items" update.
-		// 0x09: ContainerCrafter responding "ghost items" update.
 
 		byte action = -1;
 		if( packet.channel.equals("xact_channel") ) {
@@ -91,42 +89,6 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
-				// GuiCrafter requesting "ghost items" update (server side)
-				if( action == 0x08 ) {
-					EntityPlayer player = (EntityPlayer) packetSender;
-					Object openContainer = player.openContainer;
-					if( openContainer instanceof ContainerCrafter ) {
-						ContainerCrafter container = (ContainerCrafter) openContainer;
-
-						byte recipeIndex = packetData.readByte();
-						container.respondGhostUpdate( recipeIndex );
-					}
-					return;
-				}
-
-				// ContainerCrafter responding "ghost items" update (client side)
-				if( action == 0x09 ) {
-					GuiScreen screen = ClientProxy.getCurrentScreen();
-
-					if( screen instanceof GuiCrafter ) {
-						GuiCrafter gui = (GuiCrafter) screen;
-
-						// read the stacks
-						ItemStack[] contents = new ItemStack[9];
-						for( int i = 0; i < 9; i++ ) {
-							contents[i] = getItemStack( packetData );
-						}
-						// read the booleans
-						boolean[] missing = new boolean[9];
-						for( int i = 0; i < 9; i++ ) {
-							missing[i] = packetData.readBoolean();
-						}
-
-						// set them to the GUI.
-						gui.missingIngredients = missing;
-						gui.gridContents = contents;
-					}
-				}
 
 			} catch (IOException e) {
 				FMLCommonHandler.instance().raiseException(e, "XACT Packet Handler: "+action, true);
