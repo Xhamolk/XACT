@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
+import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
@@ -14,7 +15,7 @@ import xk.xact.util.CustomPacket;
 
 import java.io.IOException;
 
-public class GuiCrafter extends GuiMachine {
+public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 	private TileCrafter crafter;
 
@@ -147,6 +148,12 @@ public class GuiCrafter extends GuiMachine {
 		} catch (IOException e) {
 			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x08", true);
 		}
+	}
+
+	// InteractiveCraftingGui
+	@Override
+	public void sendGridIngredients(ItemStack[] ingredients) {
+		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients );
 	}
 
 }
