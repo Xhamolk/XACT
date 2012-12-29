@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import xk.xact.XActMod;
+import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.gui.*;
 
 import java.io.ByteArrayInputStream;
@@ -26,7 +27,7 @@ public class PacketHandler implements IPacketHandler {
 
 		// 0x01: chip (removed)
 		// 0x02: craft pad
-		// 0x03: GuiPad sending an ItemStack
+		// 0x03: Importing recipe from NEI: Gui sending an ItemStack to Container.
 		// 0x07: ContainerPad notifying the GuiPad that the contents have changed (client side)
 
 		byte action = -1;
@@ -44,22 +45,22 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
-				// GuiPad sending an ItemStack
+				// Gui sending an ItemStack to Container.
 				if( action == 0x03 ) {
 					int slotID = packetData.readByte();
-					ContainerPad padContainer = (ContainerPad) ((EntityPlayer)packetSender).openContainer;
+					InteractiveCraftingContainer container = (InteractiveCraftingContainer) ((EntityPlayer)packetSender).openContainer;
 
 					// clear the grid before placing the stacks.
 					if( slotID == -1 ) {
 						for( int i = 1; i <= 9; i++ ) {
-							padContainer.setStack(i, null);
+							container.setStack(i, null);
 						}
 						return;
 					}
 
 					// place a recipe on the slot.
 					ItemStack stack = getItemStack(packetData);
-					padContainer.setStack(slotID, stack);
+					container.setStack(slotID, stack);
 				}
 
 				// GuiPlan requesting a recipe (server side)
