@@ -8,10 +8,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.CustomPacket;
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ import java.io.IOException;
 /**
  * The container used for the Crafter's GUI.
  */
-public class ContainerCrafter extends ContainerMachine {
+public class ContainerCrafter extends ContainerMachine implements InteractiveCraftingContainer {
 
 	private TileCrafter crafter;
 	
@@ -68,13 +70,14 @@ public class ContainerCrafter extends ContainerMachine {
 					public void onSlotChanged() {
 						// update the output slot.
 						outputSlot.onSlotChanged();
+						super.onSlotChanged();
 					}
 				});
 			}
 		}
 
 		// grid's output (80,78)
-		addSlotToContainer(outputSlot = new SlotVanillaCraft(player, crafter.craftGrid, 80, 78));
+		addSlotToContainer(outputSlot = new SlotCraft(crafter, crafter.results, player, 4, 80, 78));
 
 
 		// resources (8,107) 3x9 (18x18)
@@ -115,17 +118,6 @@ public class ContainerCrafter extends ContainerMachine {
 			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
 
 			if( mergeCraftedStack(stackInSlot, 8+10, 8+10+27) ) {
-				slot.onPickupFromSlot(player, copy);
-				slot.onSlotChanged();
-				return copy;
-			}
-			return null;
-		}
-
-		if( slot instanceof SlotVanillaCraft ) {
-			ItemStack copy = stackInSlot.copy();
-
-			if ( mergeCraftedStack(stackInSlot, 8+10, 8+10+27) ) {
 				slot.onPickupFromSlot(player, copy);
 				slot.onSlotChanged();
 				return copy;
@@ -197,6 +189,38 @@ public class ContainerCrafter extends ContainerMachine {
 				playerStack = inventoryPlayer.getItemStack(),
 				retValue = null;
 
+		// Special handling for the grid slots
+		if( 8 <= slotID && slotID < 17 ) {
+
+			if( flag == 0 ) { // regular clicking.
+				if( buttomPressed == 0 || playerStack == null ){
+					slot.putStack(null);
+				} else if( buttomPressed == 1 ){
+					ItemStack copy = playerStack.copy();
+					copy.stackSize = 1;
+					slot.putStack( copy );
+				}
+				return null;
+			}
+
+			if( flag == 1 ) {
+				slot.putStack( null );
+				return null; // clear on shift-clicking.
+			}
+
+			if( flag == 2 ) { // interact with the hot-bar
+				ItemStack invStack = player.inventory.getStackInSlot(buttomPressed);
+				if( invStack != null ) {
+					ItemStack copy = invStack.copy();
+					copy.stackSize = 1;
+
+					slot.putStack(copy);
+					return invStack;
+				}
+			}
+			return null;
+		}
+
 		// Default behaviour
 		if( flag == 0 && (buttomPressed == 0 || buttomPressed == 1) ) {
 
@@ -253,7 +277,8 @@ public class ContainerCrafter extends ContainerMachine {
 					}
 
 				} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
-					stackInSlot = ((SlotCraft)slot).getCraftedStack();
+					if( craftingSlot )
+						stackInSlot = ((SlotCraft)slot).getCraftedStack();
 					int amount = stackInSlot.stackSize;
 
 					if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {
@@ -411,7 +436,7 @@ public class ContainerCrafter extends ContainerMachine {
 
 	protected void retrySlotClick(int slotID, int mouseClick, boolean flag, EntityPlayer player) {
 		Slot slot = (Slot)this.inventorySlots.get(slotID);
-		if( slot instanceof SlotCraft || slot instanceof SlotVanillaCraft ) {
+		if( slot instanceof SlotCraft ) {
 			if( mouseClick == 1 )
 				return;
 		}
@@ -425,7 +450,12 @@ public class ContainerCrafter extends ContainerMachine {
 	}
 
 	public void respondGhostUpdate(byte recipeIndex) {
-		CraftRecipe recipe = crafter.getRecipe( recipeIndex );
+		CraftRecipe recipe;
+		if( recipeIndex == -1 ) {
+			recipe = RecipeUtils.getRecipe(crafter.craftGrid.getContents(), crafter.worldObj);
+		} else {
+			recipe = crafter.getRecipe( recipeIndex );
+		}
 
 		ItemStack[] gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
 		boolean[] missingIngredients = crafter.getHandler().getMissingIngredientsArray( recipe );
@@ -440,6 +470,18 @@ public class ContainerCrafter extends ContainerMachine {
 			PacketDispatcher.sendPacketToPlayer(cPacket.toPacket(), (Player) player);
 		} catch (IOException e) {
 			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x09", true);
+		}
+	}
+
+
+	// InteractiveCraftingContainer
+	@Override
+	public void setStack(int slotID, ItemStack stack) {
+		slotID += 7; // match the grid's slots.
+		Slot slot = (Slot) this.inventorySlots.get(slotID);
+
+		if( slot != null ) {
+			slot.putStack(stack);
 		}
 	}
 

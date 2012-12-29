@@ -57,21 +57,26 @@ public class GuiCrafter extends GuiMachine {
 	protected void drawSlotInventory(Slot slot) {
 		// grid's contents.
 		if( 8 <= slot.slotNumber && slot.slotNumber < 18-1 ) {
+			int index = slot.slotNumber - 8;
+
+			// only paint the grid's real contents if there is no recipe being hovered.
+			if( hoveredRecipe == -1 ) {
+				super.drawSlotInventory( slot );
+			}
 			// If a recipe is being hovered, paint those ingredients instead.
-			if( hoveredRecipe != -1 ) {
-				int index = slot.slotNumber - 8;
+			else {
 				ItemStack itemToPaint = gridContents[index];
 
 				// Paint the "ghost item"
 				GuiUtils.paintItem( itemToPaint, slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
+			}
 
-				// Paint the item's overlay.
-				int color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
-				color |= TRANSPARENCY;
-				GuiUtils.paintOverlay( slot.xDisplayPosition, slot.yDisplayPosition, 16, color );
+			// Paint the item's overlay.
+			int color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
+			color |= TRANSPARENCY;
+			GuiUtils.paintOverlay( slot.xDisplayPosition, slot.yDisplayPosition, 16, color );
 
-				return;
-			} // only paint the grid's real contents if there is no recipe being hovered.
+			return;
 		}
 
 		if( slot.getHasStack() ) {
@@ -131,20 +136,16 @@ public class GuiCrafter extends GuiMachine {
 	private static final int TRANSPARENCY = 128 << 24; // 50%
 
 	private void updateGhostContents( int newIndex ) {
-		if( newIndex == -1 ) {
-			this.hoveredRecipe = -1;
-		} else {
-			this.hoveredRecipe = newIndex % 4;
-			gridContents = new ItemStack[9];
-			missingIngredients = new boolean[9];
+		this.hoveredRecipe = newIndex == -1 ? -1 : newIndex % 4;
+		gridContents = new ItemStack[9];
+		missingIngredients = new boolean[9];
 
-			// request the update from the server.
-			try {
-				CustomPacket cPacket = new CustomPacket((byte) 0x08).add( (byte) hoveredRecipe );
-				this.mc.getSendQueue().addToSendQueue( cPacket.toPacket() );
-			} catch (IOException e) {
-				FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x08", true);
-			}
+		// request the update from the server.
+		try {
+			CustomPacket cPacket = new CustomPacket((byte) 0x08).add( (byte) hoveredRecipe );
+			this.mc.getSendQueue().addToSendQueue( cPacket.toPacket() );
+		} catch (IOException e) {
+			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x08", true);
 		}
 	}
 

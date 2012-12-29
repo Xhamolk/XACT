@@ -321,7 +321,8 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 					}
 
 				} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
-					stackInSlot = ((SlotCraft)slot).getCraftedStack();
+					if( craftingSlot )
+						stackInSlot = ((SlotCraft)slot).getCraftedStack();
 					int amount = stackInSlot.stackSize;
 
 					if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {

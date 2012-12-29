@@ -54,10 +54,10 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 
 	public TileCrafter() {
-		this.results = new Inventory(4, "Results") {
+		this.results = new Inventory(getRecipeCount(), "Results") {
 			@Override
 			public ItemStack getStackInSlot(int slot) {
-				if( 0 <= slot && slot < 4 )
+				if( 0 <= slot && slot < getRecipeCount() )
 					return getRecipeResult(slot);
 				return null;
 			}
@@ -69,7 +69,12 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				TileCrafter.this.updateStates();
 			}
 		};
-		this.craftGrid = new Inventory(10, "CraftingGrid");
+		this.craftGrid = new Inventory(9, "CraftingGrid") {
+			@Override
+			public void onInventoryChanged() {
+				TileCrafter.this.updateRecipes();
+			}
+		};
 		this.resources = new Inventory(3*9, "Resources") {
 			@Override
 			public void onInventoryChanged() {
@@ -104,9 +109,9 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///////////////
 	///// Current State (requires updates)
 
-	private boolean[] redState = new boolean[4];
+	private boolean[] redState = new boolean[getRecipeCount()];
 
-	private CraftRecipe[] recipes = new CraftRecipe[4];
+	private CraftRecipe[] recipes = new CraftRecipe[getRecipeCount()];
 
 
 	// whether if the recipe's state must be red.
@@ -122,22 +127,26 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	// updates the stored recipe results.
 	public void updateRecipes() {
-		for(int i=0; i<4; i++) {
-			ItemStack stack = this.circuits.getStackInSlot(i);
-			if( stack == null )
-				recipes[i] = null;
-			else
-				recipes[i] = RecipeUtils.getRecipe( stack, this.worldObj );
+		for( int i = 0; i < getRecipeCount(); i++ ) {
+			if( i == 4 ) {
+				recipes[i] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
+			} else {
+				ItemStack stack = this.circuits.getStackInSlot(i);
+				if( stack == null )
+					recipes[i] = null;
+				else
+					recipes[i] = RecipeUtils.getRecipe( stack, this.worldObj );
+			}
 		}
 
-		for(int i=0; i<4; i++) {
+		for(int i=0; i<getRecipeCount(); i++) {
 			ItemStack stack = recipes[i] == null ? null : recipes[i].getResult();
 			results.setInventorySlotContents(i, stack);
 		}
 	}
 
 	public void updateStates() {
-		for(int i=0;i<4; i++) {
+		for(int i=0;i<getRecipeCount(); i++) {
 			// if there are not enough ingredients, color is red.
 			redState[i] = (recipes[i] != null) && !getHandler().canCraft(this.getRecipe(i), null);
 		}
@@ -159,17 +168,22 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	@Override
 	public int getRecipeCount() {
-		return 4;
+		return 5;
 	}
 
 	@Override
 	public CraftRecipe getRecipe(int index) {
-		if( index < 0 || index > 4 )
+		if( index < 0 || index > getRecipeCount() )
 			return null;
+
 		if( recipes[index] == null ) {
-			ItemStack stack = this.circuits.getStackInSlot(index);
-			if( stack != null )
-				recipes[index] = RecipeUtils.getRecipe( stack, this.worldObj );
+			if( index == 4 ) {
+				recipes[index] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
+			} else {
+				ItemStack stack = this.circuits.getStackInSlot(index);
+				if( stack != null )
+					recipes[index] = RecipeUtils.getRecipe( stack, this.worldObj );
+			}
 		}
 		return recipes[index];
 	}
