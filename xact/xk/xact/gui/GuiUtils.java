@@ -1,15 +1,21 @@
 package xk.xact.gui;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import xk.xact.util.CustomPacket;
+
+import java.io.IOException;
 
 public class GuiUtils {
 
@@ -99,6 +105,25 @@ public class GuiUtils {
 
 	public static boolean isShiftKeyPressed() {
 		return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+	}
+
+
+	public static void sendItemsToServer(NetClientHandler sendQueue, ItemStack[] items) {
+		if( sendQueue == null )
+			return;
+
+		for( int index = 0; index<items.length; index++ ) {
+
+			ItemStack stack = items[index];
+			byte slotID = (byte) (index +1);
+
+			try {
+				Packet250CustomPayload packet = new CustomPacket((byte)0x03).add(slotID, stack).toPacket();
+				sendQueue.addToSendQueue(packet);
+			}catch(IOException ioe) {
+				FMLCommonHandler.instance().raiseException(ioe, "XACT-ICG: custom packet", true);
+			}
+		}
 	}
 
 }
