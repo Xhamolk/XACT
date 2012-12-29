@@ -66,6 +66,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
+				TileCrafter.this.updateStates();
 			}
 		};
 		this.craftGrid = new Inventory(9, "CraftingGrid") {
