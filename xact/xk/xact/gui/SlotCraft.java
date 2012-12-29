@@ -62,8 +62,6 @@ public class SlotCraft extends Slot {
 		if( recipe != null ) {
 			if( handler.canCraft(recipe, player) )
 				return true;
-			if( player.worldObj.isRemote )
-				player.sendChatToPlayer("Can't craft "+recipe+". Missing: "+handler.getMissingIngredientsString(recipe));
 		}
 		return false;
 	}
