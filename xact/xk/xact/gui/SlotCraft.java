@@ -29,19 +29,9 @@ public class SlotCraft extends Slot {
 		this.handler = device.getHandler();
 	}
 
-
 	@Override
 	public boolean isItemValid(ItemStack itemStack) {
 		return false;
-	}
-
-	@Override
-	public ItemStack getStack() { // this is only the one to show.
-		try {
-			return getRecipe().getResult();
-		}catch(Exception e) {
-			return null;
-		}
 	}
 
 	public ItemStack getCraftedStack() {
@@ -93,10 +83,15 @@ public class SlotCraft extends Slot {
 		GameRegistry.onItemCrafted(player, craftedItem, craftMatrix);
 
 		handler.consumeIngredients(craftMatrix, player);
-
-		// putStack(itemStack);
 	}
 
+	@Override
+	public void onSlotChanged() {
+		CraftRecipe recipe = getRecipe();
+		ItemStack item = recipe == null ? null : recipe.getResult();
+		this.inventory.setInventorySlotContents(getSlotIndex(), item);
+		super.onSlotChanged();
+	}
 
 	private CraftRecipe getRecipe() {
 		try{
