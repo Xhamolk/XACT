@@ -1,15 +1,11 @@
 package xk.xact.gui;
 
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.CraftPad;
@@ -17,14 +13,12 @@ import xk.xact.core.ItemChip;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.CustomPacket;
-
-import java.io.IOException;
 
 public class ContainerPad extends Container implements InteractiveCraftingContainer {
 
-	private CraftPad craftPad;
-	private EntityPlayer player;
+	CraftPad craftPad;
+	EntityPlayer player;
+	public boolean contentsChanged = false;
 
 	public ContainerPad(CraftPad pad, EntityPlayer player){
 		this.craftPad = pad;
@@ -84,23 +78,13 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		// main player inv
 		for (int i=0; i<3; i++) {
 			for (int e=0; e<9; e++) {
-				this.addSlotToContainer(new Slot(player.inventory, (i+1)*9 +e, e*18 +8, i*18 +98) {
-					@Override
-					public void onSlotChanged() {
-						ContainerPad.this.notifyOfChange();
-					}
-				});
+				this.addSlotToContainer(new Slot(player.inventory, (i+1)*9 +e, e*18 +8, i*18 +98));
 			}
 		}
 
 		// hot-bar
 		for (int i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(player.inventory, i, 	i*18 +8,  156) {
-				@Override
-				public void onSlotChanged() {
-					ContainerPad.this.notifyOfChange();
-				}
-			});
+			this.addSlotToContainer(new Slot(player.inventory, i, i*18 +8,  156));
 		}
 	}
 
@@ -178,14 +162,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 	}
 
 	private void notifyOfChange() {
-		// send packet to set GuiPad.updateScheduled = true.
-		try {
-			Packet250CustomPayload packet = new CustomPacket((byte)0x07).toPacket();
-			PacketDispatcher.sendPacketToPlayer(packet, (Player) player);
-		} catch (IOException e) {
-			FMLCommonHandler.instance().raiseException(e, "XACT: Custom Packet, 0x07", true);
-		}
-
+		this.contentsChanged = true;
 	}
 
 	@Override

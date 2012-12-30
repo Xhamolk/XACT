@@ -15,12 +15,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import xk.xact.core.*;
 import xk.xact.gui.XactTab;
 import xk.xact.network.CommonProxy;
-import xk.xact.network.EventHandler;
 import xk.xact.network.PacketHandler;
 
 import java.util.ArrayList;
@@ -114,9 +112,6 @@ public class XActMod {
 
 		// Register GUIs
 		NetworkRegistry.instance().registerGuiHandler(XActMod.instance, proxy);
-
-		// Register Event Handler
-		MinecraftForge.EVENT_BUS.register(new EventHandler());
 
 		// Add the recipes
 		addRecipes();

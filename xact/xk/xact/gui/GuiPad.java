@@ -18,8 +18,6 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 	private CraftPad craftPad;
 
-	public boolean updateScheduled = true;
-
 	private boolean[] missingIngredients = new boolean[9];
 
 
@@ -122,9 +120,12 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 	@Override
 	public void updateScreen() {
 		super.updateScreen();
-		if( updateScheduled ) {
-			missingIngredients = craftPad.getMissingIngredients();
-			updateScheduled = false;
+		ContainerPad pad = (ContainerPad) this.mc.thePlayer.openContainer;
+		if( pad.player.inventory.inventoryChanged || pad.contentsChanged ) {
+			this.missingIngredients = pad.craftPad.getMissingIngredients();
+
+			pad.player.inventory.inventoryChanged = false;
+			pad.contentsChanged = false;
 		}
 	}
 
