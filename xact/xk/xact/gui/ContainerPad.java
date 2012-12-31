@@ -23,6 +23,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	public boolean contentsChanged = false;
 
 	public ContainerPad(CraftPad pad, EntityPlayer player){
+		super( player );
 		this.craftPad = pad;
 		this.player = player;
 		buildContainer();
@@ -185,7 +186,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	}
 
 	@Override
-	public ItemStack slotClick(int slotID, int buttomPressed, int flag, EntityPlayer player) {
+	public ItemStack handleSlotClick(int slotID, int buttomPressed, int flag, EntityPlayer player) {
 		InventoryPlayer inventoryPlayer = player.inventory;
 
 		// clicking out of the GUI. drop stuff.

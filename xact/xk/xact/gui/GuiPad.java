@@ -7,7 +7,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.opengl.GL11;
-import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.CraftPad;
 import xk.xact.recipes.CraftManager;
@@ -98,19 +97,6 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 	// button position: 97, 63. size: 14x14
 		// button texture: (14*i +0,  176)
-
-
-	@Override
-	public void handleMouseClick(Slot slot, int par2, int par3, int flag) {
-		if( slot != null && slot.getHasStack() ){
-			ItemStack stackInSlot = slot.getStack();
-			if( stackInSlot.itemID == XActMod.itemCraftPad.shiftedIndex && stackInSlot.getItemDamage() == 1 ){
-				this.mc.thePlayer.sendChatToPlayer("Can't move the Craft Pad while it's in use.");
-				return;
-			}
-		}
-		super.handleMouseClick(slot, par2, par3, flag);
-	}
 
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {

@@ -6,7 +6,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import xk.xact.XActMod;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
@@ -114,17 +113,5 @@ public class GuiCase extends GuiContainer {
 			}
 		}
 	}
-
-    @Override
-    public void handleMouseClick(Slot slot, int par2, int par3, int par4) {
-        if( slot != null && slot.getHasStack() ){
-            ItemStack stackInSlot = slot.getStack();
-            if( stackInSlot.itemID == XActMod.itemChipCase.shiftedIndex && stackInSlot.getItemDamage() == 1 ) {
-				this.mc.thePlayer.sendChatToPlayer("Can't move the Chip Case while it's in use.");
-                return;
-			}
-        }
-        super.handleMouseClick(slot, par2, par3, par4);
-    }
 
 }

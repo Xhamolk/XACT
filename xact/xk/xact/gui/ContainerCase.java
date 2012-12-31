@@ -14,6 +14,7 @@ public class ContainerCase extends ContainerItem {
 	public ChipCase chipCase;
 
 	public ContainerCase(ChipCase chipCase, EntityPlayer player) {
+		super( player );
 		this.chipCase = chipCase;
 		buildContainer(chipCase.getInternalInventory(), player.inventory);
 
