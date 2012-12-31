@@ -49,9 +49,10 @@ public class Inventory implements IInventory {
 	 * Sets the new contents on the inventory, replacing the previous ones.
 	 * @param contents the array containing all the contents.
 	 */
-	public void setContents(ItemStack[] contents) {
+	public void setContents(ItemStack... contents) {
 		this.size = contents.length;
 		this.internalInv = contents;
+		this.onInventoryChanged();
 	}
 
 	public ItemStack[] getContents() {
