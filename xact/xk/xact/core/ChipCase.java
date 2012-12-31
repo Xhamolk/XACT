@@ -12,37 +12,28 @@ public class ChipCase {
 
 	private Inventory internalInventory;
 
-	public boolean isInUse = false;
-
 	public boolean inventoryChanged = false;
 
 	public ChipCase(ItemStack itemStack) {
-		if( !itemStack.hasTagCompound() )
-			itemStack.stackTagCompound = new NBTTagCompound();
 		this.internalInventory = new Inventory(30, "libraryStorage") {
 			@Override
 			public void onInventoryChanged() {
 				super.onInventoryChanged();
-				if( isInUse ) {
-					inventoryChanged = true;
-				}
+				inventoryChanged = true;
 			}
 		};
-		internalInventory.readFromNBT(itemStack.getTagCompound());
+
+		// Load contents from NBT
+		if( !itemStack.hasTagCompound() )
+			itemStack.stackTagCompound = new NBTTagCompound();
+		readFromNBT( itemStack.getTagCompound() );
 	}
 
 	public IInventory getInternalInventory(){
 		return internalInventory;
 	}
 
-	public void saveContentsTo(ItemStack itemStack) {
-		if( !itemStack.hasTagCompound() )
-			itemStack.setTagCompound(new NBTTagCompound());
-		itemStack.getTagCompound().setInteger("chipCount", getChipsCount());
-		internalInventory.writeToNBT(itemStack.stackTagCompound);
-	}
-
-	private int getChipsCount(){
+	private int getChipsCount() {
 		int count = 0;
 		for(InvSlot current : InventoryUtils.inventoryIterator(internalInventory) ){
 			if( current != null && !current.isEmpty() ){
@@ -50,6 +41,24 @@ public class ChipCase {
 			}
 		}
 		return count;
+	}
+
+	////////////
+	/// NBT
+
+	public void readFromNBT(NBTTagCompound compound) {
+		if( compound == null )
+			return;
+
+		internalInventory.readFromNBT( compound );
+	}
+
+	public void writeToNBT(NBTTagCompound compound) {
+		if( compound == null )
+			return;
+
+		internalInventory.writeToNBT( compound );
+		compound.setInteger("chipCount", getChipsCount());
 	}
 
 }

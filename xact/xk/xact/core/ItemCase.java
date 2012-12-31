@@ -1,9 +1,8 @@
 package xk.xact.core;
 
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
@@ -12,7 +11,7 @@ import xk.xact.gui.ContainerCase;
 import java.util.List;
 
 
-public class ItemCase extends Item {
+public class ItemCase extends ItemContainer {
 
 	public ItemCase(int itemID) {
 		super(itemID);
@@ -20,6 +19,11 @@ public class ItemCase extends Item {
 		this.setMaxStackSize(1);
 		this.setTextureFile(XActMod.TEXTURE_ITEMS);
 		this.setCreativeTab(XActMod.xactTab);
+	}
+
+	@Override
+	public boolean containerMatchesItem(Container openContainer) {
+		return openContainer instanceof ContainerCase;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -46,22 +50,5 @@ public class ItemCase extends Item {
     public int getIconFromDamage(int itemDamage) {
         return 16;
     }
-
-	@Override
-	public void onUpdate(ItemStack itemChipCase, World world, Entity entity, int index, boolean isCurrentItem) {
-		if( world.isRemote || !isCurrentItem )
-			return;
-		if( ((EntityPlayer)entity).openContainer == null )
-			return;
-
-		if( ((EntityPlayer)entity).openContainer instanceof ContainerCase ) {
-			ChipCase chipCase = ((ContainerCase) ((EntityPlayer)entity).openContainer).chipCase;
-
-			if( chipCase.inventoryChanged ) {
-				chipCase.saveContentsTo( itemChipCase );
-				chipCase.inventoryChanged = false;
-			}
-		}
-	}
 
 }

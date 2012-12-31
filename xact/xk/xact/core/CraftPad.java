@@ -40,8 +40,6 @@ public class CraftPad implements ICraftingDevice {
 	public static final int MODE_ERASE = 2;
 
 
-	public boolean isInUse = false;
-
 	public boolean inventoryChanged = false;
 
 
@@ -134,12 +132,6 @@ public class CraftPad implements ICraftingDevice {
 
 	////////////
 	/// NBT
-
-	public void saveContentsTo(ItemStack itemStack) {
-		if( !itemStack.hasTagCompound() )
-			itemStack.setTagCompound(new NBTTagCompound());
-		writeToNBT(itemStack.stackTagCompound);
-	}
 
 	public void readFromNBT(NBTTagCompound compound) {
 		NBTTagCompound tagCraftPad = (NBTTagCompound)compound.getTag("craftPad");

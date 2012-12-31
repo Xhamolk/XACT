@@ -2,14 +2,14 @@ package xk.xact.gui;
 
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import xk.xact.core.ChipCase;
 import xk.xact.core.ItemChip;
 
-public class ContainerCase extends Container {
+public class ContainerCase extends ContainerItem {
 
 	public ChipCase chipCase;
 
@@ -18,7 +18,7 @@ public class ContainerCase extends Container {
 		buildContainer(chipCase.getInternalInventory(), player.inventory);
 
 		// mark the Chip Case "in use" so it will start tracking changes to it's inventory.
-		chipCase.isInUse = true;
+		super.isInUse = true;
 	}
 
 	@Override
@@ -61,8 +61,6 @@ public class ContainerCase extends Container {
 	@Override
 	public void onCraftGuiClosed(EntityPlayer player){
 		super.onCraftGuiClosed(player);
-		chipCase.isInUse = false;
-		chipCase.inventoryChanged = true; // is there a need for this?
 
 		// Reset the metadata value
 		ItemStack itemStack = player.inventory.getCurrentItem();
@@ -97,4 +95,24 @@ public class ContainerCase extends Container {
 		return stack;
 	}
 
+	///////////////
+	///// ContainerItem
+
+	@Override
+	public boolean hasInventoryChanged() {
+		return chipCase.inventoryChanged;
+	}
+
+	@Override
+	public void saveContentsToNBT(ItemStack itemStack) {
+		if( !itemStack.hasTagCompound() )
+			itemStack.setTagCompound(new NBTTagCompound());
+
+		chipCase.writeToNBT( itemStack.getTagCompound() );
+	}
+
+	@Override
+	public void onContentsStored(ItemStack itemStack) {
+		chipCase.inventoryChanged = false;
+	}
 }

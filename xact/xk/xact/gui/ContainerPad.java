@@ -3,9 +3,9 @@ package xk.xact.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.CraftPad;
@@ -14,7 +14,7 @@ import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
-public class ContainerPad extends Container implements InteractiveCraftingContainer {
+public class ContainerPad extends ContainerItem implements InteractiveCraftingContainer {
 
 	public CraftPad craftPad;
 
@@ -26,7 +26,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		this.craftPad = pad;
 		this.player = player;
 		buildContainer();
-		craftPad.isInUse = true;
+		super.isInUse = true;
 	}
 
 	private void buildContainer() {
@@ -544,5 +544,25 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 				&& ItemStack.areItemStackTagsEqual(stack1, stack2);
 	}
 
+
+	///////////////
+	///// ContainerItem
+
+	@Override
+	public boolean hasInventoryChanged() {
+		return craftPad.inventoryChanged;
+	}
+
+	@Override
+	public void saveContentsToNBT(ItemStack itemStack) {
+		if( !itemStack.hasTagCompound() )
+			itemStack.setTagCompound(new NBTTagCompound());
+		craftPad.writeToNBT(itemStack.stackTagCompound);
+	}
+
+	@Override
+	public void onContentsStored(ItemStack itemStack) {
+		craftPad.inventoryChanged = false;
+	}
 
 }
