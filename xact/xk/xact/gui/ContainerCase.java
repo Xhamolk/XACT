@@ -11,12 +11,14 @@ import xk.xact.core.ItemChip;
 
 public class ContainerCase extends Container {
 
-	private ChipCase chipCase;
+	public ChipCase chipCase;
 
 	public ContainerCase(ChipCase chipCase, EntityPlayer player) {
 		this.chipCase = chipCase;
-
 		buildContainer(chipCase.getInternalInventory(), player.inventory);
+
+		// mark the Chip Case "in use" so it will start tracking changes to it's inventory.
+		chipCase.isInUse = true;
 	}
 
 	@Override
@@ -59,11 +61,13 @@ public class ContainerCase extends Container {
 	@Override
 	public void onCraftGuiClosed(EntityPlayer player){
 		super.onCraftGuiClosed(player);
-        ItemStack current = player.inventory.getCurrentItem();
-        if( current != null ) { // this should always be the case.
-            chipCase.saveContentsTo(current);
-            current.setItemDamage(0);
-        }
+		chipCase.isInUse = false;
+		chipCase.inventoryChanged = true; // is there a need for this?
+
+		// Reset the metadata value
+		ItemStack itemStack = player.inventory.getCurrentItem();
+		if( itemStack != null )
+			itemStack.setItemDamage(0);
 	}
 
 	@Override

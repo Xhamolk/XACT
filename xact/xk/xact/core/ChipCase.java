@@ -12,10 +12,22 @@ public class ChipCase {
 
 	private Inventory internalInventory;
 
+	public boolean isInUse = false;
+
+	public boolean inventoryChanged = false;
+
 	public ChipCase(ItemStack itemStack) {
 		if( !itemStack.hasTagCompound() )
 			itemStack.stackTagCompound = new NBTTagCompound();
-		this.internalInventory = new Inventory(30, "libraryStorage");
+		this.internalInventory = new Inventory(30, "libraryStorage") {
+			@Override
+			public void onInventoryChanged() {
+				super.onInventoryChanged();
+				if( isInUse ) {
+					inventoryChanged = true;
+				}
+			}
+		};
 		internalInventory.readFromNBT(itemStack.getTagCompound());
 	}
 

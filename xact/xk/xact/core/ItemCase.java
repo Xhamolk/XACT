@@ -1,11 +1,13 @@
 package xk.xact.core;
 
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.gui.ContainerCase;
 
 import java.util.List;
 
@@ -44,5 +46,22 @@ public class ItemCase extends Item {
     public int getIconFromDamage(int itemDamage) {
         return 16;
     }
+
+	@Override
+	public void onUpdate(ItemStack itemChipCase, World world, Entity entity, int index, boolean isCurrentItem) {
+		if( world.isRemote || !isCurrentItem )
+			return;
+		if( ((EntityPlayer)entity).openContainer == null )
+			return;
+
+		if( ((EntityPlayer)entity).openContainer instanceof ContainerCase ) {
+			ChipCase chipCase = ((ContainerCase) ((EntityPlayer)entity).openContainer).chipCase;
+
+			if( chipCase.inventoryChanged ) {
+				chipCase.saveContentsTo( itemChipCase );
+				chipCase.inventoryChanged = false;
+			}
+		}
+	}
 
 }
