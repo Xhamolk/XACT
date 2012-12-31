@@ -1,11 +1,13 @@
 package xk.xact.core;
 
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.gui.ContainerPad;
 
 import java.util.List;
 
@@ -38,6 +40,23 @@ public class ItemPad extends Item {
 		if( itemDamage == 1 )
 			return 19;
 		return 18;
+	}
+
+	@Override
+	public void onUpdate(ItemStack itemChipCase, World world, Entity entity, int index, boolean isCurrentItem) {
+		if( world.isRemote || !isCurrentItem )
+			return;
+		if( ((EntityPlayer)entity).openContainer == null )
+			return;
+
+		if( ((EntityPlayer)entity).openContainer instanceof ContainerPad ) {
+			CraftPad craftPad = ((ContainerPad) ((EntityPlayer)entity).openContainer).craftPad;
+
+			if( craftPad.inventoryChanged ) {
+				craftPad.saveContentsTo(itemChipCase);
+				craftPad.inventoryChanged = false;
+			}
+		}
 	}
 
 }

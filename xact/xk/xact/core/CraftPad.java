@@ -39,11 +39,29 @@ public class CraftPad implements ICraftingDevice {
 	public static final int MODE_WRITE = 1;
 	public static final int MODE_ERASE = 2;
 
+
+	public boolean isInUse = false;
+
+	public boolean inventoryChanged = false;
+
+
 	public CraftPad(ItemStack stack, EntityPlayer player) {
 		this.player = player;
 		this.outputInv = new Inventory(1, "outputInv");
-		this.gridInv = new Inventory(9, "gridInv");
-		this.chipInv = new Inventory(1, "chipInv");
+		this.gridInv = new Inventory(9, "gridInv") {
+			@Override
+			public void onInventoryChanged() {
+				super.onInventoryChanged();
+				inventoryChanged = true;
+			}
+		};
+		this.chipInv = new Inventory(1, "chipInv") {
+			@Override
+			public void onInventoryChanged() {
+				super.onInventoryChanged();
+				inventoryChanged = true;
+			}
+		};
 
 		this.handler = CraftingHandler.createCraftingHandler(this);
 
@@ -116,6 +134,12 @@ public class CraftPad implements ICraftingDevice {
 
 	////////////
 	/// NBT
+
+	public void saveContentsTo(ItemStack itemStack) {
+		if( !itemStack.hasTagCompound() )
+			itemStack.setTagCompound(new NBTTagCompound());
+		writeToNBT(itemStack.stackTagCompound);
+	}
 
 	public void readFromNBT(NBTTagCompound compound) {
 		NBTTagCompound tagCraftPad = (NBTTagCompound)compound.getTag("craftPad");

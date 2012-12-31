@@ -16,14 +16,17 @@ import xk.xact.recipes.RecipeUtils;
 
 public class ContainerPad extends Container implements InteractiveCraftingContainer {
 
-	CraftPad craftPad;
+	public CraftPad craftPad;
+
 	EntityPlayer player;
+
 	public boolean contentsChanged = false;
 
 	public ContainerPad(CraftPad pad, EntityPlayer player){
 		this.craftPad = pad;
 		this.player = player;
 		buildContainer();
+		craftPad.isInUse = true;
 	}
 
 	private void buildContainer() {
@@ -64,8 +67,8 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 			@Override
 			public void onSlotChanged() {
-				super.onSlotChanged();
 				onChipChanged(this);
+				super.onSlotChanged();
 			}
 
 			@Override
@@ -100,6 +103,7 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 
 				// update the output slot
 				craftPad.outputInv.setInventorySlotContents(0, recipe.getResult());
+				craftPad.outputInv.onInventoryChanged();
 
 				// update the button
 				craftPad.buttonID = CraftPad.MODE_ERASE;
@@ -530,7 +534,6 @@ public class ContainerPad extends Container implements InteractiveCraftingContai
 		super.onCraftGuiClosed(player);
 		ItemStack current = player.inventory.getCurrentItem();
 		if( current != null ) {
-			craftPad.writeToNBT( current.getTagCompound() );
 			current.setItemDamage(0);
 		}
 	}
