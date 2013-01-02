@@ -69,10 +69,17 @@ public abstract class ContainerItem extends Container {
 	}
 
 	/**
-	 * Closes the current Container, and notifies the client to close the GuiContainer.
+	 * Called when the player tries to move/pick up the item in use.
+	 * By default, just send the "cannot move" notification to chat.
+	 *
+	 * @param player the EntityPlayer
+	 * @param itemStack the ItemStack in use.
 	 */
-	protected final void closeGUI() {
-		player.closeScreen();
+	protected void onPickupPrevented(EntityPlayer player, ItemStack itemStack) {
+		if( !(player instanceof EntityPlayerMP) ) { // send the chat message client-side.
+			String itemName = itemStack.getItem().getItemDisplayName(itemStack);
+			player.sendChatToPlayer("Cannot move <" + itemName + "> while it's in use.");
+		}
 	}
 
 	/**
@@ -100,12 +107,11 @@ public abstract class ContainerItem extends Container {
 
 		// Prevent moving the "held item", for security reasons.
 		if( slot != null && slotContainsHeldItem(slot, player) ) {
-			if( player instanceof EntityPlayerMP ) { // server-side only.
-				closeGUI();
-			}
+			onPickupPrevented(player, slot.getStack());
 			return slot.getStack();
 		}
 		if( flag == 2 && buttonPressed == player.inventory.currentItem ) {
+			onPickupPrevented(player, player.inventory.getCurrentItem());
 			return slot != null && slot.getHasStack() ? slot.getStack() : null;
 		}
 
