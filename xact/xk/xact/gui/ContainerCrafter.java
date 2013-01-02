@@ -124,6 +124,9 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 					if (!mergeItemStack(stackInSlot, 8+10+27, inventorySlots.size(), false)) // add to the player's inv.
 						return null;
 
+				// prevent retrying by returning null.
+				stack = null;
+
 			} else { // any other item goes to the player's inventory.
 				if (!mergeItemStack(stackInSlot, 8+10+27, inventorySlots.size(), false))
 					return null;
@@ -417,6 +420,92 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		return true;
 	}
 
+	@Override
+	protected boolean mergeItemStack(ItemStack itemStack, int indexMin, int indexMax, boolean reverse) {
+		boolean retValue = false;
+		int index = indexMin;
+
+		if (reverse) {
+			index = indexMax - 1;
+		}
+
+		Slot slot;
+		ItemStack stackInSlot;
+
+		if( itemStack.isStackable() ) {
+			while( itemStack.stackSize > 0 && (!reverse && index < indexMax || reverse && index >= indexMin) ) {
+				slot = (Slot)this.inventorySlots.get( index );
+				stackInSlot = slot.getStack();
+
+				int maxStackSize = Math.min(itemStack.getMaxStackSize(), slot.getSlotStackLimit());
+
+				if( stackInSlot != null && stackInSlot.itemID == itemStack.itemID
+						&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
+						&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot) ) {
+
+					int sum = stackInSlot.stackSize + itemStack.stackSize;
+
+					if( sum <= maxStackSize ) {
+						itemStack.stackSize = 0;
+						stackInSlot.stackSize = sum;
+						slot.onSlotChanged();
+						retValue = true;
+					} else if( stackInSlot.stackSize < maxStackSize ) {
+						itemStack.stackSize -= maxStackSize - stackInSlot.stackSize;
+						stackInSlot.stackSize = maxStackSize;
+						slot.onSlotChanged();
+						retValue = true;
+					}
+				}
+
+				if( reverse ) {
+					--index;
+				} else {
+					++index;
+				}
+			}
+		}
+
+		if( itemStack.stackSize > 0 ) {
+			if( reverse ) {
+				index = indexMax - 1;
+			} else {
+				index = indexMin;
+			}
+
+			while( !reverse && index < indexMax || reverse && index >= indexMin ) {
+				slot = (Slot)this.inventorySlots.get(index);
+				stackInSlot = slot.getStack();
+				int maxStackSize = Math.min(itemStack.getMaxStackSize(), slot.getSlotStackLimit());
+
+				if( stackInSlot == null ) {
+					int remaining = 0;
+					ItemStack tempStack = itemStack;
+
+					if( itemStack.stackSize > maxStackSize ) {
+						remaining = itemStack.stackSize - maxStackSize;
+						tempStack = itemStack.splitStack( maxStackSize );
+					}
+
+					slot.putStack(tempStack.copy());
+					slot.onSlotChanged();
+					itemStack.stackSize = remaining;
+					retValue = true;
+					break;
+				}
+
+				if( reverse ) {
+					--index;
+				} else {
+					++index;
+				}
+			}
+		}
+
+		return retValue;
+	}
+
+	@Override
 	protected void retrySlotClick(int slotID, int mouseClick, boolean flag, EntityPlayer player) {
 		Slot slot = (Slot)this.inventorySlots.get(slotID);
 		if( slot instanceof SlotCraft ) {
