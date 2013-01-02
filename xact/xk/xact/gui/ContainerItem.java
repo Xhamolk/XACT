@@ -7,6 +7,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
+
 /**
  * This class provides the methods required by ItemContainer.
  */
@@ -74,8 +76,9 @@ public abstract class ContainerItem extends Container {
 	 *
 	 * @param player the EntityPlayer
 	 * @param itemStack the ItemStack in use.
+	 * @param slot the Slot that contains the itemStack.
 	 */
-	protected void onPickupPrevented(EntityPlayer player, ItemStack itemStack) {
+	protected void onPickupPrevented(EntityPlayer player, ItemStack itemStack, Slot slot) {
 		if( !(player instanceof EntityPlayerMP) ) { // send the chat message client-side.
 			String itemName = itemStack.getItem().getItemDisplayName(itemStack);
 			player.sendChatToPlayer("Cannot move <" + itemName + "> while it's in use.");
@@ -107,15 +110,24 @@ public abstract class ContainerItem extends Container {
 
 		// Prevent moving the "held item", for security reasons.
 		if( slot != null && slotContainsHeldItem(slot, player) ) {
-			onPickupPrevented(player, slot.getStack());
+			onPickupPrevented(player, slot.getStack(), slot);
 			return slot.getStack();
 		}
 		if( flag == 2 && buttonPressed == player.inventory.currentItem ) {
-			onPickupPrevented(player, player.inventory.getCurrentItem());
+			onPickupPrevented(player, player.inventory.getCurrentItem(), getSlotWithHeldItem(player));
 			return slot != null && slot.getHasStack() ? slot.getStack() : null;
 		}
 
 		return handleSlotClick(slotID, buttonPressed, flag, player);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Slot getSlotWithHeldItem(EntityPlayer player) {
+		for( Slot slot : (List<Slot>) this.inventorySlots ) {
+			if( slotContainsHeldItem(slot, player) )
+				return slot;
+		}
+		return null;
 	}
 
 }
