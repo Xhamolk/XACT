@@ -82,8 +82,9 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 		if( slot.getHasStack() ) {
 			// output slots.
 			if( slot.slotNumber < 4 ) {
-				// paint slot's colored underlay.
-				GuiUtils.paintSlotOverlay(slot, 22, getColorFor( slot.getSlotIndex() ));
+				// paint slot's colored underlay if the slot is hovered.
+				if( slot.slotNumber == hoveredRecipe )
+					GuiUtils.paintSlotOverlay(slot, 22, getColorFor( slot.getSlotIndex() ));
 			}
 			// show the chip's recipe's output when holding shift.
 			else if( slot.slotNumber >= 18 && GuiUtils.isShiftKeyPressed() ) {
