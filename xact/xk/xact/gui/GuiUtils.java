@@ -112,6 +112,16 @@ public class GuiUtils {
 		if( sendQueue == null )
 			return;
 
+		if( items == null ) {
+			try {
+				Packet250CustomPayload packet = new CustomPacket((byte)0x03).add(-1, null).toPacket();
+				sendQueue.addToSendQueue(packet);
+			}catch(IOException ioe) {
+				FMLCommonHandler.instance().raiseException(ioe, "XACT-ICG: custom packet (-1)", true);
+			}
+			return;
+		}
+
 		for( int index = 0; index<items.length; index++ ) {
 
 			ItemStack stack = items[index];

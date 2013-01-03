@@ -6,6 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.CraftPad;
@@ -113,6 +114,18 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			pad.player.inventory.inventoryChanged = false;
 			pad.contentsChanged = false;
 		}
+	}
+
+	@Override
+	protected void keyTyped(char par1, int key) {
+		if( key == Keyboard.KEY_DOWN ) {
+			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null );
+			return;
+		}
+		if( key == Keyboard.KEY_DELETE ) {
+
+		}
+		super.keyTyped(par1, key);
 	}
 
 	private void paintSlotOverlays() {

@@ -9,6 +9,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.util.CustomPacket;
@@ -74,13 +75,17 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 		super.mouseClicked(x, y, mouseButton);
 	}
 
-	protected void keyTyped(char par1, int par2) {
-		if( par2 == 1 ) {
+	@Override
+	protected void keyTyped(char par1, int key) {
+		if( key == 1 ) {
 			buttonClicked(0);
 			return;
 		}
-
-		super.keyTyped(par1, par2);
+		if( key == Keyboard.KEY_DOWN ) {
+			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null );
+			return;
+		}
+		super.keyTyped(par1, key);
 	}
 
 
