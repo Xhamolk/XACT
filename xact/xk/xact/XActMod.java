@@ -17,7 +17,7 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import xk.xact.core.*;
-import xk.xact.gui.XactTab;
+import xk.xact.gui.CreativeTabXACT;
 import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
 
@@ -58,7 +58,7 @@ public class XActMod {
 	// Block
 	public static Block blockMachine;
 
-    public static XactTab xactTab;
+    public static CreativeTabXACT xactTab;
 
 	// debugging information.
 	public static boolean DEBUG_MODE = false;
@@ -81,7 +81,7 @@ public class XActMod {
 	public void initializeAll(FMLInitializationEvent ignoredEvent) {
 		proxy.registerRenderInformation();
 
-        xactTab = new XactTab();
+        xactTab = new CreativeTabXACT();
 
 		// Init Items
 		itemRecipeBlank = new ItemChip(blankChipID, false);
