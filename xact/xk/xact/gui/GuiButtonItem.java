@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
-public class ItemButton extends GuiButton {
+public class GuiButtonItem extends GuiButton {
 
 
 
@@ -15,7 +15,7 @@ public class ItemButton extends GuiButton {
 
 	private boolean isSpecial = false;
 
-	public ItemButton( int id, ItemStack item, int posX, int posY, boolean isSpecial) {
+	public GuiButtonItem(int id, ItemStack item, int posX, int posY, boolean isSpecial) {
 		super( id, posX, posY, isSpecial ? 26 : 22, isSpecial ? 26 : 22, "");
 		this.isSpecial = isSpecial;
 		this.item = item;
