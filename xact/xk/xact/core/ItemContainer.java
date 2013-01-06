@@ -3,6 +3,7 @@ package xk.xact.core;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -32,7 +33,7 @@ public abstract class ItemContainer extends Item {
 	public void onUpdate(ItemStack itemStack, World world, Entity entity, int indexInInventory, boolean isCurrentItem) {
 		if( world.isRemote || !isCurrentItem )
 			return;
-		if( ((EntityPlayer)entity).openContainer == null )
+		if( ((EntityPlayer)entity).openContainer == null || ((EntityPlayer)entity).openContainer instanceof ContainerPlayer )
 			return;
 
 		if( containerMatchesItem(((EntityPlayer)entity).openContainer) ) {
