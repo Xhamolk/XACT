@@ -107,18 +107,25 @@ public class GuiUtils {
 		return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 	}
 
+	public static void sendItemToServer(NetClientHandler sendQueue, byte slotID, ItemStack item) {
+		if( sendQueue == null )
+			return;
+
+
+		try {
+			Packet250CustomPayload packet = new CustomPacket((byte)0x03).add( slotID, item ).toPacket();
+			sendQueue.addToSendQueue(packet);
+		}catch(IOException ioe) {
+			FMLCommonHandler.instance().raiseException(ioe, "XACT-ICG: custom packet", true);
+		}
+	}
 
 	public static void sendItemsToServer(NetClientHandler sendQueue, ItemStack[] items) {
 		if( sendQueue == null )
 			return;
 
 		if( items == null ) {
-			try {
-				Packet250CustomPayload packet = new CustomPacket((byte)0x03).add(-1, null).toPacket();
-				sendQueue.addToSendQueue(packet);
-			}catch(IOException ioe) {
-				FMLCommonHandler.instance().raiseException(ioe, "XACT-ICG: custom packet (-1)", true);
-			}
+			sendItemToServer( sendQueue, (byte) -1, null );
 			return;
 		}
 
@@ -127,12 +134,7 @@ public class GuiUtils {
 			ItemStack stack = items[index];
 			byte slotID = (byte) (index +1);
 
-			try {
-				Packet250CustomPayload packet = new CustomPacket((byte)0x03).add(slotID, stack).toPacket();
-				sendQueue.addToSendQueue(packet);
-			}catch(IOException ioe) {
-				FMLCommonHandler.instance().raiseException(ioe, "XACT-ICG: custom packet", true);
-			}
+			sendItemToServer(sendQueue, slotID, stack);
 		}
 	}
 
