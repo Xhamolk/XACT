@@ -42,7 +42,7 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 			addSlotToContainer(new Slot(crafter.circuits, i, x, y) {
 				@Override
 				public boolean isItemValid(ItemStack stack) {
-					return CraftManager.isEncoded(stack);
+					return CraftManager.isValid(stack);
 				}
 				@Override
 				public int getSlotStackLimit() {
