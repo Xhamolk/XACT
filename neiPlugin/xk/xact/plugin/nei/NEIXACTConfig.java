@@ -3,15 +3,22 @@ package xk.xact.plugin.nei;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.recipe.DefaultOverlayHandler;
 import xk.xact.gui.GuiCrafter;
 import xk.xact.gui.GuiPad;
 import xk.xact.gui.GuiRecipe;
+import xk.xact.gui.GuiVanillaWorkbench;
 
 public class NEIXACTConfig implements IConfigureNEI {
 
 	@Override
 	public void loadConfig() {
-		// Register the handler for the Craft Pad.
+
+		// Register the handlers for the replaced (vanilla) workbench.
+		API.registerGuiOverlay( GuiVanillaWorkbench.class, "crafting" );
+		API.registerGuiOverlayHandler( GuiVanillaWorkbench.class, new DefaultOverlayHandler(), "crafting" );
+
+		// Register the overlay handlers for the crafting devices.
 		XactOverlayHandler handler = new XactOverlayHandler();
 
 		API.registerGuiOverlayHandler( GuiPad.class, handler, "crafting" );
@@ -26,6 +33,6 @@ public class NEIXACTConfig implements IConfigureNEI {
 
 	@Override
 	public String getVersion() {
-		return "v1.1";
+		return "v1.2";
 	}
 }
