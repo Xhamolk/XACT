@@ -16,7 +16,7 @@ public class CommonProxy implements IGuiHandler {
 		// ID:
 			// 0: crafter
 			// 1: library
-			// 2: chip (removed)
+			// 2: vanilla workbench
 			// 3: craft pad
 			// 4: <none> (client only)
 			// 5: recipe
@@ -29,6 +29,14 @@ public class CommonProxy implements IGuiHandler {
 			if( machine instanceof TileCrafter ) {
 				return new ContainerCrafter((TileCrafter) machine, player);
 			}
+		}
+
+		if( ID == 2 ) {
+			TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity(x, y, z);
+			if( workbench == null )
+				return null;
+
+			return new ContainerVanillaWorkbench(workbench, player);
 		}
 
 		if( ID == 1 ) { // Chip Case
@@ -55,7 +63,7 @@ public class CommonProxy implements IGuiHandler {
 		// ID:
 			// 0: crafter
 			// 1: library
-			// 2: chip (removed)
+			// 2: vanilla workbench
 			// 3: craft pad
 			// 4: plan (client only)
 			// 5: recipe
@@ -73,6 +81,14 @@ public class CommonProxy implements IGuiHandler {
 		if( ID == 1 ) { // Chip Case
 			ChipCase chipCase = new ChipCase(player.inventory.getCurrentItem());
 			return new GuiCase(new ContainerCase(chipCase, player));
+		}
+
+		if( ID == 2 ) {
+			TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity(x, y, z);
+			if( workbench == null )
+				return null;
+
+			return new GuiVanillaWorkbench(new ContainerVanillaWorkbench(workbench, player));
 		}
 
         if( ID == 3 ) { // Craft Pad

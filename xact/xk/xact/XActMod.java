@@ -57,6 +57,7 @@ public class XActMod {
 
 	// Block
 	public static Block blockMachine;
+	public static Block blockWorkbench;
 
     public static CreativeTabXACT xactTab;
 
@@ -91,12 +92,14 @@ public class XActMod {
 
 		// Init Blocks
 		blockMachine = new BlockMachine(machineID);
+		blockWorkbench = BlockVanillaWorkbench.createNew();
 
 		// Register Blocks
 		GameRegistry.registerBlock(blockMachine, ItemMachine.class, "XACT Mod");
 
 		// Register TileEntities
 		GameRegistry.registerTileEntity(TileCrafter.class, "tile.xact.Crafter");
+		GameRegistry.registerTileEntity(TileWorkbench.class, "tile.xact.VanillaWorkbench");
 
 		// Add names
 		LanguageRegistry.addName(itemRecipeBlank, "Recipe Chip");
