@@ -3,16 +3,14 @@ package xk.xact.core;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * 
@@ -64,37 +62,11 @@ public class BlockMachine extends BlockContainer {
 		if( entity != null )
 			for( ItemStack stack : entity.getDropItems() ){
 				if( stack != null )
-					drop(world, x, y, z, stack);
+					Utils.dropItemAsEntity( world, x, y, z, stack );
 			}
 
 		super.breakBlock(world, x, y, z, par5, par6);
 		world.removeBlockTileEntity(x, y, z);
-	}
-
-	private void drop(World world, int x, int y, int z, ItemStack stack) {
-		Random random = new Random();
-		float var10 = random.nextFloat() * 0.8F + 0.1F;
-		float var11 = random.nextFloat() * 0.8F + 0.1F;
-		EntityItem item;
-
-		for( float var12 = random.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(item) ) {
-			int var13 = random.nextInt(21) + 10;
-
-			if (var13 > stack.stackSize) {
-				var13 = stack.stackSize;
-			}
-
-			stack.stackSize -= var13;
-			item = new EntityItem(world, (double)(x + var10), (double)(y + var11), (double)(z + var12), new ItemStack(stack.itemID, var13, stack.getItemDamage()));
-			float var15 = 0.05F;
-			item.motionX = (random.nextGaussian() * var15);
-			item.motionY = (random.nextGaussian() * var15 + 0.2F);
-			item.motionZ = (random.nextGaussian() * var15);
-
-			if (stack.hasTagCompound()) {
-				item.func_92014_d().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-			}
-		}
 	}
 
 	@Override

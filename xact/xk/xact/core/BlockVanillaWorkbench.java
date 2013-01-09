@@ -6,9 +6,11 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.util.Utils;
 
 
 // the block that replaces the vanilla crafting table
@@ -58,6 +60,20 @@ public class BlockVanillaWorkbench extends BlockContainer {
 			player.openGui(XActMod.instance, 2, world, x, y , z);
 		}
 		return true;
+	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
+		TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity(x, y, z);
+		if( workbench != null ) {
+			ItemStack[] inventoryContents = workbench.craftingGrid.getContents();
+			for( ItemStack current : inventoryContents ) {
+				if( current == null )
+					continue;
+				Utils.dropItemAsEntity(world, x, y , z, current);
+			}
+		}
+		super.breakBlock( world, x, y, z, par5, par6 );
 	}
 
 }
