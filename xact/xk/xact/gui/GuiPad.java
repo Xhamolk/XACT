@@ -1,15 +1,20 @@
 package xk.xact.gui;
 
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.CraftPad;
+import xk.xact.core.ItemChip;
+import xk.xact.gui.button.CustomButtons;
+import xk.xact.gui.button.GuiButtonCustom;
+import xk.xact.gui.button.ICustomButtonMode;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
@@ -27,19 +32,25 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 		this.craftPad = pad;
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public void initGui() {
+		super.initGui();
+		super.controlList.clear();
+		this.button = CustomButtons.createdDeviceButton( this.guiLeft + 97, this.guiTop + 63 );
+		button.id = 0;
+		controlList.add( button );
+		invalidated = true;
+	}
 
 	@Override
 	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int texture = this.mc.renderEngine.getTexture("/gfx/xact/gui/pad.png");
+		int texture = this.mc.renderEngine.getTexture("/gfx/xact/gui/pad_1.png");
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.renderEngine.bindTexture(texture);
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(cornerX, cornerY, 0, 0, this.xSize, this.ySize);
-
-		// draw the button
-		if( craftPad.buttonID != -1 )
-			this.drawTexturedModalRect(cornerX+97, cornerY+63, 	176, craftPad.buttonID*14, 	14, 14);
 	}
 
 	@Override
@@ -56,20 +67,6 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int mouseButton) {
-		int cornerX = (this.width - this.xSize) / 2;
-		int cornerY = (this.height - this.ySize) / 2;
-
-		if( cornerX+ 97 <= x && x < cornerX+ 97+14 ) {
-			if( cornerY+ 63 <= y && y < cornerY+ 63+14 ) {
-				this.mc.thePlayer.sendQueue.addToSendQueue(createPacket());
-				return;
-			}
-		}
-		super.mouseClicked(x, y, mouseButton);
-	}
-
-	@Override
 	protected void drawSlotInventory(Slot slot) {
 		if( GuiUtils.isShiftKeyPressed() && slot.getHasStack() ) {
 			ItemStack stack = slot.getStack();
@@ -83,15 +80,6 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			}
 		}
 		super.drawSlotInventory( slot );
-	}
-
-	private Packet250CustomPayload createPacket() {
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel = "xact_channel";
-		packet.data = new byte[] { 0x02, (byte) craftPad.buttonID, (byte) this.mc.thePlayer.inventory.currentItem};
-		packet.length = packet.data.length;
-
-		return packet;
 	}
 
 	// title: (43,8) size: 88x12
@@ -115,12 +103,39 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 	public void updateScreen() {
 		super.updateScreen();
 		ContainerPad pad = (ContainerPad) this.mc.thePlayer.openContainer;
-		if( pad.player.inventory.inventoryChanged || pad.contentsChanged ) {
+		if( pad.player.inventory.inventoryChanged || craftPad.inventoryChanged ) {
+			pad.craftPad.getRecipe(0); // update the recipe.
 			this.missingIngredients = pad.craftPad.getMissingIngredients();
-
 			pad.player.inventory.inventoryChanged = false;
+			craftPad.inventoryChanged = false;
+		}
+
+		if( pad.contentsChanged || invalidated ) {
+
+			for( int i = 0; i < 4; i++ ) {
+				ItemStack chip = craftPad.chipInv.getStackInSlot(0);
+				if( chip == null ) {
+					button.setMode( ICustomButtonMode.DeviceModes.INACTIVE );
+					continue;
+				}
+
+				if( chip.getItem() instanceof ItemChip) {
+					if( !((ItemChip) chip.getItem()).encoded ) {
+						CraftRecipe mainRecipe = craftPad.getRecipe( 0 ); // the recipe on the grid
+						if( mainRecipe != null && mainRecipe.isValid() ) {
+							button.setMode( ICustomButtonMode.DeviceModes.SAVE );
+							continue;
+						}
+						button.setMode( ICustomButtonMode.DeviceModes.INACTIVE );
+						continue;
+					}
+					button.setMode( ICustomButtonMode.DeviceModes.CLEAR );
+				}
+			}
+			invalidated = false;
 			pad.contentsChanged = false;
 		}
+
 	}
 
 	@Override
@@ -158,6 +173,29 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 		// todo: paint the overlay on the output slot.
 
+	}
+
+	///////////////
+	///// Buttons
+
+	private GuiButtonCustom button;
+
+	private boolean invalidated = true;
+
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		if( button instanceof GuiButtonCustom ) {
+			int action = ((GuiButtonCustom) button).getAction();
+
+			if( action == 1 ) { // SAVE
+				ItemStack stack = CraftManager.encodeRecipe( craftPad.getRecipe(0) );
+				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte)(button.id +10), stack);
+				return;
+			}
+			if( action == 3 ) { // CLEAR
+				GuiUtils.sendItemToServer(this.mc.getSendQueue(), (byte)(button.id +10), new ItemStack(XActMod.itemRecipeBlank));
+			}
+		}
 	}
 
 }

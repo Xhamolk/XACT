@@ -24,8 +24,6 @@ public class PacketHandler implements IPacketHandler {
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player packetSender) {
 
-		// 0x01: chip (removed)
-		// 0x02: craft pad
 		// 0x03: Importing recipe from NEI: Gui sending an ItemStack to Container.
 
 		byte action = -1;
@@ -33,15 +31,6 @@ public class PacketHandler implements IPacketHandler {
 			try {
 				DataInputStream packetData = new DataInputStream(new ByteArrayInputStream( packet.data ));
 				action = packetData.readByte();
-
-				// CraftPad button click
-				if( action == 0x02 ) {
-					byte buttonID = packetData.readByte();
-
-					ContainerPad padContainer = (ContainerPad) ((EntityPlayer)packetSender).openContainer;
-					padContainer.buttonClicked(buttonID);
-					return;
-				}
 
 				// Gui sending an ItemStack to Container.
 				if( action == 0x03 ) {
@@ -77,6 +66,7 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
+				System.out.println("XACT package unhandled: " + action);
 			} catch (IOException e) {
 				FMLCommonHandler.instance().raiseException(e, "XACT Packet Handler: "+action, true);
 			}

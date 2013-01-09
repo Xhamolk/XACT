@@ -106,26 +106,13 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 				craftPad.outputInv.setInventorySlotContents(0, recipe.getResult());
 				craftPad.outputInv.onInventoryChanged();
 
-				// update the button
-				craftPad.buttonID = CraftPad.MODE_ERASE;
-
 			} else { // placing a blank chip
-				// update the button
-				CraftRecipe currentRecipe = craftPad.getRecipe(0);
-				if( currentRecipe != null )
-					craftPad.buttonID = CraftPad.MODE_WRITE;
-
 				// Automatically clear invalid chips.
 				if( CraftManager.isEncoded(slot.getStack()) ) {
 					slot.putStack( new ItemStack(XActMod.itemRecipeBlank) );
 				}
 			}
 
-		} else { // removed a chip
-			if( craftPad.gridInv.isEmpty() )
-				craftPad.buttonID = CraftPad.MODE_null;
-			else
-				craftPad.buttonID = CraftPad.MODE_CLEAR;
 		}
 
 		this.notifyOfChange();
@@ -138,32 +125,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		ItemStack outputStack = recipe == null ? null : recipe.getResult();
 		craftPad.outputInv.setInventorySlotContents(0, outputStack);
 
-		// update the button
-		ItemStack chip = craftPad.chipInv.getStackInSlot(0);
-		if( chip == null ) { // empty circuit slot
-			if( craftPad.gridInv.isEmpty() )
-				craftPad.buttonID = CraftPad.MODE_null;
-			else
-				craftPad.buttonID = CraftPad.MODE_CLEAR;
-
-		} else { // there is a chip involved.
-			if( recipe != null )
-				craftPad.buttonID = CraftPad.MODE_WRITE;
-			else {
-				if( CraftManager.isEncoded(chip) )
-					craftPad.buttonID = CraftPad.MODE_ERASE;
-				else
-					craftPad.buttonID = CraftPad.MODE_null;
-			}
-		}
-
 		this.notifyOfChange();
-	}
-
-	public void buttonClicked(int buttonID) {
-		craftPad.buttonID = buttonID;
-		craftPad.buttonPressed();
-		notifyOfChange();
 	}
 
 	private void notifyOfChange() {
