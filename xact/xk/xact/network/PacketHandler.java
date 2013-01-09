@@ -46,6 +46,7 @@ public class PacketHandler implements IPacketHandler {
 					// place a recipe on the slot.
 					ItemStack stack = getItemStack(packetData);
 					container.setStack(slotID, stack);
+					return;
 				}
 
 				// GuiPlan requesting a recipe (server side)
