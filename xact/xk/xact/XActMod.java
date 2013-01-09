@@ -64,6 +64,8 @@ public class XActMod {
 	// debugging information.
 	public static boolean DEBUG_MODE = false;
 
+	public static boolean REPLACE_WORKBENCH;
+
 	@Mod.PreInit
 	public void preInit(FMLPreInitializationEvent event){
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
@@ -74,6 +76,11 @@ public class XActMod {
 		encodedChipID =  config.getItem("encodedChip", 9101).getInt();
 		caseID = config.getItem("chipCase", 9102).getInt();
         padID = config.getItem("craftPad", 9103).getInt();
+
+		REPLACE_WORKBENCH = config.get("Miscellaneous", "addWorkbenchTileEntity", true,
+			"If true, XACT will make the vanilla workbench able to keep it's contents on the grid after the GUI is closed. \n" +
+			"Make sure you clear the workbench's grid before setting this to false, or you will lose your items.")
+				.getBoolean( true );
 
 		config.save();
 	}
@@ -92,7 +99,8 @@ public class XActMod {
 
 		// Init Blocks
 		blockMachine = new BlockMachine(machineID);
-		blockWorkbench = BlockVanillaWorkbench.createNew();
+		if( REPLACE_WORKBENCH )
+			blockWorkbench = BlockVanillaWorkbench.createNew();
 
 		// Register Blocks
 		GameRegistry.registerBlock(blockMachine, ItemMachine.class, "XACT Mod");
