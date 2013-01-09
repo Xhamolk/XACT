@@ -113,11 +113,14 @@ public class Inventory implements IInventory {
     public ItemStack decrStackSize(int slot, int count) {
 		if (internalInv[slot] == null)
 			return null;
-		if (internalInv[slot].stackSize > count)
-			return internalInv[slot].splitStack(count);
-
-		ItemStack retValue = internalInv[slot];
-		internalInv[slot] = null;
+		ItemStack retValue;
+		if (internalInv[slot].stackSize > count) {
+			retValue = internalInv[slot].splitStack(count);
+		} else {
+			retValue = internalInv[slot];
+			internalInv[slot] = null;
+		}
+		this.onInventoryChanged();
         return retValue;
     }
 
