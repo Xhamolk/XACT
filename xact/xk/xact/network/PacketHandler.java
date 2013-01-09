@@ -50,9 +50,7 @@ public class PacketHandler implements IPacketHandler {
 
 					// clear the grid before placing the stacks.
 					if( slotID == -1 ) {
-						for( int i = 1; i <= 9; i++ ) {
-							container.setStack(i, null);
-						}
+						container.setStack( -1, null );
 						return;
 					}
 

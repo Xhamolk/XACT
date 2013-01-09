@@ -1,18 +1,14 @@
 package xk.xact.gui;
 
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import xk.xact.api.InteractiveCraftingGui;
-import xk.xact.util.CustomPacket;
 import xk.xact.util.InventoryUtils;
 
 import java.io.IOException;
@@ -123,20 +119,12 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
-		NetClientHandler sendQueue = this.mc.getSendQueue();
-		if( sendQueue == null )
+		if( ingredients == null ) {
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null);
 			return;
-
-		for( int index = 0; index<ingredients.length; index++ ) {
-			ItemStack stack = ingredients[index];
-			byte slotID = (byte) (index +1);
-
-			try {
-				Packet250CustomPayload packet = new CustomPacket((byte)0x03).add(slotID, stack).toPacket();
-				sendQueue.addToSendQueue(packet);
-			}catch(IOException ioe) {
-				FMLCommonHandler.instance().raiseException(ioe, "GuiRecipe: custom packet", true);
-			}
+		}
+		for( int i = 0; i < ingredients.length; i ++ ) {
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte)(i +1), ingredients[i]);
 		}
 	}
 
