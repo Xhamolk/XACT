@@ -1,13 +1,19 @@
 package xk.xact.gui;
 
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingGui;
+import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
+import xk.xact.gui.button.CustomButtons;
+import xk.xact.gui.button.GuiButtonCustom;
+import xk.xact.gui.button.ICustomButtonMode;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
@@ -22,10 +28,58 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 		this.ySize = 256;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onInit() {
 		crafter.updateRecipes();
 		crafter.updateStates();
 		updateGhostContents( -1 );
+		/*
+		Buttons:
+			42, 21.   120, 21
+			42, 65.   120, 65
+		 */
+		controlList.clear();
+
+		for( int i = 0; i < 4; i++ ) {
+			int x = (i % 2 == 0 ? 42 : 120) + this.guiLeft;
+			int y = (i / 2 == 0 ? 21 : 65) + this.guiTop;
+
+			GuiButtonCustom button = CustomButtons.createdDeviceButton(x, y);
+			button.id = i;
+			controlList.add( buttons[i] = button );
+		}
+		invalidated = true;
+	}
+
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+
+		if( invalidated || crafter.contentsChanged ) {
+
+			for( int i = 0; i < 4; i++ ) {
+				ItemStack chip = crafter.circuits.getStackInSlot(i);
+				if( chip == null ) {
+					buttons[i].setMode( ICustomButtonMode.DeviceModes.INACTIVE );
+					continue;
+				}
+
+				if( chip.getItem() instanceof ItemChip ) {
+					if( !((ItemChip) chip.getItem()).encoded ) {
+						CraftRecipe mainRecipe = crafter.getRecipe( 4 ); // the recipe on the grid
+						if( mainRecipe != null && mainRecipe.isValid() ) {
+							buttons[i].setMode( ICustomButtonMode.DeviceModes.SAVE );
+							continue;
+						}
+						buttons[i].setMode( ICustomButtonMode.DeviceModes.INACTIVE );
+						continue;
+					}
+					buttons[i].setMode( ICustomButtonMode.DeviceModes.CLEAR );
+				}
+			}
+			invalidated = false;
+			crafter.contentsChanged = false;
+		}
 	}
 
 	@Override
@@ -163,15 +217,45 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 	@Override
 	protected void keyTyped(char par1, int key) {
 		if( key == Keyboard.KEY_DOWN ) {
-			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null );
+			sendGridIngredients( null ); // clear the grid.
 		}
 		super.keyTyped(par1, key);
 	}
 
-	// InteractiveCraftingGui
+	///////////////
+	///// InteractiveCraftingGui
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
-		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients );
+		if( ingredients == null ) {
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null);
+			return;
+		}
+		for( int i = 0; i < ingredients.length; i ++ ) {
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte)(i +8), ingredients[i]);
+		}
+	}
+
+	///////////////
+	///// Buttons
+
+	private GuiButtonCustom[] buttons = new GuiButtonCustom[4];
+
+	private boolean invalidated = true;
+
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		if( button instanceof GuiButtonCustom ) {
+			int action = ((GuiButtonCustom) button).getAction();
+
+			if( action == 1 ) { // SAVE
+				ItemStack stack = CraftManager.encodeRecipe( crafter.getRecipe(4) );
+				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte)(4 + button.id), stack);
+				return;
+			}
+			if( action == 3 ) { // CLEAR
+				GuiUtils.sendItemToServer(this.mc.getSendQueue(), (byte)(4 + button.id), new ItemStack(XActMod.itemRecipeBlank));
+			}
+		}
 	}
 
 }

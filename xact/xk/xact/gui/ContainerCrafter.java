@@ -525,7 +525,14 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 	// InteractiveCraftingContainer
 	@Override
 	public void setStack(int slotID, ItemStack stack) {
-		slotID += 7; // match the grid's slots.
+		if( slotID == -1 ) { // Clear the grid
+			for( int i = 0; i < 9; i++ ) {
+				Slot slot = (Slot) this.inventorySlots.get(i +8);
+				slot.putStack( null );
+			}
+			return;
+		}
+
 		Slot slot = (Slot) this.inventorySlots.get(slotID);
 
 		if( slot != null ) {

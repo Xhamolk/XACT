@@ -52,6 +52,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public final Inventory resources; // size = 3*9 = 27
 
+	public boolean contentsChanged = false;
 
 	public TileCrafter() {
 		this.results = new Inventory(getRecipeCount(), "Results") {
@@ -67,6 +68,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
 				TileCrafter.this.updateStates();
+				contentsChanged = true;
 			}
 		};
 		this.craftGrid = new Inventory(9, "CraftingGrid") {
@@ -74,6 +76,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
 				TileCrafter.this.updateStates();
+				contentsChanged = true;
 			}
 		};
 		this.resources = new Inventory(3*9, "Resources") {
