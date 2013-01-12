@@ -397,7 +397,7 @@ public abstract class CraftingHandler {
 			}
 		}
 
-		// regular test: if replacing the item with that
+		// regular test: if replacing the item on that spot still matches with the recipe.
 		return recipe.matchesIngredient(ingredient, slot.stack, device.getWorld());
     }
 

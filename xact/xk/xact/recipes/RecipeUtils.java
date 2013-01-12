@@ -13,6 +13,10 @@ public class RecipeUtils {
 		try{
 			IRecipe iRecipe = recipe.getRecipePointer().getIRecipe();
 
+			// temporary fix. this is exploitable.
+			if( isMicroblockRecipe( iRecipe ) )
+				return false;
+
 			int ingredientIndex = getIngredientIndex(recipe, ingredient);
 			if( ingredientIndex == -1 )
 				return false;
@@ -54,6 +58,10 @@ public class RecipeUtils {
 				return recipe;
 		}
 		return null;
+	}
+
+	private static boolean isMicroblockRecipe(IRecipe iRecipe) {
+		return iRecipe.getClass().getName().equals("com.eloraam.redpower.core.CoverRecipe");
 	}
 
 }
