@@ -11,8 +11,6 @@ import org.lwjgl.opengl.GL11;
 import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.util.InventoryUtils;
 
-import java.io.IOException;
-
 // GUI used to set the recipe of a node.
 public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 
@@ -91,7 +89,7 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 		if( target == null ) {
 			return outputSlot.getHasStack();
 		}
-		return outputSlot.getHasStack() && InventoryUtils.similarStacks( outputSlot.getStack(), target );
+		return outputSlot.getHasStack() && InventoryUtils.similarStacks( outputSlot.getStack(), target, false );
 	}
 
 	private void paintTarget() {

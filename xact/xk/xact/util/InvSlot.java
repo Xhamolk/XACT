@@ -28,7 +28,7 @@ public class InvSlot {
 	}
 
 	public boolean containsItemsFrom(ItemStack otherStack) {
-		return InventoryUtils.similarStacks(this.stack, otherStack);
+		return InventoryUtils.similarStacks( this.stack, otherStack, true );
 	}
 	
 	public int getSpaceFor(ItemStack otherStack) {

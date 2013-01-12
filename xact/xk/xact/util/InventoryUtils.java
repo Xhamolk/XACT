@@ -25,9 +25,10 @@ public class InventoryUtils {
 	 *
 	 * @param stack1 one of the stacks.
 	 * @param stack2 one of the stacks.
+	 * @param compareNBT if the item's NBT must also match.
 	 * @return true if the stacks contain the same kind of items.
 	 */
-	public static boolean similarStacks(ItemStack stack1, ItemStack stack2) {
+	public static boolean similarStacks(ItemStack stack1, ItemStack stack2, boolean compareNBT) {
 		if( stack1 == null || stack2 == null )
 			return false; // this scenario is not meant to happen. 
 		
@@ -38,6 +39,9 @@ public class InventoryUtils {
 			if( stack1.getItemDamage() != stack2.getItemDamage() )
                 return false;
 		}
+		if( !compareNBT )
+			return true;
+
         // Compare stacks tags.
 		return !stack1.hasTagCompound() || stack2.hasTagCompound() && stack1.getTagCompound().equals(stack2.getTagCompound());
 
@@ -56,7 +60,7 @@ public class InventoryUtils {
 	 * @see InventoryUtils#similarStacks
 	 */
 	public static int getSpaceInStackFor(ItemStack target, ItemStack itemStack){
-		if( !similarStacks(target, itemStack))
+		if( !similarStacks(target, itemStack, true) )
 			return -1;
 
 		if( !target.isStackable() )

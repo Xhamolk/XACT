@@ -40,7 +40,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 		if( item == null )
 			return false;
 		for( ItemStack current : ingredients ) {
-			if( InventoryUtils.similarStacks( current, item ) ) {
+			if( InventoryUtils.similarStacks( current, item, false ) ) {
 				return true;
 			}
 		}
@@ -49,7 +49,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 	public boolean hasRecipe(ItemStack item) {
 		for( ItemStack current : recipes.keySet() ) {
-			if( InventoryUtils.similarStacks(current, item) )
+			if( InventoryUtils.similarStacks(current, item, false ) )
 				return true;
 		}
 		return false;
@@ -57,7 +57,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 	public CraftRecipe getRecipe(ItemStack item) {
 		for( ItemStack current : recipes.keySet() ) {
-			if( InventoryUtils.similarStacks(current, item) )
+			if( InventoryUtils.similarStacks( current, item, false ) )
 				return recipes.get( current );
 		}
 		return null;
@@ -67,7 +67,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 		// is it a valid recipe?
 
 		for( ItemStack c : recipes.keySet() ) {
-			if( InventoryUtils.similarStacks(c, item) ) {
+			if( InventoryUtils.similarStacks( c, item, false ) ) {
 				recipes.put( c, recipe );
 				return;
 			}

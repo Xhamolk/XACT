@@ -92,7 +92,7 @@ public class CraftingProject {
 		int count = 0;
 		for( ItemStack ingredient : recipe.getSimplifiedIngredients() ) {
 			int amount = ingredient.stackSize;
-			if( InventoryUtils.similarStacks( ingredient, item) ) {
+			if( InventoryUtils.similarStacks( ingredient, item, false ) ) {
 				count += amount;
 			} else if( list.hasRecipe( ingredient ) ) {
 				CraftRecipe recipe2 = list.getRecipe(item);
