@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xk.xact.util.FakeCraftingInventory;
+import xk.xact.util.InventoryUtils;
 
 public class RecipeUtils {
 
@@ -13,10 +14,6 @@ public class RecipeUtils {
 		try{
 			IRecipe iRecipe = recipe.getRecipePointer().getIRecipe();
 
-			// temporary fix. this is exploitable.
-			if( isMicroblockRecipe( iRecipe ) )
-				return false;
-
 			int ingredientIndex = getIngredientIndex(recipe, ingredient);
 			if( ingredientIndex == -1 )
 				return false;
@@ -24,8 +21,13 @@ public class RecipeUtils {
 			FakeCraftingInventory craftingGrid = FakeCraftingInventory.emulateContents( recipe.getIngredients() );
 			craftingGrid.setInventorySlotContents(ingredientIndex, otherStack);
 
-			return iRecipe.matches(craftingGrid, world);
+			if( !iRecipe.matches(craftingGrid, world) )
+				return false;
 
+			ItemStack nominalResult = recipe.getResult();
+			ItemStack realResult = iRecipe.getCraftingResult( craftingGrid );
+
+			return InventoryUtils.similarStacks( nominalResult, realResult, false );
 		} catch(NullPointerException npe) {
 			return false;
 		}
@@ -58,10 +60,6 @@ public class RecipeUtils {
 				return recipe;
 		}
 		return null;
-	}
-
-	private static boolean isMicroblockRecipe(IRecipe iRecipe) {
-		return iRecipe.getClass().getName().equals("com.eloraam.redpower.core.CoverRecipe");
 	}
 
 }
