@@ -100,11 +100,6 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			if( stack != null )
 				list.add( stack );
 		}
-		for(int i=0; i<this.craftGrid.getSizeInventory(); i++){
-			ItemStack stack = craftGrid.getStackInSlotOnClosing(i);
-			if( stack != null )
-				list.add( stack );
-		}
 		return list;
 	}
 
