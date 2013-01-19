@@ -28,7 +28,13 @@ public class ItemPad extends ItemContainer {
 	@SuppressWarnings("unchecked")
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+		// Tell which is recipe is loaded on the grid.
+		if( itemStack == null || itemStack.stackTagCompound == null )
+			return;
 
+		String loadedRecipe = itemStack.getTagCompound().getString("loadedRecipe");
+		if( loadedRecipe != null && !loadedRecipe.equals("") )
+			list.add("Recipe: "+loadedRecipe);
     }
 
     @Override

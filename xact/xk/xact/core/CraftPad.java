@@ -114,6 +114,9 @@ public class CraftPad implements ICraftingDevice {
 		gridInv.writeToNBT(tagCraftPad);
 		outputInv.writeToNBT(tagCraftPad);
 
+		String loadedRecipe = lastRecipe == null ? "" : lastRecipe.toString();
+		compound.setString("loadedRecipe",  loadedRecipe);
+
 		compound.setTag("craftPad", tagCraftPad);
 	}
 
@@ -125,6 +128,7 @@ public class CraftPad implements ICraftingDevice {
 				chipInv
 				gridInv
 				outputInv
+				"loadedRecipe"
 		 */
 
 }
