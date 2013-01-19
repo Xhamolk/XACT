@@ -96,7 +96,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 		for( int i = 0; i < ingredients.length; i ++ ) {
 			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte)(i +1), ingredients[i]);
 		}
-		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients );
+		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 1 );
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 	@Override
 	protected void keyTyped(char par1, int key) {
 		if( key == Keyboard.KEY_DOWN ) {
-			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null );
+			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null, 0 );
 			return;
 		}
 		if( key == Keyboard.KEY_DELETE ) {
