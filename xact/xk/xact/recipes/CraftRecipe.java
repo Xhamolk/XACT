@@ -141,6 +141,11 @@ public class CraftRecipe {
         return string;
     }
 
+	public boolean equals(Object o) {
+		return o != null && o instanceof CraftRecipe
+				&& ItemStack.areItemStacksEqual(this.getResult(), ((CraftRecipe) o).getResult());
+	}
+
 	/**
 	 * A string listing all the ingredients for this recipe by their amount and name.
 	 *
