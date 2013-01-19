@@ -120,7 +120,7 @@ public class GuiUtils {
 		}
 	}
 
-	public static void sendItemsToServer(NetClientHandler sendQueue, ItemStack[] items) {
+	public static void sendItemsToServer(NetClientHandler sendQueue, ItemStack[] items, int offset) {
 		if( sendQueue == null )
 			return;
 
@@ -132,7 +132,7 @@ public class GuiUtils {
 		for( int index = 0; index<items.length; index++ ) {
 
 			ItemStack stack = items[index];
-			byte slotID = (byte) (index +1);
+			byte slotID = (byte) (index + offset);
 
 			sendItemToServer(sendQueue, slotID, stack);
 		}
