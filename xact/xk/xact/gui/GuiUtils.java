@@ -2,8 +2,11 @@ package xk.xact.gui;
 
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
@@ -12,6 +15,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import xk.xact.util.CustomPacket;
 
@@ -136,6 +140,20 @@ public class GuiUtils {
 
 			sendItemToServer(sendQueue, slotID, stack);
 		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static int getMouseX(Minecraft minecraft) {
+		ScaledResolution resolution = new ScaledResolution(minecraft.gameSettings, minecraft.displayWidth, minecraft.displayHeight);
+		int width = resolution.getScaledWidth();
+		return Mouse.getX() * width / minecraft.displayWidth;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static int getMouseY(Minecraft minecraft) {
+		ScaledResolution resolution = new ScaledResolution(minecraft.gameSettings, minecraft.displayWidth, minecraft.displayHeight);
+		int height = resolution.getScaledHeight();
+		return height - Mouse.getY() * height / minecraft.displayHeight - 1;
 	}
 
 }
