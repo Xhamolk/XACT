@@ -231,7 +231,6 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 	@Override
 	protected void keyTyped(char par1, int key) {
 		if( isExpectedKey(key) ) {
-			System.out.println("Key Pressed: "+key);
 			handleKeyTyped( key );
 			return;
 		}

@@ -14,9 +14,7 @@ public class RecipeDeque {
 	public void pushRecipe(CraftRecipe recipe) {
 		if( recipe == null )
 			return;
-		System.out.println("push.");
 		if( current != null && !current.equals(recipe) ) {
-			System.out.println("successfully pushing recipe: " + current);
 			previousRecipes.push( current );
 		}
 		current = recipe;
@@ -29,7 +27,6 @@ public class RecipeDeque {
 		if( current != null ) {
 			nextRecipes.push( current );
 		}
-		System.out.println("prev: "+previousRecipes.size());
 		return current = previousRecipes.pop();
 	}
 
@@ -40,7 +37,6 @@ public class RecipeDeque {
 		if( current != null ) {
 			previousRecipes.push( current );
 		}
-		System.out.println("next: "+nextRecipes.size());
 		return current = nextRecipes.pop();
 	}
 
