@@ -1,5 +1,9 @@
 package xk.xact.core;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -7,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
+import xk.xact.gui.GuiCrafter;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Inventory;
@@ -130,6 +135,11 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		for( int i = 0; i < getRecipeCount(); i++ ) {
 			if( i == 4 ) {
 				recipes[i] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
+				if( recipes[i] != null ) {
+					if( this.worldObj.isRemote ) { // client-side only
+						notifyClientOfRecipeChanged();
+					}
+				}
 				this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[i] );
 			} else {
 				ItemStack stack = this.circuits.getStackInSlot(i);
@@ -274,6 +284,17 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		resources.writeToNBT(compound);
 		circuits.writeToNBT(compound);
 		craftGrid.writeToNBT(compound);
+	}
+
+	//////////
+	///// Recipe Deque
+
+	@SideOnly(Side.CLIENT)
+	private void notifyClientOfRecipeChanged() {
+		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+		if( screen != null && screen instanceof GuiCrafter ) {
+			((GuiCrafter) screen).pushRecipe( recipes[4] );
+		}
 	}
 
 }

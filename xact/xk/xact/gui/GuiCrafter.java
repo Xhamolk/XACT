@@ -17,6 +17,7 @@ import xk.xact.gui.button.ICustomButtonMode;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.RecipeDeque;
 
 public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
@@ -186,6 +187,19 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 		return -1;
 	}
 
+	private Slot getHoveredSlot(int mouseX, int mouseY) {
+		for( int i = 0; i < inventorySlots.inventorySlots.size(); i++ ) {
+			Slot slot = this.inventorySlots.getSlot( i );
+
+			if( slot != null ) {
+				if( func_74188_c(slot.xDisplayPosition - 3, slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY) ) {
+					return slot;
+				}
+			}
+		}
+		return null;
+	}
+
 	private int hoveredRecipe = -1;
 	public ItemStack[] gridContents = new ItemStack[9];
 	public boolean[] missingIngredients = new boolean[9];
@@ -216,8 +230,10 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 	@Override
 	protected void keyTyped(char par1, int key) {
-		if( key == Keyboard.KEY_DOWN ) {
-			sendGridIngredients( null ); // clear the grid.
+		if( isExpectedKey(key) ) {
+			System.out.println("Key Pressed: "+key);
+			handleKeyTyped( key );
+			return;
 		}
 		super.keyTyped(par1, key);
 	}
@@ -256,6 +272,75 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 				GuiUtils.sendItemToServer(this.mc.getSendQueue(), (byte)(4 + button.id), new ItemStack(XActMod.itemRecipeBlank));
 			}
 		}
+	}
+
+
+	///////////////
+	///// Key input
+
+	private boolean isExpectedKey(int key) {
+		return key == Keyboard.KEY_UP
+				|| key == Keyboard.KEY_LEFT
+				|| key == Keyboard.KEY_RIGHT
+				|| key == Keyboard.KEY_DOWN
+				|| key == Keyboard.KEY_BACK;
+	}
+
+	private void handleKeyTyped(int key) {
+		CraftRecipe recipe = null;
+
+		switch ( key ) {
+			case Keyboard.KEY_UP: // load recipe in chip
+				int mouseX = GuiUtils.getMouseX( this.mc );
+				int mouseY = GuiUtils.getMouseY( this.mc );
+
+				Slot hoveredSlot = getHoveredSlot( mouseX, mouseY );
+				if( hoveredSlot != null && hoveredSlot.getHasStack() ) {
+					ItemStack stackInSlot = hoveredSlot.getStack();
+					if( CraftManager.isEncoded( stackInSlot ) ) {
+						recipe = RecipeUtils.getRecipe( stackInSlot, this.crafter.worldObj );
+						if( recipe != null ) {
+							break;
+						}
+					}
+				}
+				return;
+			case Keyboard.KEY_LEFT: // previous recipe
+				recipe = recipeDeque.getPrevious();
+				if( recipe == null ) {
+					return;
+				}
+				break;
+			case Keyboard.KEY_RIGHT: // next recipe
+				recipe = recipeDeque.getNext();
+				if( recipe == null ) {
+					return;
+				}
+				break;
+			case Keyboard.KEY_DOWN: // clear recipe
+				recipe = null;
+				break;
+			case Keyboard.KEY_BACK: // clear the RecipeDeque (testing... or not?)
+			case Keyboard.KEY_DELETE:
+				recipeDeque.clear();
+				return;
+		}
+
+		setRecipe( recipe );
+	}
+
+	///////////////
+	///// Recipe Deque
+
+	private RecipeDeque recipeDeque = new RecipeDeque();
+
+	public void setRecipe(CraftRecipe recipe) {
+		ItemStack[] ingredients = ( recipe == null ) ? null : recipe.getIngredients();
+		GuiUtils.sendItemsToServer(this.mc.getSendQueue(), ingredients, 8);
+	}
+
+	public void pushRecipe(CraftRecipe recipe) {
+		recipeDeque.pushRecipe( recipe );
 	}
 
 }
