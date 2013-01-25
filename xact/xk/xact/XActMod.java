@@ -88,7 +88,8 @@ public class XActMod {
 	@Mod.Init
 	public void initializeAll(FMLInitializationEvent ignoredEvent) {
 		proxy.registerRenderInformation();
-
+		proxy.registerKeyBindings();
+		
         xactTab = new CreativeTabXACT();
 
 		// Init Items
@@ -120,7 +121,14 @@ public class XActMod {
 
 		// tab's name
 		LanguageRegistry.instance().addStringLocalization("itemGroup.xact", "XACT");
-
+		
+		// keybinding names
+		LanguageRegistry.instance().addStringLocalization("xact.clear", "XACT: Clear grid");
+		LanguageRegistry.instance().addStringLocalization("xact.load", "XACT: Load recipe from chip");
+		LanguageRegistry.instance().addStringLocalization("xact.prev", "XACT: Previous recipe in queue");
+		LanguageRegistry.instance().addStringLocalization("xact.next", "XACT: Next recipe in queue");
+		LanguageRegistry.instance().addStringLocalization("xact.delete", "XACT: Clear queue");
+		
 		// Register GUIs
 		NetworkRegistry.instance().registerGuiHandler(XActMod.instance, proxy);
 
