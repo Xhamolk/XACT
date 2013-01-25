@@ -74,11 +74,16 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 		if( key == 1 ) {
 			buttonClicked(0);
 		}
-		if( key == Keyboard.KEY_DOWN ) {
-			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null, 0 );
-			return;
-		}
 		super.keyTyped(par1, key);
+	}
+	
+	@Override
+	public void handleKeyBinding(String keyDescription) {
+		switch (keyDescription) {
+		case "xact.clear":
+			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null, 0 );
+			break;
+		}
 	}
 
 
