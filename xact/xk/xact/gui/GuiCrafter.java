@@ -299,11 +299,9 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 		CraftRecipe recipe = null;
 
-		switch (keyDescription) {
-		case "xact.clear": // clear recipe
+		if(keyDescription.equals("xact.clear")){
 			recipe = null;
-			break;
-		case "xact.load": // load recipe in chip
+		} else if (keyDescription.equals("xact.load")){
 			int mouseX = GuiUtils.getMouseX(this.mc);
 			int mouseY = GuiUtils.getMouseY(this.mc);
 
@@ -313,28 +311,20 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 				if (CraftManager.isEncoded(stackInSlot)) {
 					recipe = RecipeUtils.getRecipe(stackInSlot,
 							this.crafter.worldObj);
-					if (recipe != null) {
-						break;
-					}
 				}
 			}
-			return;
-		case "xact.prev": // previous recipe
+		} else if (keyDescription.equals("xact.prev")){
 			recipe = recipeDeque.getPrevious();
 			if (recipe == null) {
 				return;
 			}
-			break;
-		case "xact.next": // next recipe
+		} else if (keyDescription.equals("xact.next")){
 			recipe = recipeDeque.getNext();
 			if (recipe == null) {
 				return;
 			}
-			break;
-
-		case "xact.delete":
+		} else if(keyDescription.equals("xact.delete")){
 			recipeDeque.clear();
-			return;
 		}
 		
 		setRecipe(recipe);

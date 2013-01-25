@@ -79,10 +79,8 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 	
 	@Override
 	public void handleKeyBinding(String keyDescription) {
-		switch (keyDescription) {
-		case "xact.clear":
+		if(keyDescription.equals("xact.clear")) {
 			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null, 0 );
-			break;
 		}
 	}
 
