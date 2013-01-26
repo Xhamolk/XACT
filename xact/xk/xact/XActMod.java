@@ -123,11 +123,11 @@ public class XActMod {
 		LanguageRegistry.instance().addStringLocalization( "itemGroup.xact", "XACT" );
 
 		// keybinding names
-		LanguageRegistry.instance().addStringLocalization( "xact.clear", "XACT: Clear grid" );
+		LanguageRegistry.instance().addStringLocalization( "xact.clear", "XACT: Clear Crafting Grid" );
 		LanguageRegistry.instance().addStringLocalization( "xact.load", "XACT: Load recipe from chip" );
-		LanguageRegistry.instance().addStringLocalization( "xact.prev", "XACT: Previous recipe in queue" );
-		LanguageRegistry.instance().addStringLocalization( "xact.next", "XACT: Next recipe in queue" );
-		LanguageRegistry.instance().addStringLocalization( "xact.delete", "XACT: Clear queue" );
+		LanguageRegistry.instance().addStringLocalization( "xact.prev", "XACT: Get Previous Recipe" );
+		LanguageRegistry.instance().addStringLocalization( "xact.next", "XACT: Get Next Recipe" );
+		LanguageRegistry.instance().addStringLocalization( "xact.delete", "XACT: Clear Recipe List" );
 
 		// Register GUIs
 		NetworkRegistry.instance().registerGuiHandler( XActMod.instance, proxy );
