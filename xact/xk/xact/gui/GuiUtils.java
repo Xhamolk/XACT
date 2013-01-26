@@ -118,7 +118,6 @@ public class GuiUtils {
 		if( sendQueue == null )
 			return;
 
-
 		try {
 			Packet250CustomPayload packet = new CustomPacket( (byte) 0x03 ).add( slotID, item ).toPacket();
 			sendQueue.addToSendQueue( packet );
@@ -136,12 +135,14 @@ public class GuiUtils {
 			return;
 		}
 
-		for( int index = 0; index < items.length; index++ ) {
-
-			ItemStack stack = items[index];
-			byte slotID = (byte) (index + offset);
-
-			sendItemToServer( sendQueue, slotID, stack );
+		try {
+			CustomPacket customPacket = new CustomPacket( (byte) 0x02 ).add( (byte) items.length, (byte) offset );
+			for( ItemStack item : items ) {
+				customPacket.add( item );
+			}
+			sendQueue.addToSendQueue( customPacket.toPacket() );
+		} catch ( IOException ioe ) {
+			FMLCommonHandler.instance().raiseException( ioe, "XACT-ICG: custom packet", true );
 		}
 	}
 
