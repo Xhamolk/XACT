@@ -1,4 +1,4 @@
-package xk.xact.keybinding;
+package xk.xact.config;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;

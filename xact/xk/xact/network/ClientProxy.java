@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.MinecraftForgeClient;
 import xk.xact.XActMod;
-import xk.xact.keybinding.KeyBindingHandler;
+import xk.xact.config.KeyBindingHandler;
 
 public class ClientProxy extends CommonProxy {
 
