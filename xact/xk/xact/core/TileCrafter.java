@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
-import xk.xact.gui.GuiCrafter;
+import xk.xact.gui.CraftingGui;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Inventory;
@@ -294,8 +294,8 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	@SideOnly(Side.CLIENT)
 	private void notifyClientOfRecipeChanged() {
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-		if( screen != null && screen instanceof GuiCrafter ) {
-			((GuiCrafter) screen).pushRecipe( recipes[4] );
+		if( screen != null && screen instanceof CraftingGui ) {
+			((CraftingGui) screen).pushRecipe( recipes[4] );
 		}
 	}
 

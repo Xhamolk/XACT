@@ -2,6 +2,8 @@ package xk.xact.core;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -9,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
+import xk.xact.gui.CraftingGui;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Inventory;
@@ -78,7 +81,10 @@ public class CraftPad implements ICraftingDevice {
 
 	@Override
 	public CraftRecipe getRecipe(int index) {
-		return lastRecipe = RecipeUtils.getRecipe( gridInv.getContents(), player.worldObj );
+		lastRecipe = RecipeUtils.getRecipe( gridInv.getContents(), player.worldObj );
+		if( getWorld().isRemote )
+			notifyClient();
+		return lastRecipe;
 	}
 
 	@Override
@@ -89,6 +95,13 @@ public class CraftPad implements ICraftingDevice {
 	@Override
 	public World getWorld() {
 		return player.worldObj;
+	}
+
+	private void notifyClient() { // client-only
+		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+		if( screen != null && screen instanceof CraftingGui ) {
+			((CraftingGui) screen).pushRecipe( lastRecipe );
+		}
 	}
 
 	////////////
