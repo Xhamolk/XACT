@@ -17,7 +17,7 @@ import xk.xact.recipes.CraftManager;
 public class ContainerCrafter extends ContainerMachine implements InteractiveCraftingContainer {
 
 	TileCrafter crafter;
-	
+
 	private EntityPlayer player;
 
 	public ContainerCrafter(TileCrafter crafter, EntityPlayer player) {
@@ -28,67 +28,68 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 	private void buildContainer() {
 		// craft results
-		for(int i=0; i<4; i++) {
+		for( int i = 0; i < 4; i++ ) {
 			int x = 20 + (i % 2) * 120;
 			int y = 20 + (i / 2) * 44;
-			addSlotToContainer(new SlotCraft(crafter, crafter.results, player, i, x, y));
+			addSlotToContainer( new SlotCraft( crafter, crafter.results, player, i, x, y ) );
 		}
 
 		// circuits
-		for(int i=0; i<4; i++) {
+		for( int i = 0; i < 4; i++ ) {
 			int x = 20 + (i % 2) * 120;
 			int y = 40 + (i / 2) * 44;
 
-			addSlotToContainer(new Slot(crafter.circuits, i, x, y) {
+			addSlotToContainer( new Slot( crafter.circuits, i, x, y ) {
 				@Override
 				public boolean isItemValid(ItemStack stack) {
-					return CraftManager.isValid(stack);
+					return CraftManager.isValid( stack );
 				}
+
 				@Override
 				public int getSlotStackLimit() {
 					return 1;
 				}
-			});
+			} );
 		}
 
 		// crafting grid (62,17) 3x3 (18x18)
-		for(int i=0; i<3; i++) {
-			for(int e=0; e<3; e++){
-				int x = 18*e + 62, y = 18*i + 17, index = e + i*3;
-				addSlotToContainer(new Slot(crafter.craftGrid, index, x, y));
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 3; e++ ) {
+				int x = 18 * e + 62, y = 18 * i + 17, index = e + i * 3;
+				addSlotToContainer( new Slot( crafter.craftGrid, index, x, y ) );
 			}
 		}
 
 		// grid's output (80,78)
-		addSlotToContainer(new SlotCraft(crafter, crafter.results, player, 4, 80, 78));
+		addSlotToContainer( new SlotCraft( crafter, crafter.results, player, 4, 80, 78 ) );
 
 
 		// resources (8,107) 3x9 (18x18)
-		for(int i=0; i<3; i++){
-			for(int e=0; e<9; e++){
-				int x = 18*e + 8, y = 18*i + 107;
-				addSlotToContainer(new Slot(crafter.resources, e + i*9, x, y));
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 9; e++ ) {
+				int x = 18 * e + 8, y = 18 * i + 107;
+				addSlotToContainer( new Slot( crafter.resources, e + i * 9, x, y ) );
 			}
 		}
-		
+
 		// player's inventory (8,174) 3x9 (18x18)
-		for(int i=0; i<3; i++) {
-			for(int e=0; e<9; e++){
-				int x = 18*e + 8, y = 18*i + 174;
-				addSlotToContainer(new Slot(player.inventory, e + i*9 + 9, x, y));
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 9; e++ ) {
+				int x = 18 * e + 8, y = 18 * i + 174;
+				addSlotToContainer( new Slot( player.inventory, e + i * 9 + 9, x, y ) );
 			}
 		}
 		// player's hot bar (8,232) 1x9 (18x18)
-		for(int i=0; i<9; i++){
-			addSlotToContainer(new Slot(player.inventory, i, 18*i + 8, 232));
+		for( int i = 0; i < 9; i++ ) {
+			addSlotToContainer( new Slot( player.inventory, i, 18 * i + 8, 232 ) );
 		}
-		
+
 	}
 
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotID){
-		Slot slot = (Slot) inventorySlots.get(slotID);
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+		Slot slot = (Slot) inventorySlots.get( slotID );
 
 		if( slot == null || !slot.getHasStack() )
 			return null;
@@ -97,11 +98,11 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 		if( slot instanceof SlotCraft ) {
 			// add to the resources buffer.
-			stackInSlot = ((SlotCraft)slot).getCraftedStack();
+			stackInSlot = ((SlotCraft) slot).getCraftedStack();
 			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
 
-			if( mergeCraftedStack(stackInSlot, 8+10, 8+10+27) ) {
-				slot.onPickupFromSlot(player, copy);
+			if( mergeCraftedStack( stackInSlot, 8 + 10, 8 + 10 + 27 ) ) {
+				slot.onPickupFromSlot( player, copy );
 				slot.onSlotChanged();
 				return copy;
 			}
@@ -110,37 +111,37 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 		// From the crafter to the resources buffer.
 		if( slotID < 8 ) {
-			if (!mergeItemStack(stackInSlot, 8+10, 8+10+27, false))
-				return null;
-			
-		} else if( slotID < 8+10 ) { // from the crafting grid.
-			if (!mergeItemStack(stackInSlot, 8+10, inventorySlots.size(), false))
+			if( !mergeItemStack( stackInSlot, 8 + 10, 8 + 10 + 27, false ) )
 				return null;
 
-		} else if( slotID < 8+10+27 ) { // from the resources buffer
+		} else if( slotID < 8 + 10 ) { // from the crafting grid.
+			if( !mergeItemStack( stackInSlot, 8 + 10, inventorySlots.size(), false ) )
+				return null;
+
+		} else if( slotID < 8 + 10 + 27 ) { // from the resources buffer
 			// chips first try to go to the chip slots.
 			if( stackInSlot.getItem() instanceof ItemChip ) {
-				if (!mergeItemStack(stackInSlot, 4, 8, false)) // try add to the chip slots.
-					if (!mergeItemStack(stackInSlot, 8+10+27, inventorySlots.size(), false)) // add to the player's inv.
+				if( !mergeItemStack( stackInSlot, 4, 8, false ) ) // try add to the chip slots.
+					if( !mergeItemStack( stackInSlot, 8 + 10 + 27, inventorySlots.size(), false ) ) // add to the player's inv.
 						return null;
 
 				// prevent retrying by returning null.
 				stack = null;
 
 			} else { // any other item goes to the player's inventory.
-				if (!mergeItemStack(stackInSlot, 8+10+27, inventorySlots.size(), false))
+				if( !mergeItemStack( stackInSlot, 8 + 10 + 27, inventorySlots.size(), false ) )
 					return null;
 			}
 
 		} else { // From the player's inventory to the resources buffer.
-			if (!mergeItemStack(stackInSlot, 8+10, 8+10+27, false))
+			if( !mergeItemStack( stackInSlot, 8 + 10, 8 + 10 + 27, false ) )
 				return null;
 		}
 
-		if ( stackInSlot.stackSize == 0 ) {
-			slot.putStack(null);
+		if( stackInSlot.stackSize == 0 ) {
+			slot.putStack( null );
 		}
-        slot.onSlotChanged();
+		slot.onSlotChanged();
 
 		return stack;
 	}
@@ -150,23 +151,23 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		InventoryPlayer inventoryPlayer = player.inventory;
 
 		// clicking out of the GUI. drop stuff.
-		if (slotID == -999) {
-			if ( inventoryPlayer.getItemStack() != null ) {
-				if (buttomPressed == 0) {
-					player.dropPlayerItem(inventoryPlayer.getItemStack());
-					inventoryPlayer.setItemStack(null);
+		if( slotID == -999 ) {
+			if( inventoryPlayer.getItemStack() != null ) {
+				if( buttomPressed == 0 ) {
+					player.dropPlayerItem( inventoryPlayer.getItemStack() );
+					inventoryPlayer.setItemStack( null );
 				}
-				if (buttomPressed == 1) {
-					player.dropPlayerItem(inventoryPlayer.getItemStack().splitStack(1));
-					if (inventoryPlayer.getItemStack().stackSize == 0) {
-						inventoryPlayer.setItemStack(null);
+				if( buttomPressed == 1 ) {
+					player.dropPlayerItem( inventoryPlayer.getItemStack().splitStack( 1 ) );
+					if( inventoryPlayer.getItemStack().stackSize == 0 ) {
+						inventoryPlayer.setItemStack( null );
 					}
 				}
 			}
 			return null;
 		}
 
-		Slot slot = ((Slot)this.inventorySlots.get(slotID));
+		Slot slot = ((Slot) this.inventorySlots.get( slotID ));
 		if( slot == null )
 			return null;
 		boolean craftingSlot = slot instanceof SlotCraft;
@@ -179,9 +180,9 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		if( 8 <= slotID && slotID < 17 ) {
 
 			if( flag == 0 ) { // regular clicking.
-				if( buttomPressed == 0 || playerStack == null ){
-					slot.putStack(null);
-				} else if( buttomPressed == 1 ){
+				if( buttomPressed == 0 || playerStack == null ) {
+					slot.putStack( null );
+				} else if( buttomPressed == 1 ) {
 					ItemStack copy = playerStack.copy();
 					copy.stackSize = 1;
 					slot.putStack( copy );
@@ -195,12 +196,12 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 			}
 
 			if( flag == 2 ) { // interact with the hot-bar
-				ItemStack invStack = player.inventory.getStackInSlot(buttomPressed);
+				ItemStack invStack = player.inventory.getStackInSlot( buttomPressed );
 				if( invStack != null ) {
 					ItemStack copy = invStack.copy();
 					copy.stackSize = 1;
 
-					slot.putStack(copy);
+					slot.putStack( copy );
 					return invStack;
 				}
 			}
@@ -212,71 +213,71 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 			if( stackInSlot == null ) { // Placing player's stack on empty slot.
 
-				if( playerStack != null && slot.isItemValid(playerStack) ) {
+				if( playerStack != null && slot.isItemValid( playerStack ) ) {
 					int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
 
-					if (amount > slot.getSlotStackLimit()) {
+					if( amount > slot.getSlotStackLimit() ) {
 						amount = slot.getSlotStackLimit();
 					}
 
-					slot.putStack(playerStack.splitStack(amount));
+					slot.putStack( playerStack.splitStack( amount ) );
 
-					if (playerStack.stackSize == 0) {
-						inventoryPlayer.setItemStack(null);
+					if( playerStack.stackSize == 0 ) {
+						inventoryPlayer.setItemStack( null );
 					}
 				}
 
-			} else if( slot.canTakeStack(player) ) {  // interact with the slot.
+			} else if( slot.canTakeStack( player ) ) {  // interact with the slot.
 
 				if( playerStack == null ) { // Full extraction from slot.
 					int amount = buttomPressed == 0 || craftingSlot ? stackInSlot.stackSize : (stackInSlot.stackSize + 1) / 2;
 
 					ItemStack itemStack = craftingSlot ?
-							((SlotCraft)slot).getCraftedStack() : slot.decrStackSize(amount);
+							((SlotCraft) slot).getCraftedStack() : slot.decrStackSize( amount );
 
 					inventoryPlayer.setItemStack( itemStack );
 
 					if( stackInSlot.stackSize == 0 )
-						slot.putStack(null);
+						slot.putStack( null );
 
-					slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
+					slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
 
-				} else if( slot.isItemValid(playerStack) ) { // Merge to slot
+				} else if( slot.isItemValid( playerStack ) ) { // Merge to slot
 
-					if( equalsStacks(stackInSlot, playerStack) ) { // split player's into slot.
+					if( equalsStacks( stackInSlot, playerStack ) ) { // split player's into slot.
 						int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
 
-						int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize);
+						int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize );
 						if( amount > max )
 							amount = max;
 
-						playerStack.splitStack(amount);
+						playerStack.splitStack( amount );
 						stackInSlot.stackSize += amount;
 
-						if (playerStack.stackSize == 0) {
-							inventoryPlayer.setItemStack(null);
+						if( playerStack.stackSize == 0 ) {
+							inventoryPlayer.setItemStack( null );
 						}
 
 					} else if( playerStack.stackSize <= slot.getSlotStackLimit() ) { // swap stacks.
-						slot.putStack(playerStack);
-						inventoryPlayer.setItemStack(stackInSlot);
+						slot.putStack( playerStack );
+						inventoryPlayer.setItemStack( stackInSlot );
 					}
 
-				} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
+				} else if( equalsStacks( stackInSlot, playerStack ) && playerStack.getMaxStackSize() > 1 ) { // extract some
 					if( craftingSlot )
-						stackInSlot = ((SlotCraft)slot).getCraftedStack();
+						stackInSlot = ((SlotCraft) slot).getCraftedStack();
 					int amount = stackInSlot.stackSize;
 
-					if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {
+					if( amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize() ) {
 						playerStack.stackSize += amount;
 						if( !craftingSlot )
-							stackInSlot = slot.decrStackSize(amount);
+							stackInSlot = slot.decrStackSize( amount );
 
-						if (stackInSlot.stackSize == 0) {
-							slot.putStack(null);
+						if( stackInSlot.stackSize == 0 ) {
+							slot.putStack( null );
 						}
 
-						slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
+						slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
 					}
 				}
 			}
@@ -286,14 +287,14 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		}
 		// Shift-clicking
 		else if( flag == 1 && (buttomPressed == 0 || buttomPressed == 1) ) {
-			if (slot != null && slot.canTakeStack(player)) {
-				ItemStack stack = this.transferStackInSlot(player, slotID);
+			if( slot != null && slot.canTakeStack( player ) ) {
+				ItemStack stack = this.transferStackInSlot( player, slotID );
 
-				if (stack != null) {
+				if( stack != null ) {
 					retValue = stack.copy();
 
-					if( craftingSlot || ( slot.getStack() != null && slot.getStack().itemID == stack.itemID) ) {
-						this.retrySlotClick(slotID, buttomPressed, true, player);
+					if( craftingSlot || (slot.getStack() != null && slot.getStack().itemID == stack.itemID) ) {
+						this.retrySlotClick( slotID, buttomPressed, true, player );
 					}
 				}
 				return retValue;
@@ -301,36 +302,34 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		}
 		// Interacting with the hot bar.
 		else if( flag == 2 ) {
-			if (slot.canTakeStack(player)) {
-				ItemStack itemStack = inventoryPlayer.getStackInSlot(buttomPressed);
-				boolean var9 = itemStack == null || slot.inventory == inventoryPlayer && slot.isItemValid(itemStack);
+			if( slot.canTakeStack( player ) ) {
+				ItemStack itemStack = inventoryPlayer.getStackInSlot( buttomPressed );
+				boolean var9 = itemStack == null || slot.inventory == inventoryPlayer && slot.isItemValid( itemStack );
 				int index = -1;
 
-				if (!var9) {
+				if( !var9 ) {
 					index = inventoryPlayer.getFirstEmptyStack();
 					var9 = index > -1;
 				}
 
-				if (slot.getHasStack() && var9) {
-					ItemStack slotStack = craftingSlot ? ((SlotCraft)slot).getCraftedStack() : slot.getStack();
-					inventoryPlayer.setInventorySlotContents(buttomPressed, slotStack);
+				if( slot.getHasStack() && var9 ) {
+					ItemStack slotStack = craftingSlot ? ((SlotCraft) slot).getCraftedStack() : slot.getStack();
+					inventoryPlayer.setInventorySlotContents( buttomPressed, slotStack );
 
-					if ((slot.inventory != inventoryPlayer || !slot.isItemValid(itemStack)) && itemStack != null) {
-						if (index > -1) {
-							inventoryPlayer.addItemStackToInventory(itemStack);
+					if( (slot.inventory != inventoryPlayer || !slot.isItemValid( itemStack )) && itemStack != null ) {
+						if( index > -1 ) {
+							inventoryPlayer.addItemStackToInventory( itemStack );
 							if( !craftingSlot )
-								slot.putStack(null);
-							slot.onPickupFromSlot(player, slotStack);
+								slot.putStack( null );
+							slot.onPickupFromSlot( player, slotStack );
 						}
 					} else {
-						slot.putStack(itemStack);
-						slot.onPickupFromSlot(player, slotStack);
+						slot.putStack( itemStack );
+						slot.onPickupFromSlot( player, slotStack );
 					}
-				}
-				else if (!slot.getHasStack() && itemStack != null && slot.isItemValid(itemStack))
-				{
-					inventoryPlayer.setInventorySlotContents(buttomPressed, null);
-					slot.putStack(itemStack);
+				} else if( !slot.getHasStack() && itemStack != null && slot.isItemValid( itemStack ) ) {
+					inventoryPlayer.setInventorySlotContents( buttomPressed, null );
+					slot.putStack( itemStack );
 				}
 			}
 		}
@@ -345,7 +344,7 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		int emptySlots = 0;
 
 		for( int i = indexMin; i < indexMax && missingSpace > 0; i++ ) {
-			Slot tempSlot = (Slot) this.inventorySlots.get(i);
+			Slot tempSlot = (Slot) this.inventorySlots.get( i );
 			ItemStack stackInSlot = tempSlot.getStack();
 
 			if( stackInSlot == null ) {
@@ -355,9 +354,9 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 			if( stackInSlot.itemID == itemStack.itemID
 					&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
-					&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+					&& ItemStack.areItemStackTagsEqual( itemStack, stackInSlot ) ) {
 
-				missingSpace -= Math.min(stackInSlot.getMaxStackSize(), tempSlot.getSlotStackLimit()) - stackInSlot.stackSize;
+				missingSpace -= Math.min( stackInSlot.getMaxStackSize(), tempSlot.getSlotStackLimit() ) - stackInSlot.stackSize;
 			}
 		}
 
@@ -373,7 +372,7 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 				if( itemStack.stackSize <= 0 )
 					break;
 
-				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				Slot targetSlot = (Slot) this.inventorySlots.get( i );
 				ItemStack stackInSlot = targetSlot.getStack();
 
 				if( stackInSlot == null )
@@ -381,17 +380,16 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 				if( stackInSlot.itemID == itemStack.itemID
 						&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
-						&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+						&& ItemStack.areItemStackTagsEqual( itemStack, stackInSlot ) ) {
 
 					int sum = itemStack.stackSize + stackInSlot.stackSize;
-					int maxStackSize = Math.min(stackInSlot.getMaxStackSize(), targetSlot.getSlotStackLimit());
+					int maxStackSize = Math.min( stackInSlot.getMaxStackSize(), targetSlot.getSlotStackLimit() );
 
 					if( sum <= maxStackSize ) {
 						stackInSlot.stackSize = sum;
 						targetSlot.onSlotChanged();
 						return true;
-					}
-					else if( stackInSlot.stackSize < maxStackSize  ) {
+					} else if( stackInSlot.stackSize < maxStackSize ) {
 						itemStack.stackSize -= maxStackSize - stackInSlot.stackSize;
 						stackInSlot.stackSize = maxStackSize;
 						targetSlot.onSlotChanged();
@@ -401,11 +399,11 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		}
 
 		// Add to an empty slot.
-		if (itemStack.stackSize > 0) {
+		if( itemStack.stackSize > 0 ) {
 
 			for( int i = indexMin; i < indexMax; i++ ) {
 
-				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				Slot targetSlot = (Slot) this.inventorySlots.get( i );
 				ItemStack stackInSlot = targetSlot.getStack();
 
 				if( stackInSlot != null )
@@ -425,7 +423,7 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 		boolean retValue = false;
 		int index = indexMin;
 
-		if (reverse) {
+		if( reverse ) {
 			index = indexMax - 1;
 		}
 
@@ -434,14 +432,14 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 		if( itemStack.isStackable() ) {
 			while( itemStack.stackSize > 0 && (!reverse && index < indexMax || reverse && index >= indexMin) ) {
-				slot = (Slot)this.inventorySlots.get( index );
+				slot = (Slot) this.inventorySlots.get( index );
 				stackInSlot = slot.getStack();
 
-				int maxStackSize = Math.min(itemStack.getMaxStackSize(), slot.getSlotStackLimit());
+				int maxStackSize = Math.min( itemStack.getMaxStackSize(), slot.getSlotStackLimit() );
 
 				if( stackInSlot != null && stackInSlot.itemID == itemStack.itemID
 						&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
-						&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot) ) {
+						&& ItemStack.areItemStackTagsEqual( itemStack, stackInSlot ) ) {
 
 					int sum = stackInSlot.stackSize + itemStack.stackSize;
 
@@ -474,9 +472,9 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 			}
 
 			while( !reverse && index < indexMax || reverse && index >= indexMin ) {
-				slot = (Slot)this.inventorySlots.get(index);
+				slot = (Slot) this.inventorySlots.get( index );
 				stackInSlot = slot.getStack();
-				int maxStackSize = Math.min(itemStack.getMaxStackSize(), slot.getSlotStackLimit());
+				int maxStackSize = Math.min( itemStack.getMaxStackSize(), slot.getSlotStackLimit() );
 
 				if( stackInSlot == null ) {
 					int remaining = 0;
@@ -487,7 +485,7 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 						tempStack = itemStack.splitStack( maxStackSize );
 					}
 
-					slot.putStack(tempStack.copy());
+					slot.putStack( tempStack.copy() );
 					slot.onSlotChanged();
 					itemStack.stackSize = remaining;
 					retValue = true;
@@ -507,18 +505,18 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 	@Override
 	protected void retrySlotClick(int slotID, int mouseClick, boolean flag, EntityPlayer player) {
-		Slot slot = (Slot)this.inventorySlots.get(slotID);
+		Slot slot = (Slot) this.inventorySlots.get( slotID );
 		if( slot instanceof SlotCraft ) {
 			if( mouseClick == 1 )
 				return;
 		}
-		this.slotClick(slotID, mouseClick, 1, player);
+		this.slotClick( slotID, mouseClick, 1, player );
 	}
 
-	private boolean equalsStacks( ItemStack stack1, ItemStack stack2 ){
+	private boolean equalsStacks(ItemStack stack1, ItemStack stack2) {
 		return stack1.itemID == stack2.itemID
 				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())
-				&& ItemStack.areItemStackTagsEqual(stack1, stack2);
+				&& ItemStack.areItemStackTagsEqual( stack1, stack2 );
 	}
 
 
@@ -527,16 +525,16 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 	public void setStack(int slotID, ItemStack stack) {
 		if( slotID == -1 ) { // Clear the grid
 			for( int i = 0; i < 9; i++ ) {
-				Slot slot = (Slot) this.inventorySlots.get(i +8);
+				Slot slot = (Slot) this.inventorySlots.get( i + 8 );
 				slot.putStack( null );
 			}
 			return;
 		}
 
-		Slot slot = (Slot) this.inventorySlots.get(slotID);
+		Slot slot = (Slot) this.inventorySlots.get( slotID );
 
 		if( slot != null ) {
-			slot.putStack(stack);
+			slot.putStack( stack );
 		}
 	}
 

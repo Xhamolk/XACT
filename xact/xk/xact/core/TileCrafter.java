@@ -19,7 +19,6 @@ import xk.xact.util.Inventory;
 import java.util.ArrayList;
 
 /**
- * 
  * @author Xhamolk_
  */
 public class TileCrafter extends TileMachine implements IInventory, ICraftingDevice {
@@ -60,15 +59,15 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public boolean contentsChanged = false;
 
 	public TileCrafter() {
-		this.results = new Inventory(getRecipeCount(), "Results") {
+		this.results = new Inventory( getRecipeCount(), "Results" ) {
 			@Override
 			public ItemStack getStackInSlot(int slot) {
 				if( 0 <= slot && slot < getRecipeCount() )
-					return getRecipeResult(slot);
+					return getRecipeResult( slot );
 				return null;
 			}
 		};
-		this.circuits = new Inventory(4, "Encoded Recipes") {
+		this.circuits = new Inventory( 4, "Encoded Recipes" ) {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
@@ -76,7 +75,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				contentsChanged = true;
 			}
 		};
-		this.craftGrid = new Inventory(9, "CraftingGrid") {
+		this.craftGrid = new Inventory( 9, "CraftingGrid" ) {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
@@ -84,7 +83,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				contentsChanged = true;
 			}
 		};
-		this.resources = new Inventory(3*9, "Resources") {
+		this.resources = new Inventory( 3 * 9, "Resources" ) {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateStates();
@@ -95,19 +94,18 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	@Override // the items to be dropped when the block is destroyed.
 	public ArrayList<ItemStack> getDropItems() {
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		for(int i=0; i<this.circuits.getSizeInventory(); i++){
-			ItemStack stack = circuits.getStackInSlotOnClosing(i);
+		for( int i = 0; i < this.circuits.getSizeInventory(); i++ ) {
+			ItemStack stack = circuits.getStackInSlotOnClosing( i );
 			if( stack != null )
 				list.add( stack );
 		}
-		for(int i=0; i<this.resources.getSizeInventory(); i++){
-			ItemStack stack = resources.getStackInSlotOnClosing(i);
+		for( int i = 0; i < this.resources.getSizeInventory(); i++ ) {
+			ItemStack stack = resources.getStackInSlotOnClosing( i );
 			if( stack != null )
 				list.add( stack );
 		}
 		return list;
 	}
-
 
 
 	///////////////
@@ -120,13 +118,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public boolean[] missingIngredients = new boolean[9];
 
 	// whether if the recipe's state must be red.
-	public boolean isRedState( int i ) {
+	public boolean isRedState(int i) {
 		return redState[i];
 	}
 
 	// Gets the recipe's result.
 	public ItemStack getRecipeResult(int slot) {
-		CraftRecipe recipe = this.getRecipe(slot);
+		CraftRecipe recipe = this.getRecipe( slot );
 		return recipe == null ? null : recipe.getResult();
 	}
 
@@ -142,7 +140,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				}
 				this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[i] );
 			} else {
-				ItemStack stack = this.circuits.getStackInSlot(i);
+				ItemStack stack = this.circuits.getStackInSlot( i );
 				if( stack == null )
 					recipes[i] = null;
 				else
@@ -150,16 +148,16 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			}
 		}
 
-		for(int i=0; i<getRecipeCount(); i++) {
+		for( int i = 0; i < getRecipeCount(); i++ ) {
 			ItemStack stack = recipes[i] == null ? null : recipes[i].getResult();
-			results.setInventorySlotContents(i, stack);
+			results.setInventorySlotContents( i, stack );
 		}
 	}
 
 	public void updateStates() {
-		for(int i=0;i<getRecipeCount(); i++) {
+		for( int i = 0; i < getRecipeCount(); i++ ) {
 			// if there are not enough ingredients, color is red.
-			redState[i] = (recipes[i] != null) && !getHandler().canCraft(this.getRecipe(i), null);
+			redState[i] = (recipes[i] != null) && !getHandler().canCraft( this.getRecipe( i ), null );
 		}
 		this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[4] );
 	}
@@ -192,7 +190,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			if( index == 4 ) {
 				recipes[index] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
 			} else {
-				ItemStack stack = this.circuits.getStackInSlot(index);
+				ItemStack stack = this.circuits.getStackInSlot( index );
 				if( stack != null )
 					recipes[index] = RecipeUtils.getRecipe( stack, this.worldObj );
 			}
@@ -206,7 +204,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	@Override
 	public CraftingHandler getHandler() {
 		if( handler == null )
-			handler = CraftingHandler.createCraftingHandler(this);
+			handler = CraftingHandler.createCraftingHandler( this );
 		return handler;
 	}
 
@@ -217,8 +215,8 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	///////////////
 	///// IInventory: provide access to the resources inventory
-	
-	
+
+
 	@Override
 	public int getSizeInventory() {
 		return resources.getSizeInventory();
@@ -226,22 +224,22 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	@Override
 	public ItemStack getStackInSlot(int var1) {
-		return resources.getStackInSlot(var1);
+		return resources.getStackInSlot( var1 );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int var1, int var2) {
-		return resources.decrStackSize(var1, var2);
+		return resources.decrStackSize( var1, var2 );
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int var1) {
-		return resources.getStackInSlotOnClosing(var1);
+		return resources.getStackInSlotOnClosing( var1 );
 	}
 
 	@Override
 	public void setInventorySlotContents(int var1, ItemStack var2) {
-		resources.setInventorySlotContents(var1, var2);
+		resources.setInventorySlotContents( var1, var2 );
 	}
 
 	@Override
@@ -260,30 +258,34 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	}
 
 	public void onInventoryChanged() { // this is called when adding stuff through pipes/tubes/etc 
-	    resources.onInventoryChanged();
-	}  
+		resources.onInventoryChanged();
+	}
 
-	@Override public void openChest() { }
+	@Override
+	public void openChest() {
+	}
 
-	@Override public void closeChest() { }
+	@Override
+	public void closeChest() {
+	}
 
 	///////////////
 	///// NBT
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		resources.readFromNBT(compound);
-		circuits.readFromNBT(compound);
-		craftGrid.readFromNBT(compound);
+		super.readFromNBT( compound );
+		resources.readFromNBT( compound );
+		circuits.readFromNBT( compound );
+		craftGrid.readFromNBT( compound );
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-		resources.writeToNBT(compound);
-		circuits.writeToNBT(compound);
-		craftGrid.writeToNBT(compound);
+		super.writeToNBT( compound );
+		resources.writeToNBT( compound );
+		circuits.writeToNBT( compound );
+		craftGrid.writeToNBT( compound );
 	}
 
 	//////////

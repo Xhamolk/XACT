@@ -18,7 +18,7 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 
 	private EntityPlayer player;
 
-	public Inventory internalInventory = new Inventory(10, "recipeInv");
+	public Inventory internalInventory = new Inventory( 10, "recipeInv" );
 
 	public ContainerRecipe(EntityPlayer player) {
 		this.player = player;
@@ -33,46 +33,47 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 
 
 		// output slot
-		this.addSlotToContainer(new Slot(internalInventory, 9, 110, 35) {
+		this.addSlotToContainer( new Slot( internalInventory, 9, 110, 35 ) {
 			@Override
-			public boolean isItemValid(ItemStack item){
+			public boolean isItemValid(ItemStack item) {
 				return false;
 			}
+
 			@Override
 			public boolean canTakeStack(EntityPlayer player) {
 				return false;
 			}
-		});
+		} );
 
 		// grid
-		for (int i = 0; i < 3; i++) {
-			for (int e = 0; e < 3; e++) {
-				this.addSlotToContainer(new Slot(internalInventory, i*3 + e, e*18 +44, i*18 +24) {
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 3; e++ ) {
+				this.addSlotToContainer( new Slot( internalInventory, i * 3 + e, e * 18 + 44, i * 18 + 24 ) {
 					@Override
 					public boolean canTakeStack(EntityPlayer player) {
 						return false;
 					}
+
 					@Override
 					public void onSlotChanged() {
 						updateOutputSlot();
 					}
-				});
+				} );
 			}
 		}
 
 		// main player inv
-		for (int i = 0; i < 3; i++) {
-			for (int e = 0; e < 9; e++) {
-				this.addSlotToContainer(new Slot(player.inventory, (i+1)*9 +e, e*18 +8, i*18 +98));
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 9; e++ ) {
+				this.addSlotToContainer( new Slot( player.inventory, (i + 1) * 9 + e, e * 18 + 8, i * 18 + 98 ) );
 			}
 		}
 
 		// hot-bar
-		for (int i = 0; i < 9; i++) {
-			this.addSlotToContainer(new Slot(player.inventory, i, 	i*18 +8,  156));
+		for( int i = 0; i < 9; i++ ) {
+			this.addSlotToContainer( new Slot( player.inventory, i, i * 18 + 8, 156 ) );
 		}
 	}
-
 
 
 	@Override
@@ -80,16 +81,16 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 
 		// Special handle for the grid slots.
 		if( 1 == slotID && slotID < 10 ) {
-			Slot slot = ((Slot)this.inventorySlots.get(slotID));
+			Slot slot = ((Slot) this.inventorySlots.get( slotID ));
 
 			if( flag == 0 ) { // regular clicking.
 				ItemStack playerStack = player.inventory.getItemStack();
-				if( buttomPressed == 0 || playerStack == null ){
-					slot.putStack(null);
-				} else if( buttomPressed == 1 ){
+				if( buttomPressed == 0 || playerStack == null ) {
+					slot.putStack( null );
+				} else if( buttomPressed == 1 ) {
 					ItemStack copy = playerStack.copy();
 					copy.stackSize = 1;
-					slot.putStack(copy);
+					slot.putStack( copy );
 				}
 				slot.onSlotChanged();
 				return null;
@@ -99,12 +100,12 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 				return null; // do nothing on shift click.
 
 			if( flag == 2 ) { // interact with the hot-bar
-				ItemStack invStack = player.inventory.getStackInSlot(buttomPressed);
+				ItemStack invStack = player.inventory.getStackInSlot( buttomPressed );
 				if( invStack != null ) {
 					ItemStack copy = invStack.copy();
 					copy.stackSize = 1;
 
-					slot.putStack(copy);
+					slot.putStack( copy );
 					slot.onSlotChanged();
 
 					return invStack;
@@ -115,7 +116,7 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 			return null;
 		}
 
-		return super.slotClick(slotID, buttomPressed, flag, player);
+		return super.slotClick( slotID, buttomPressed, flag, player );
 	}
 
 	@Override
@@ -129,10 +130,10 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 	}
 
 	private void updateOutputSlot() {
-		ItemStack[] gridContents = Arrays.copyOf(internalInventory.getContents(), 9);
-		CraftRecipe recipe = RecipeUtils.getRecipe(gridContents, player.worldObj);
+		ItemStack[] gridContents = Arrays.copyOf( internalInventory.getContents(), 9 );
+		CraftRecipe recipe = RecipeUtils.getRecipe( gridContents, player.worldObj );
 
-		Slot outputSlot = (Slot) inventorySlots.get(0);
+		Slot outputSlot = (Slot) inventorySlots.get( 0 );
 		ItemStack item = null;
 		if( recipe != null ) {
 			FakeCraftingInventory grid = FakeCraftingInventory.emulateContents( gridContents );
@@ -148,15 +149,15 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 	public void setStack(int slotID, ItemStack stack) {
 		if( slotID == -1 ) { // Clear the grid
 			for( int i = 0; i < 9; i++ ) {
-				Slot slot = (Slot) this.inventorySlots.get(i +1);
+				Slot slot = (Slot) this.inventorySlots.get( i + 1 );
 				slot.putStack( null );
 			}
 			return;
 		}
 
-		Slot slot = (Slot) this.inventorySlots.get(slotID);
+		Slot slot = (Slot) this.inventorySlots.get( slotID );
 		if( slot != null ) {
-			slot.putStack(stack);
+			slot.putStack( stack );
 		}
 	}
 

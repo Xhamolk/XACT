@@ -18,7 +18,7 @@ public class InvSlotIterator implements Iterable<InvSlot>, Iterator<InvSlot> {
 		this.inv = inventory;
 		this.size = inventory.getSizeInventory();
 	}
-	
+
 	@Override
 	public Iterator<InvSlot> iterator() {
 		return this;
@@ -26,19 +26,20 @@ public class InvSlotIterator implements Iterable<InvSlot>, Iterator<InvSlot> {
 
 	@Override
 	public boolean hasNext() {
-		return ( currentSlot-1 < size );
+		return (currentSlot - 1 < size);
 	}
 
 	@Override
 	public InvSlot next() {
 		if( ++currentSlot < size ) {
-			ItemStack stack = inv.getStackInSlot(currentSlot);
+			ItemStack stack = inv.getStackInSlot( currentSlot );
 			return new InvSlot( currentSlot, stack );
 		}
 		return null;
 	}
 
 	@Override
-	public void remove() { } // do nothing.
+	public void remove() {
+	} // do nothing.
 
 }

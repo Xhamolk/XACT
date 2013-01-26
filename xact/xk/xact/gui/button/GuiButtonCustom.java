@@ -3,7 +3,6 @@ package xk.xact.gui.button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 
 // Used by GuiCrafter for the buttons that save/load/delete recipes.
 public abstract class GuiButtonCustom extends GuiButton {
@@ -29,7 +28,7 @@ public abstract class GuiButtonCustom extends GuiButton {
 	 * @param mouseX the mouse x-coordinate
 	 * @param mouseY the mouse y-coordinate
 	 * @return true if the mouse's coordinates are withing
-	 * 	the area determined by xPosition, yPosition, width and height.
+	 *         the area determined by xPosition, yPosition, width and height.
 	 */
 	public boolean isMouseHovering(int mouseX, int mouseY) {
 		return mouseX >= this.xPosition && mouseY >= this.yPosition
@@ -38,11 +37,11 @@ public abstract class GuiButtonCustom extends GuiButton {
 
 	@Override
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-		return isVisible() && super.mousePressed(mc, mouseX, mouseY);
+		return isVisible() && super.mousePressed( mc, mouseX, mouseY );
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY){
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if( !isVisible() )
 			return;
 
@@ -63,9 +62,11 @@ public abstract class GuiButtonCustom extends GuiButton {
 
 	protected abstract void drawBackgroundLayer(Minecraft mc, int mouseX, int mouseY);
 
-	protected void drawForegroundLayer(Minecraft mc, int mouseX, int mouseY) {}
+	protected void drawForegroundLayer(Minecraft mc, int mouseX, int mouseY) {
+	}
 
-	protected void drawTooltip(Minecraft mc, int mouseX, int mouseY) { }
+	protected void drawTooltip(Minecraft mc, int mouseX, int mouseY) {
+	}
 
 	///////////////
 	///// Action
@@ -87,8 +88,8 @@ public abstract class GuiButtonCustom extends GuiButton {
 	}
 
 	public GuiButtonCustom setMode(ICustomButtonMode mode) {
-		if( !isModeValid(mode) ) {
-			throw new IllegalArgumentException("Invalid mode: "+mode);
+		if( !isModeValid( mode ) ) {
+			throw new IllegalArgumentException( "Invalid mode: " + mode );
 		}
 		this.mode = mode;
 		onModeSet( mode );
@@ -97,8 +98,8 @@ public abstract class GuiButtonCustom extends GuiButton {
 
 	protected abstract boolean isModeValid(ICustomButtonMode mode);
 
-	protected void onModeSet(ICustomButtonMode mode) { }
-
+	protected void onModeSet(ICustomButtonMode mode) {
+	}
 
 
 }

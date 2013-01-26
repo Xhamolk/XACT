@@ -16,7 +16,7 @@ public class ContainerCase extends ContainerItem {
 	public ContainerCase(ChipCase chipCase, EntityPlayer player) {
 		super( player );
 		this.chipCase = chipCase;
-		buildContainer(chipCase.getInternalInventory(), player.inventory);
+		buildContainer( chipCase.getInternalInventory(), player.inventory );
 
 		// mark the Chip Case "in use" so it will start tracking changes to it's inventory.
 		super.isInUse = true;
@@ -34,44 +34,44 @@ public class ContainerCase extends ContainerItem {
 	private void buildContainer(IInventory storage, IInventory playerInv) {
 
 		// storage (30 slots)
-		for (int i=0; i<5; i++) {
-			for (int e=0; e<6; e++) {
-				this.addSlotToContainer(new Slot(storage, i*6 +e, e*18 +79, i*18 +10){
+		for( int i = 0; i < 5; i++ ) {
+			for( int e = 0; e < 6; e++ ) {
+				this.addSlotToContainer( new Slot( storage, i * 6 + e, e * 18 + 79, i * 18 + 10 ) {
 					@Override
-					public boolean isItemValid(ItemStack stack){
+					public boolean isItemValid(ItemStack stack) {
 						return stack != null && stack.getItem() instanceof ItemChip;
 					}
-				});
+				} );
 			}
 		}
 
 		// main player inv
-		for (int i=0; i<3; i++) {
-			for (int e=0; e<9; e++) {
-				this.addSlotToContainer(new Slot(playerInv, (i+1)*9 +e, e*18 +18, i*18 +109));
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 9; e++ ) {
+				this.addSlotToContainer( new Slot( playerInv, (i + 1) * 9 + e, e * 18 + 18, i * 18 + 109 ) );
 			}
 		}
 
 		// hot-bar
-		for (int i=0; i<9; i++) {
-			this.addSlotToContainer(new Slot(playerInv, i, 	i*18 +18,  167));
+		for( int i = 0; i < 9; i++ ) {
+			this.addSlotToContainer( new Slot( playerInv, i, i * 18 + 18, 167 ) );
 		}
 
 	}
 
 	@Override
-	public void onCraftGuiClosed(EntityPlayer player){
-		super.onCraftGuiClosed(player);
+	public void onCraftGuiClosed(EntityPlayer player) {
+		super.onCraftGuiClosed( player );
 
 		// Reset the metadata value
 		ItemStack itemStack = player.inventory.getCurrentItem();
 		if( itemStack != null )
-			itemStack.setItemDamage(0);
+			itemStack.setItemDamage( 0 );
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
-		Slot slot = (Slot) inventorySlots.get(slotID);
+		Slot slot = (Slot) inventorySlots.get( slotID );
 
 		if( slot == null || !slot.getHasStack() )
 			return null;
@@ -80,17 +80,17 @@ public class ContainerCase extends ContainerItem {
 		ItemStack stack = stackInSlot.copy();
 
 		if( slotID < 30 ) {
-			if (!mergeItemStack(stackInSlot, 30, inventorySlots.size(), false))
+			if( !mergeItemStack( stackInSlot, 30, inventorySlots.size(), false ) )
 				return null;
 		} else if( stackInSlot.getItem() instanceof ItemChip ) {
-			if (!mergeItemStack(stackInSlot, 0, 30, false))
+			if( !mergeItemStack( stackInSlot, 0, 30, false ) )
 				return null;
 		} else {
 			return null;
 		}
 
-		if ( stackInSlot.stackSize == 0 )
-			slot.putStack(null);
+		if( stackInSlot.stackSize == 0 )
+			slot.putStack( null );
 
 		slot.onSlotChanged();
 		return stack;
@@ -107,7 +107,7 @@ public class ContainerCase extends ContainerItem {
 	@Override
 	public void saveContentsToNBT(ItemStack itemStack) {
 		if( !itemStack.hasTagCompound() )
-			itemStack.setTagCompound(new NBTTagCompound());
+			itemStack.setTagCompound( new NBTTagCompound() );
 
 		chipCase.writeToNBT( itemStack.getTagCompound() );
 	}

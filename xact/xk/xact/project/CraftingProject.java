@@ -1,4 +1,3 @@
-
 package xk.xact.project;
 
 
@@ -19,7 +18,7 @@ public class CraftingProject {
 	private CraftRecipe targetRecipe;
 
 	private CraftingProject() {
-		this.list = new IngredientsList(this);
+		this.list = new IngredientsList( this );
 	}
 
 	public void setTarget(ItemStack item, CraftRecipe recipe) {
@@ -43,11 +42,11 @@ public class CraftingProject {
 	}
 
 	public void addRecipe(ItemStack item, CraftRecipe recipe) {
-		list.setRecipe(item, recipe);
+		list.setRecipe( item, recipe );
 	}
 
 	public void removeRecipe(ItemStack item) {
-		list.removeRecipe(item);
+		list.removeRecipe( item );
 	}
 
 	public CraftRecipe getRecipeFor(ItemStack itemStack) {
@@ -62,7 +61,7 @@ public class CraftingProject {
 		ArrayList<ItemStack> rawMaterials = new ArrayList<ItemStack>();
 
 		for( ItemStack current : list ) {
-			if( !list.hasRecipe(current) )
+			if( !list.hasRecipe( current ) )
 				rawMaterials.add( current );
 		}
 
@@ -71,6 +70,7 @@ public class CraftingProject {
 
 	/**
 	 * Gets an ordered list of the amounts required of each raw material.
+	 *
 	 * @see xk.xact.project.CraftingProject#getRawMaterials()
 	 */
 	public ArrayList<Integer> getRawMaterialsCount() {
@@ -85,7 +85,7 @@ public class CraftingProject {
 	public int countIngredientRequirement(ItemStack item, int amount) {
 		CraftRecipe recipe = getMainRecipe();
 		double multiplier = amount / recipe.getResult().stackSize;
-		return (int) Math.ceil( count(item, recipe, multiplier) );
+		return (int) Math.ceil( count( item, recipe, multiplier ) );
 	}
 
 	private double count(ItemStack item, CraftRecipe recipe, double multiplier) {
@@ -95,7 +95,7 @@ public class CraftingProject {
 			if( InventoryUtils.similarStacks( ingredient, item, false ) ) {
 				count += amount;
 			} else if( list.hasRecipe( ingredient ) ) {
-				CraftRecipe recipe2 = list.getRecipe(item);
+				CraftRecipe recipe2 = list.getRecipe( item );
 				double nextMultiplier = multiplier * amount / recipe2.getResult().stackSize;
 
 				count += count( item, recipe2, nextMultiplier );
@@ -111,11 +111,11 @@ public class CraftingProject {
 	///////////////
 	///// NBT
 
-	public void writeToNBT( NBTTagCompound compound ) {
+	public void writeToNBT(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
 
 		// Write target item
-		InventoryUtils.writeItemStackToNBT( nbt, targetItem, "targetItem");
+		InventoryUtils.writeItemStackToNBT( nbt, targetItem, "targetItem" );
 
 		// Write target recipe
 		targetRecipe.writeToNBT( nbt );
@@ -123,26 +123,26 @@ public class CraftingProject {
 		// Write the list of ingredients
 		list.writeToNBT( nbt );
 
-		compound.setTag( "craftingProject" , nbt);
+		compound.setTag( "craftingProject", nbt );
 	}
 
-	public static CraftingProject readFromNBT( NBTTagCompound compound ) {
+	public static CraftingProject readFromNBT(NBTTagCompound compound) {
 		CraftingProject project = new CraftingProject();
 
 		if( compound == null )
 			return project;
 
-		NBTTagCompound nbt = (NBTTagCompound) compound.getTag("craftingProject");
+		NBTTagCompound nbt = (NBTTagCompound) compound.getTag( "craftingProject" );
 		if( nbt == null )
 			return project;
 
 		// Read target item
-		ItemStack item = InventoryUtils.readStackFromNBT((NBTTagCompound) nbt.getTag("targetItem"));
+		ItemStack item = InventoryUtils.readStackFromNBT( (NBTTagCompound) nbt.getTag( "targetItem" ) );
 
 		// Read target recipe
 		CraftRecipe recipe = CraftRecipe.readFromNBT( nbt );
 
-		project.setTarget(item, recipe);
+		project.setTarget( item, recipe );
 
 		// Read the list of ingredients
 		project.list.readFromNBT( nbt );

@@ -21,8 +21,8 @@ public class ButtonItem extends GuiButtonCustom {
 		super.xPosition += xDiff;
 		super.yPosition += yDiff;
 
-		super.drawButton = ( xPosition > 0 && xPosition < boundX )
-				&& ( yPosition > 0 && yPosition < boundY );
+		super.drawButton = (xPosition > 0 && xPosition < boundX)
+				&& (yPosition > 0 && yPosition < boundY);
 	}
 
 
@@ -34,21 +34,21 @@ public class ButtonItem extends GuiButtonCustom {
 
 	@Override
 	protected void drawBackgroundLayer(Minecraft mc, int mouseX, int mouseY) {
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture("/gfx/xact/gui/buttons_1.png"));
+		GL11.glBindTexture( GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture( "/gfx/xact/gui/buttons_1.png" ) );
 		int textureX = isSpecial ? 0 : 26;
 		if( field_82253_i )
 			textureX += 48;
 
 		// Draw button.
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.drawTexturedModalRect(this.xPosition, this.yPosition, textureX, 14, this.width, this.height);
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		this.drawTexturedModalRect( this.xPosition, this.yPosition, textureX, 14, this.width, this.height );
 	}
 
 	@Override
 	protected void drawForegroundLayer(Minecraft mc, int mouseX, int mouseY) {
 		// Draw the item
 		if( item != null )
-			paintItem(mc, item, xPosition,yPosition);
+			paintItem( mc, item, xPosition, yPosition );
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class ButtonItem extends GuiButtonCustom {
 		y += (this.height - 16) / 2;
 
 		itemRenderer.zLevel = 100.0F;
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, item, x, y);
+		GL11.glEnable( GL11.GL_DEPTH_TEST );
+		itemRenderer.renderItemAndEffectIntoGUI( mc.fontRenderer, mc.renderEngine, item, x, y );
 
 		// don't paint the item's overlay (stack size and effect)
 		// itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, item, x, y);

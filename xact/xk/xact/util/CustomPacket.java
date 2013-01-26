@@ -14,25 +14,25 @@ public class CustomPacket {
 	private ByteArrayOutputStream byteArray;
 	private DataOutputStream dataStream;
 
-	public CustomPacket( byte type ) throws IOException {
+	public CustomPacket(byte type) throws IOException {
 		this.byteArray = new ByteArrayOutputStream();
-		this.dataStream = new DataOutputStream(byteArray);
+		this.dataStream = new DataOutputStream( byteArray );
 
-		dataStream.writeByte(type);
+		dataStream.writeByte( type );
 	}
 
 	public CustomPacket add(Object... objects) throws IOException {
 		for( Object o : objects ) {
-			if(o == null || o instanceof ItemStack) {
-				addItemStack((ItemStack) o);
-			} else if(o instanceof Byte) {
-				dataStream.writeByte((Byte) o);
-			} else if(o instanceof Short) {
-				dataStream.writeShort((Short) o);
-			} else if(o instanceof Integer) {
-				dataStream.writeInt((Integer) o);
-			} else if(o instanceof Boolean) {
-				dataStream.writeBoolean((Boolean) o);
+			if( o == null || o instanceof ItemStack ) {
+				addItemStack( (ItemStack) o );
+			} else if( o instanceof Byte ) {
+				dataStream.writeByte( (Byte) o );
+			} else if( o instanceof Short ) {
+				dataStream.writeShort( (Short) o );
+			} else if( o instanceof Integer ) {
+				dataStream.writeInt( (Integer) o );
+			} else if( o instanceof Boolean ) {
+				dataStream.writeBoolean( (Boolean) o );
 			}
 		}
 		return this;
@@ -46,7 +46,7 @@ public class CustomPacket {
 		return packet;
 	}
 
-	private void addItemStack( ItemStack stack ) throws IOException {
+	private void addItemStack(ItemStack stack) throws IOException {
 		/*
 		ItemStack:
 			(short) itemID
@@ -66,11 +66,11 @@ public class CustomPacket {
 		dataStream.writeShort( (short) stack.getItemDamage() );
 
 		if( stack.hasTagCompound() ) {
-			byte[] compressedNBT = CompressedStreamTools.compress(stack.getTagCompound());
-			dataStream.writeShort((short)compressedNBT.length);
-			dataStream.write(compressedNBT);
+			byte[] compressedNBT = CompressedStreamTools.compress( stack.getTagCompound() );
+			dataStream.writeShort( (short) compressedNBT.length );
+			dataStream.write( compressedNBT );
 		} else {
-			dataStream.writeShort(-1);
+			dataStream.writeShort( -1 );
 		}
 
 	}

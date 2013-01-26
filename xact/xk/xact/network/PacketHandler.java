@@ -12,7 +12,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
-import xk.xact.gui.*;
+import xk.xact.gui.GuiRecipe;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -27,15 +27,15 @@ public class PacketHandler implements IPacketHandler {
 		// 0x03: Importing recipe from NEI: Gui sending an ItemStack to Container.
 
 		byte action = -1;
-		if( packet.channel.equals("xact_channel") ) {
+		if( packet.channel.equals( "xact_channel" ) ) {
 			try {
-				DataInputStream packetData = new DataInputStream(new ByteArrayInputStream( packet.data ));
+				DataInputStream packetData = new DataInputStream( new ByteArrayInputStream( packet.data ) );
 				action = packetData.readByte();
 
 				// Gui sending an ItemStack to Container.
 				if( action == 0x03 ) {
 					int slotID = packetData.readByte();
-					InteractiveCraftingContainer container = (InteractiveCraftingContainer) ((EntityPlayer)packetSender).openContainer;
+					InteractiveCraftingContainer container = (InteractiveCraftingContainer) ((EntityPlayer) packetSender).openContainer;
 
 					// clear the grid before placing the stacks.
 					if( slotID == -1 ) {
@@ -44,21 +44,21 @@ public class PacketHandler implements IPacketHandler {
 					}
 
 					// place a recipe on the slot.
-					ItemStack stack = getItemStack(packetData);
-					container.setStack(slotID, stack);
+					ItemStack stack = getItemStack( packetData );
+					container.setStack( slotID, stack );
 					return;
 				}
 
 				// GuiPlan requesting a recipe (server side)
-				if ( action == 0x04 ) {
+				if( action == 0x04 ) {
 					// must open the recipe gui.
 					EntityPlayer player = (EntityPlayer) packetSender;
-					player.openGui(XActMod.instance, 5, player.worldObj, 0, 0, 0);
+					player.openGui( XActMod.instance, 5, player.worldObj, 0, 0, 0 );
 					return;
 				}
 
 				// ContainerRecipe notifying GuiRecipe that the recipe has changed (client side)
-				if ( action == 0x05 ) {
+				if( action == 0x05 ) {
 					GuiScreen screen = ClientProxy.getCurrentScreen();
 					if( screen instanceof GuiRecipe ) {
 						GuiRecipe gui = (GuiRecipe) screen;
@@ -67,9 +67,9 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
-				System.out.println("XACT package unhandled: " + action);
-			} catch (IOException e) {
-				FMLCommonHandler.instance().raiseException(e, "XACT Packet Handler: "+action, true);
+				System.out.println( "XACT package unhandled: " + action );
+			} catch ( IOException e ) {
+				FMLCommonHandler.instance().raiseException( e, "XACT Packet Handler: " + action, true );
 			}
 		}
 
@@ -85,12 +85,12 @@ public class PacketHandler implements IPacketHandler {
 			byte stackSize = packetData.readByte();
 			short itemDamage = packetData.readShort();
 
-			ItemStack stack = new ItemStack(itemID, stackSize, itemDamage);
-			NBTTagCompound stackNbtTag = getNBT(packetData);
-			stack.setTagCompound(stackNbtTag);
+			ItemStack stack = new ItemStack( itemID, stackSize, itemDamage );
+			NBTTagCompound stackNbtTag = getNBT( packetData );
+			stack.setTagCompound( stackNbtTag );
 
 			return stack;
-		} catch (IOException e) {
+		} catch ( IOException e ) {
 			return null;
 		}
 	}
@@ -101,11 +101,11 @@ public class PacketHandler implements IPacketHandler {
 			return null;
 
 		byte[] byteArray = new byte[nbtLength];
-		for( int i=0; i<nbtLength; i++ ) {
+		for( int i = 0; i < nbtLength; i++ ) {
 			byteArray[i] = packetData.readByte();
 		}
 
-		return CompressedStreamTools.decompress(byteArray);
+		return CompressedStreamTools.decompress( byteArray );
 	}
 
 }

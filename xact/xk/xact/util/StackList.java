@@ -1,7 +1,6 @@
 package xk.xact.util;
 
 
-
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -14,27 +13,27 @@ public class StackList implements Iterable<StackReference> {
 
 	public void addStack(ItemStack stack) {
 		if( stack != null )
-			addStack(new StackReference(stack), stack.stackSize);
+			addStack( new StackReference( stack ), stack.stackSize );
 	}
 
 	public void addStack(ItemStack stack, int amount) {
 		if( stack != null )
-			addStack( new StackReference(stack), amount );
+			addStack( new StackReference( stack ), amount );
 	}
 
 	public void addStack(StackReference reference, int increment) {
-		for (StackReference current : list) {
-			if (current != null && current.equals(reference)) {
+		for( StackReference current : list ) {
+			if( current != null && current.equals( reference ) ) {
 				current.amount += increment;
 				return;
 			}
 		}
 		reference.amount = increment;
-		list.add(reference);
+		list.add( reference );
 	}
 
 	public ItemStack[] toArray() {
-		return StackReference.toItemStacks(list.toArray(new StackReference[list.size()]));
+		return StackReference.toItemStacks( list.toArray( new StackReference[list.size()] ) );
 	}
 
 	@Override
@@ -53,7 +52,8 @@ public class StackList implements Iterable<StackReference> {
 			}
 
 			@Override
-			public void remove() { }
+			public void remove() {
+			}
 		};
 	}
 

@@ -30,12 +30,12 @@ public class RecipePointer {
 	public ItemStack getOutputFrom(InventoryCrafting craftingGrid) {
 		if( craftingGrid == null )
 			return getIRecipe().getRecipeOutput();
-		return getIRecipe().getCraftingResult(craftingGrid);
+		return getIRecipe().getCraftingResult( craftingGrid );
 	}
 
 	public IRecipe getIRecipe() {
 		if( recipe == null ) {
-			recipe = (IRecipe) CraftingManager.getInstance().getRecipeList().get(recipeID);
+			recipe = (IRecipe) CraftingManager.getInstance().getRecipeList().get( recipeID );
 		}
 		return recipe;
 	}
@@ -47,14 +47,14 @@ public class RecipePointer {
 
 	@SuppressWarnings("unchecked")
 	public CraftRecipe getCraftRecipe(InventoryCrafting craftingGrid) {
-		ItemStack result = getOutputFrom(craftingGrid);
+		ItemStack result = getOutputFrom( craftingGrid );
 		ItemStack[] ingredients;
 		getIRecipe(); // make sure recipe is instantiated.
 
 		ingredients = new ItemStack[9];
-		ItemStack[] tempIngredients = ((FakeCraftingInventory)craftingGrid).getContents();
+		ItemStack[] tempIngredients = ((FakeCraftingInventory) craftingGrid).getContents();
 
-		for( int i=0; i<9; i++  ) {
+		for( int i = 0; i < 9; i++ ) {
 			if( tempIngredients[i] != null ) {
 				ingredients[i] = tempIngredients[i].copy();
 				ingredients[i].stackSize = 1;
@@ -62,7 +62,7 @@ public class RecipePointer {
 				ingredients[i] = null;
 		}
 
-		CraftRecipe craftRecipe = new CraftRecipe(result, ingredients);
+		CraftRecipe craftRecipe = new CraftRecipe( result, ingredients );
 		craftRecipe.recipeID = this.recipeID;
 		return craftRecipe;
 	}

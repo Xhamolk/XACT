@@ -11,9 +11,9 @@ import xk.xact.XActMod;
 public class ItemMachine extends ItemBlock {
 
 	public ItemMachine(int id) {
-		super(id);
-		this.setHasSubtypes(true);
-		this.setCreativeTab(XActMod.xactTab);
+		super( id );
+		this.setHasSubtypes( true );
+		this.setCreativeTab( XActMod.xactTab );
 	}
 
 	@Override

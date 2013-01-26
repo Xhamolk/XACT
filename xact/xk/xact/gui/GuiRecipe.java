@@ -6,18 +6,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.util.InventoryUtils;
 
 // GUI used to set the recipe of a node.
-public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
+public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui {
 
 	private EntityPlayer player;
 
 	public GuiRecipe(EntityPlayer player, Container container) {
-		super(container);
+		super( container );
 		this.player = player;
 	}
 
@@ -29,16 +28,16 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 
 	@Override
 	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int texture = this.mc.renderEngine.getTexture("/gfx/xact/gui/recipe.png");
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(texture);
+		int texture = this.mc.renderEngine.getTexture( "/gfx/xact/gui/recipe.png" );
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		this.mc.renderEngine.bindTexture( texture );
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect(cornerX, cornerY, 0, 0, this.xSize, this.ySize);
+		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );
 
 		if( matching = matchingTarget() ) {
 			// draw the "success" button
-			this.drawTexturedModalRect(cornerX+117, cornerY+63, 	176, 0, 	14, 14);
+			this.drawTexturedModalRect( cornerX + 117, cornerY + 63, 176, 0, 14, 14 );
 		} else {
 			// Paint the target.
 			paintTarget();
@@ -50,8 +49,8 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		// the title
-		int xPos = (this.xSize - fontRenderer.getStringWidth("Choose the Recipe")) / 2;
-		this.fontRenderer.drawString("Choose the Recipe", xPos, 8, 4210752);
+		int xPos = (this.xSize - fontRenderer.getStringWidth( "Choose the Recipe" )) / 2;
+		this.fontRenderer.drawString( "Choose the Recipe", xPos, 8, 4210752 );
 	}
 
 	@Override
@@ -59,27 +58,27 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 
-		if( matching && cornerX+ 117 <= x && x < cornerX+ 117+14 ) {
-			if( cornerY+ 63 <= y && y < cornerY+ 63+14 ) {
+		if( matching && cornerX + 117 <= x && x < cornerX + 117 + 14 ) {
+			if( cornerY + 63 <= y && y < cornerY + 63 + 14 ) {
 				// todo: either 1 or 2.
 				buttonClicked( 1 );
 				return;
 			}
 		}
-		super.mouseClicked(x, y, mouseButton);
+		super.mouseClicked( x, y, mouseButton );
 	}
 
 	@Override
 	protected void keyTyped(char par1, int key) {
 		if( key == 1 ) {
-			buttonClicked(0);
+			buttonClicked( 0 );
 		}
-		super.keyTyped(par1, key);
+		super.keyTyped( par1, key );
 	}
-	
+
 	@Override
 	public void handleKeyBinding(String keyDescription) {
-		if(keyDescription.equals("xact.clear")) {
+		if( keyDescription.equals( "xact.clear" ) ) {
 			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null, 0 );
 		}
 	}
@@ -88,7 +87,7 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 	private boolean matching = false;
 
 	private boolean matchingTarget() {
-		Slot outputSlot = player.openContainer.getSlot(0);
+		Slot outputSlot = player.openContainer.getSlot( 0 );
 		if( target == null ) {
 			return outputSlot.getHasStack();
 		}
@@ -96,22 +95,22 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 	}
 
 	private void paintTarget() {
-		Slot slot = player.openContainer.getSlot(0);
+		Slot slot = player.openContainer.getSlot( 0 );
 
 		if( !matching && target != null ) {
 			int x = slot.xDisplayPosition, y = slot.yDisplayPosition;
 
 			this.zLevel = 100.0F;
 			itemRenderer.zLevel = 100.0F;
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			itemRenderer.renderItemAndEffectIntoGUI(this.fontRenderer, this.mc.renderEngine, target, x, y);
-			itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.mc.renderEngine, target, x, y);
+			GL11.glEnable( GL11.GL_DEPTH_TEST );
+			itemRenderer.renderItemAndEffectIntoGUI( this.fontRenderer, this.mc.renderEngine, target, x, y );
+			itemRenderer.renderItemOverlayIntoGUI( this.fontRenderer, this.mc.renderEngine, target, x, y );
 			itemRenderer.zLevel = 0.0F;
 			this.zLevel = 0.0F;
 		}
 
 		int color = 165 << 24 | GuiUtils.COLOR_GRAY;
-		GuiUtils.paintSlotOverlay(slot, 16, color);
+		GuiUtils.paintSlotOverlay( slot, 16, color );
 	}
 
 	private void buttonClicked(int i) {
@@ -121,11 +120,11 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui  {
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
 		if( ingredients == null ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null);
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
 			return;
 		}
-		for( int i = 0; i < ingredients.length; i ++ ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte)(i +1), ingredients[i]);
+		for( int i = 0; i < ingredients.length; i++ ) {
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 1), ingredients[i] );
 		}
 	}
 

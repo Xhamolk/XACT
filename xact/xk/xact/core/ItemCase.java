@@ -14,11 +14,11 @@ import java.util.List;
 public class ItemCase extends ItemContainer {
 
 	public ItemCase(int itemID) {
-		super(itemID);
-		this.setItemName("chipCase");
-		this.setMaxStackSize(1);
-		this.setTextureFile(XActMod.TEXTURE_ITEMS);
-		this.setCreativeTab(XActMod.xactTab);
+		super( itemID );
+		this.setItemName( "chipCase" );
+		this.setMaxStackSize( 1 );
+		this.setTextureFile( XActMod.TEXTURE_ITEMS );
+		this.setCreativeTab( XActMod.xactTab );
 	}
 
 	@Override
@@ -29,26 +29,26 @@ public class ItemCase extends ItemContainer {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-	    // Show how many chips are stored.
+		// Show how many chips are stored.
 		if( itemStack == null || itemStack.stackTagCompound == null )
 			return;
 
-		Integer count = itemStack.getTagCompound().getInteger("chipCount");
-		if (count != null && count > 0)
-			list.add("Stored " + count +" chips.");
+		Integer count = itemStack.getTagCompound().getInteger( "chipCount" );
+		if( count != null && count > 0 )
+			list.add( "Stored " + count + " chips." );
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-        itemStack.setItemDamage(1);
+		itemStack.setItemDamage( 1 );
 		if( !world.isRemote )
-        	player.openGui(XActMod.instance, 1, world, 0, 0, 0);
+			player.openGui( XActMod.instance, 1, world, 0, 0, 0 );
 		return itemStack;
 	}
 
-    @Override
-    public int getIconFromDamage(int itemDamage) {
-        return 16;
-    }
+	@Override
+	public int getIconFromDamage(int itemDamage) {
+		return 16;
+	}
 
 }

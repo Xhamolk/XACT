@@ -18,25 +18,24 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	public void registerRenderInformation() {
-		MinecraftForgeClient.preloadTexture(XActMod.TEXTURE_ITEMS);
-		MinecraftForgeClient.preloadTexture(XActMod.TEXTURE_BLOCKS);
+		MinecraftForgeClient.preloadTexture( XActMod.TEXTURE_ITEMS );
+		MinecraftForgeClient.preloadTexture( XActMod.TEXTURE_BLOCKS );
 	}
 
 	public void registerKeyBindings() {
-		KeyBindingRegistry.registerKeyBinding(new KeyBindingHandler(
-				new KeyBinding[] { 
-						new KeyBinding("xact.clear", 208),
-						new KeyBinding("xact.load", 200),
-						new KeyBinding("xact.prev", 203),
-						new KeyBinding("xact.next", 205),
-						new KeyBinding("xact.delete", 211)
+		KeyBindingRegistry.registerKeyBinding( new KeyBindingHandler(
+				new KeyBinding[] {
+						new KeyBinding( "xact.clear", 208 ),
+						new KeyBinding( "xact.load", 200 ),
+						new KeyBinding( "xact.prev", 203 ),
+						new KeyBinding( "xact.next", 205 ),
+						new KeyBinding( "xact.delete", 211 )
 				}, new boolean[] {
-						false,
-						false,
-						false,
-						false,
-						false
-				}));
-
+				false,
+				false,
+				false,
+				false,
+				false
+		} ) );
 	}
 }

@@ -18,12 +18,12 @@ public class BlockVanillaWorkbench extends BlockContainer {
 
 
 	private BlockVanillaWorkbench(int blockID) {
-		super(blockID, Material.wood);
+		super( blockID, Material.wood );
 		this.blockIndexInTexture = 59;
-		this.setHardness(2.5F);
-		this.setStepSound(soundWoodFootstep);
-		this.setBlockName("workbench");
-		this.setCreativeTab(CreativeTabs.tabDecorations);
+		this.setHardness( 2.5F );
+		this.setStepSound( soundWoodFootstep );
+		this.setBlockName( "workbench" );
+		this.setCreativeTab( CreativeTabs.tabDecorations );
 	}
 
 	public static BlockVanillaWorkbench createNew() {
@@ -40,14 +40,14 @@ public class BlockVanillaWorkbench extends BlockContainer {
 
 	@Override
 	public int getBlockTextureFromSide(int side) {
-		switch ( side ) {
+		switch( side ) {
 			case 0:
-				return Block.planks.getBlockTextureFromSide(0);
+				return Block.planks.getBlockTextureFromSide( 0 );
 			case 1:
 				return this.blockIndexInTexture - 16;
 			default:
 				if( side == 2 || side == 4 ) {
-					return this.blockIndexInTexture +1;
+					return this.blockIndexInTexture + 1;
 				} else {
 					return this.blockIndexInTexture;
 				}
@@ -57,20 +57,20 @@ public class BlockVanillaWorkbench extends BlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float offX, float offY, float offZ) {
 		if( !world.isRemote ) {
-			player.openGui(XActMod.instance, 2, world, x, y , z);
+			player.openGui( XActMod.instance, 2, world, x, y, z );
 		}
 		return true;
 	}
 
 	@Override
 	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
-		TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity(x, y, z);
+		TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity( x, y, z );
 		if( workbench != null ) {
 			ItemStack[] inventoryContents = workbench.craftingGrid.getContents();
 			for( ItemStack current : inventoryContents ) {
 				if( current == null )
 					continue;
-				Utils.dropItemAsEntity(world, x, y , z, current);
+				Utils.dropItemAsEntity( world, x, y, z, current );
 			}
 		}
 		super.breakBlock( world, x, y, z, par5, par6 );

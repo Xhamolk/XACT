@@ -15,7 +15,7 @@ public class ChipCase {
 	public boolean inventoryChanged = false;
 
 	public ChipCase(ItemStack itemStack) {
-		this.internalInventory = new Inventory(30, "libraryStorage") {
+		this.internalInventory = new Inventory( 30, "libraryStorage" ) {
 			@Override
 			public void onInventoryChanged() {
 				super.onInventoryChanged();
@@ -29,14 +29,14 @@ public class ChipCase {
 		readFromNBT( itemStack.getTagCompound() );
 	}
 
-	public IInventory getInternalInventory(){
+	public IInventory getInternalInventory() {
 		return internalInventory;
 	}
 
 	private int getChipsCount() {
 		int count = 0;
-		for(InvSlot current : InventoryUtils.inventoryIterator(internalInventory) ){
-			if( current != null && !current.isEmpty() ){
+		for( InvSlot current : InventoryUtils.inventoryIterator( internalInventory ) ) {
+			if( current != null && !current.isEmpty() ) {
 				count += current.stack.stackSize;
 			}
 		}
@@ -58,7 +58,7 @@ public class ChipCase {
 			return;
 
 		internalInventory.writeToNBT( compound );
-		compound.setInteger("chipCount", getChipsCount());
+		compound.setInteger( "chipCount", getChipsCount() );
 	}
 
 }

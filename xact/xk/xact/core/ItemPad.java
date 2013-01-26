@@ -12,13 +12,13 @@ import java.util.List;
 
 public class ItemPad extends ItemContainer {
 
-    public ItemPad(int itemID) {
-        super(itemID);
-        this.setItemName("craftPad");
-        this.setMaxStackSize(1);
-        this.setTextureFile(XActMod.TEXTURE_ITEMS);
-        this.setCreativeTab(XActMod.xactTab);
-    }
+	public ItemPad(int itemID) {
+		super( itemID );
+		this.setItemName( "craftPad" );
+		this.setMaxStackSize( 1 );
+		this.setTextureFile( XActMod.TEXTURE_ITEMS );
+		this.setCreativeTab( XActMod.xactTab );
+	}
 
 	@Override
 	public boolean containerMatchesItem(Container openContainer) {
@@ -26,24 +26,24 @@ public class ItemPad extends ItemContainer {
 	}
 
 	@SuppressWarnings("unchecked")
-    @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+	@Override
+	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
 		// Tell which is recipe is loaded on the grid.
 		if( itemStack == null || itemStack.stackTagCompound == null )
 			return;
 
-		String loadedRecipe = itemStack.getTagCompound().getString("loadedRecipe");
-		if( loadedRecipe != null && !loadedRecipe.equals("") )
-			list.add("Recipe: "+loadedRecipe);
-    }
+		String loadedRecipe = itemStack.getTagCompound().getString( "loadedRecipe" );
+		if( loadedRecipe != null && !loadedRecipe.equals( "" ) )
+			list.add( "Recipe: " + loadedRecipe );
+	}
 
-    @Override
-    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-        itemStack.setItemDamage(1);
+	@Override
+	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+		itemStack.setItemDamage( 1 );
 		if( !world.isRemote )
-			player.openGui(XActMod.instance, 3, world, 0, 0, 0);
+			player.openGui( XActMod.instance, 3, world, 0, 0, 0 );
 		return itemStack;
-    }
+	}
 
 	@Override
 	public int getIconFromDamage(int itemDamage) {
@@ -51,7 +51,6 @@ public class ItemPad extends ItemContainer {
 			return 19;
 		return 18;
 	}
-
 
 
 }

@@ -34,7 +34,7 @@ public class GuiUtils {
 		if( slot == null )
 			return;
 
-		int off = ( size - 16 ) / 2;
+		int off = (size - 16) / 2;
 		int minX = slot.xDisplayPosition - off;
 		int minY = slot.yDisplayPosition - off;
 
@@ -42,11 +42,11 @@ public class GuiUtils {
 	}
 
 	public static void paintOverlay(int x, int y, int size, int color) {
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		Gui.drawRect( x, y,  x + size, y + size,  color );
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable( GL11.GL_LIGHTING );
+		GL11.glDisable( GL11.GL_DEPTH_TEST );
+		Gui.drawRect( x, y, x + size, y + size, color );
+		GL11.glEnable( GL11.GL_LIGHTING );
+		GL11.glEnable( GL11.GL_DEPTH_TEST );
 	}
 
 	public static void paintItem(ItemStack itemStack, int x, int y, Minecraft mc, RenderItem itemRenderer) {
@@ -54,61 +54,61 @@ public class GuiUtils {
 			return; // I might want to have a "null" image, like background image.
 
 		itemRenderer.zLevel = 100.0F;
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
-		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
+		GL11.glEnable( GL11.GL_DEPTH_TEST );
+		itemRenderer.renderItemAndEffectIntoGUI( mc.fontRenderer, mc.renderEngine, itemStack, x, y );
+		itemRenderer.renderItemOverlayIntoGUI( mc.fontRenderer, mc.renderEngine, itemStack, x, y );
 		itemRenderer.zLevel = 0.0F;
 	}
 
 	public static void paintGreenEffect(Slot slot, RenderItem itemRenderer) {
-		paintEffectOverlay(slot.xDisplayPosition, slot.yDisplayPosition, Minecraft.getMinecraft().renderEngine, itemRenderer, 0.25f, 0.55f, 0.3f, 0.75f);
+		paintEffectOverlay( slot.xDisplayPosition, slot.yDisplayPosition, Minecraft.getMinecraft().renderEngine, itemRenderer, 0.25f, 0.55f, 0.3f, 0.75f );
 	}
 
-	public static void paintEffectOverlay( int x, int y, RenderEngine renderEngine, RenderItem itemRenderer, float red, float green, float blue, float alpha) {
-		GL11.glDepthFunc(GL11.GL_GREATER);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glDepthMask(false);
-		renderEngine.bindTexture(renderEngine.getTexture("%blur%/misc/glint.png")); // do I want to change this to something else?
+	public static void paintEffectOverlay(int x, int y, RenderEngine renderEngine, RenderItem itemRenderer, float red, float green, float blue, float alpha) {
+		GL11.glDepthFunc( GL11.GL_GREATER );
+		GL11.glDisable( GL11.GL_LIGHTING );
+		GL11.glDepthMask( false );
+		renderEngine.bindTexture( renderEngine.getTexture( "%blur%/misc/glint.png" ) ); // do I want to change this to something else?
 
 		itemRenderer.zLevel -= 50.0F;
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
-		GL11.glColor4f(red, green, blue, alpha);
-		effect(itemRenderer.zLevel, x - 1, y - 1, 18, 18);
+		GL11.glEnable( GL11.GL_BLEND );
+		GL11.glBlendFunc( GL11.GL_DST_COLOR, GL11.GL_DST_COLOR );
+		GL11.glColor4f( red, green, blue, alpha );
+		effect( itemRenderer.zLevel, x - 1, y - 1, 18, 18 );
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDepthMask(true);
+		GL11.glDisable( GL11.GL_BLEND );
+		GL11.glDepthMask( true );
 		itemRenderer.zLevel += 50.0F;
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glDepthFunc(GL11.GL_LEQUAL);
+		GL11.glEnable( GL11.GL_LIGHTING );
+		GL11.glDepthFunc( GL11.GL_LEQUAL );
 	}
 
 	private static void effect(float zLevel, int x, int y, int width, int height) {
 
-		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+		GL11.glBlendFunc( GL11.GL_SRC_COLOR, GL11.GL_ONE );
 
 		for( int i = 0; i < 2; i++ ) {
 			float var7 = 0.00390625F;
 			float var8 = 0.00390625F;
-			float var9 = (float)(Minecraft.getSystemTime() % (long)(3000 + i * 1873)) / (3000.0F + (float)(i * 1873)) * 256.0F;
+			float var9 = (float) (Minecraft.getSystemTime() % (long) (3000 + i * 1873)) / (3000.0F + (float) (i * 1873)) * 256.0F;
 			float var10 = 0.0F;
 			Tessellator var11 = Tessellator.instance;
 			float var12 = 4.0F;
 
-			if (i == 1)
+			if( i == 1 )
 				var12 = -1.0F;
 
 			var11.startDrawingQuads();
-			var11.addVertexWithUV((double) x, (double)(y + height), (double)zLevel, (double)((var9 + (float)height * var12) * var7), (double)((var10 + (float)height) * var8));
-			var11.addVertexWithUV((double)(x + width), (double)(y + height), (double)zLevel, (double)((var9 + (float)width + (float)height * var12) * var7), (double)((var10 + (float)height) * var8));
-			var11.addVertexWithUV((double)(x + width), (double) y, (double)zLevel, (double)((var9 + (float)width) * var7), (double)((var10 + 0.0F) * var8));
-			var11.addVertexWithUV((double) x, (double) y, (double)zLevel, (double)((var9 + 0.0F) * var7), (double)((var10 + 0.0F) * var8));
+			var11.addVertexWithUV( (double) x, (double) (y + height), (double) zLevel, (double) ((var9 + (float) height * var12) * var7), (double) ((var10 + (float) height) * var8) );
+			var11.addVertexWithUV( (double) (x + width), (double) (y + height), (double) zLevel, (double) ((var9 + (float) width + (float) height * var12) * var7), (double) ((var10 + (float) height) * var8) );
+			var11.addVertexWithUV( (double) (x + width), (double) y, (double) zLevel, (double) ((var9 + (float) width) * var7), (double) ((var10 + 0.0F) * var8) );
+			var11.addVertexWithUV( (double) x, (double) y, (double) zLevel, (double) ((var9 + 0.0F) * var7), (double) ((var10 + 0.0F) * var8) );
 			var11.draw();
 		}
 	}
 
 	public static boolean isShiftKeyPressed() {
-		return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+		return Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 	}
 
 	public static void sendItemToServer(NetClientHandler sendQueue, byte slotID, ItemStack item) {
@@ -117,10 +117,10 @@ public class GuiUtils {
 
 
 		try {
-			Packet250CustomPayload packet = new CustomPacket((byte)0x03).add( slotID, item ).toPacket();
-			sendQueue.addToSendQueue(packet);
-		}catch(IOException ioe) {
-			FMLCommonHandler.instance().raiseException(ioe, "XACT-ICG: custom packet", true);
+			Packet250CustomPayload packet = new CustomPacket( (byte) 0x03 ).add( slotID, item ).toPacket();
+			sendQueue.addToSendQueue( packet );
+		} catch ( IOException ioe ) {
+			FMLCommonHandler.instance().raiseException( ioe, "XACT-ICG: custom packet", true );
 		}
 	}
 
@@ -133,25 +133,25 @@ public class GuiUtils {
 			return;
 		}
 
-		for( int index = 0; index<items.length; index++ ) {
+		for( int index = 0; index < items.length; index++ ) {
 
 			ItemStack stack = items[index];
 			byte slotID = (byte) (index + offset);
 
-			sendItemToServer(sendQueue, slotID, stack);
+			sendItemToServer( sendQueue, slotID, stack );
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	public static int getMouseX(Minecraft minecraft) {
-		ScaledResolution resolution = new ScaledResolution(minecraft.gameSettings, minecraft.displayWidth, minecraft.displayHeight);
+		ScaledResolution resolution = new ScaledResolution( minecraft.gameSettings, minecraft.displayWidth, minecraft.displayHeight );
 		int width = resolution.getScaledWidth();
 		return Mouse.getX() * width / minecraft.displayWidth;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public static int getMouseY(Minecraft minecraft) {
-		ScaledResolution resolution = new ScaledResolution(minecraft.gameSettings, minecraft.displayWidth, minecraft.displayHeight);
+		ScaledResolution resolution = new ScaledResolution( minecraft.gameSettings, minecraft.displayWidth, minecraft.displayHeight );
 		int height = resolution.getScaledHeight();
 		return height - Mouse.getY() * height / minecraft.displayHeight - 1;
 	}

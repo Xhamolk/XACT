@@ -12,7 +12,7 @@ public class ButtonDevice extends GuiButtonCustom {
 	private int textureIndex = 0;
 
 	ButtonDevice(int posX, int posY) {
-		super(-1, posX, posY, SIZE, SIZE);
+		super( -1, posX, posY, SIZE, SIZE );
 	}
 
 	@Override
@@ -32,9 +32,9 @@ public class ButtonDevice extends GuiButtonCustom {
 	@Override
 	protected void drawBackgroundLayer(Minecraft mc, int mouseX, int mouseY) {
 		// Draw button.
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture("/gfx/xact/gui/buttons_1.png"));
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.drawTexturedModalRect(this.xPosition, this.yPosition, textureIndex * 14, 0, this.width, this.height);
+		GL11.glBindTexture( GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture( "/gfx/xact/gui/buttons_1.png" ) );
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		this.drawTexturedModalRect( this.xPosition, this.yPosition, textureIndex * 14, 0, this.width, this.height );
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ButtonDevice extends GuiButtonCustom {
 
 	@Override
 	protected void onModeSet(ICustomButtonMode mode) {
-		this.action = this.textureIndex = ((ICustomButtonMode.DeviceModes)mode).ordinal();
+		this.action = this.textureIndex = ((ICustomButtonMode.DeviceModes) mode).ordinal();
 	}
 
 }

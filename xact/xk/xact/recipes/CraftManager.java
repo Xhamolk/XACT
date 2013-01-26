@@ -7,14 +7,15 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import xk.xact.core.ItemChip;
 import xk.xact.XActMod;
+import xk.xact.core.ItemChip;
 import xk.xact.util.FakeCraftingInventory;
 
 import java.util.ArrayList;
 
 /**
  * Handles the encoding/decoding of CraftRecipes.
+ *
  * @author Xhamolk_
  */
 public class CraftManager {
@@ -26,37 +27,37 @@ public class CraftManager {
 	 * @return an ItemStack with the recipe stored in it's NBT.
 	 */
 	public static ItemStack encodeRecipe(CraftRecipe recipe) {
-		ItemStack stack = new ItemStack(XActMod.itemRecipeEncoded, 1);
+		ItemStack stack = new ItemStack( XActMod.itemRecipeEncoded, 1 );
 
 		if( stack.stackTagCompound == null )
 			stack.stackTagCompound = new NBTTagCompound();
 
-		recipe.writeToNBT(stack.stackTagCompound);
+		recipe.writeToNBT( stack.stackTagCompound );
 		return stack;
 	}
 
-	public static NBTTagCompound generateNBTTagFor(CraftRecipe recipe){
+	public static NBTTagCompound generateNBTTagFor(CraftRecipe recipe) {
 		// Result
 		NBTTagCompound result = new NBTTagCompound();
-		recipe.result.writeToNBT(result);
+		recipe.result.writeToNBT( result );
 
 		// Ingredients
 		NBTTagList listIngredients = new NBTTagList();
 		ItemStack[] ingredients = recipe.ingredients;
 		int i;
-		for( i = 0; i<ingredients.length; i++ ) {
+		for( i = 0; i < ingredients.length; i++ ) {
 			NBTTagCompound tag = new NBTTagCompound();
 			if( ingredients[i] != null ) {
-				tag.setInteger("index", i);
-				ingredients[i].writeToNBT(tag);
-				listIngredients.appendTag(tag);
+				tag.setInteger( "index", i );
+				ingredients[i].writeToNBT( tag );
+				listIngredients.appendTag( tag );
 			}
 		}
 
 		// Actual encoding
-		NBTTagCompound recipeCompound = new NBTTagCompound("encodedRecipe");
-		recipeCompound.setTag("recipeResult", result);
-		recipeCompound.setTag("recipeIngredients", listIngredients);
+		NBTTagCompound recipeCompound = new NBTTagCompound( "encodedRecipe" );
+		recipeCompound.setTag( "recipeResult", result );
+		recipeCompound.setTag( "recipeIngredients", listIngredients );
 
 		return recipeCompound;
 	}
@@ -67,7 +68,7 @@ public class CraftManager {
 	 * @param stack the stack containing the ItemChip
 	 * @return a CraftRecipe representation of the recipe.
 	 */
-	public static CraftRecipe decodeRecipe(ItemStack stack){
+	public static CraftRecipe decodeRecipe(ItemStack stack) {
 		if( stack == null || !(stack.getItem() instanceof ItemChip) )
 			return null;
 
@@ -75,28 +76,29 @@ public class CraftManager {
 		if( stack.stackTagCompound == null )
 			return null;
 
-		return CraftRecipe.readFromNBT(stack.stackTagCompound);
+		return CraftRecipe.readFromNBT( stack.stackTagCompound );
 	}
 
-    /**
-     * Generate a CraftRecipe instance from the ingredients provided.
-     * @param ingredients the recipe's ingredients.
-     * @return null if invalid or recipe not found. Else, a CraftRecipe representation.
-     */
-    public static CraftRecipe generateRecipe(ItemStack[] ingredients, World world) {
-		if(ingredients == null || ingredients.length != 9)
+	/**
+	 * Generate a CraftRecipe instance from the ingredients provided.
+	 *
+	 * @param ingredients the recipe's ingredients.
+	 * @return null if invalid or recipe not found. Else, a CraftRecipe representation.
+	 */
+	public static CraftRecipe generateRecipe(ItemStack[] ingredients, World world) {
+		if( ingredients == null || ingredients.length != 9 )
 			return null;
 
-		FakeCraftingInventory craftGrid = FakeCraftingInventory.emulateContents(ingredients);
+		FakeCraftingInventory craftGrid = FakeCraftingInventory.emulateContents( ingredients );
 		if( craftGrid == null )
 			return null;
 
-		RecipePointer pointer = getRecipeFrom(craftGrid, world);
+		RecipePointer pointer = getRecipeFrom( craftGrid, world );
 		if( pointer == null )
 			return null;
 
-		return pointer.getCraftRecipe(craftGrid);
-    }
+		return pointer.getCraftRecipe( craftGrid );
+	}
 
 	////////////////////
 	///// NBT Structure
@@ -116,7 +118,7 @@ public class CraftManager {
 	 * @return true if contains an instance of this class.
 	 */
 	public static boolean isValid(ItemStack stack) {
-		return ( stack != null && stack.getItem() instanceof ItemChip);
+		return (stack != null && stack.getItem() instanceof ItemChip);
 	}
 
 	/**
@@ -126,18 +128,18 @@ public class CraftManager {
 	 * @param stack the stack to check.
 	 * @return true if contains an encoded recipe.
 	 */
-	public static boolean isEncoded(ItemStack stack){
-		return isValid(stack) && ((ItemChip) stack.getItem()).encoded;
+	public static boolean isEncoded(ItemStack stack) {
+		return isValid( stack ) && ((ItemChip) stack.getItem()).encoded;
 	}
 
 
 	public static RecipePointer getRecipeFrom(InventoryCrafting gridInv, World world) {
 		ArrayList recipeList = (ArrayList) CraftingManager.getInstance().getRecipeList();
 
-		for( int i=0; i<recipeList.size(); i ++ ) {
-			IRecipe currentRecipe = (IRecipe) recipeList.get(i);
-			if( currentRecipe.matches(gridInv, world) )
-				return RecipePointer.getRecipe(i);
+		for( int i = 0; i < recipeList.size(); i++ ) {
+			IRecipe currentRecipe = (IRecipe) recipeList.get( i );
+			if( currentRecipe.matches( gridInv, world ) )
+				return RecipePointer.getRecipe( i );
 		}
 		return null;
 	}

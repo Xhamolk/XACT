@@ -19,7 +19,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 	private ArrayList<ItemStack> ingredients = new ArrayList<ItemStack>();
 
 	// Contains the ingredients with recipes.
-	private HashMap<ItemStack,CraftRecipe> recipes = new HashMap<ItemStack, CraftRecipe>();
+	private HashMap<ItemStack, CraftRecipe> recipes = new HashMap<ItemStack, CraftRecipe>();
 
 	private CraftingProject project;
 
@@ -29,7 +29,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 
 	public void addIngredient(ItemStack ingredient) {
-		if( ingredient != null && !containsIngredient( ingredient ) ){
+		if( ingredient != null && !containsIngredient( ingredient ) ) {
 			ItemStack copy = ingredient.copy();
 			copy.stackSize = 1;
 			ingredients.add( copy );
@@ -49,7 +49,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 	public boolean hasRecipe(ItemStack item) {
 		for( ItemStack current : recipes.keySet() ) {
-			if( InventoryUtils.similarStacks(current, item, false ) )
+			if( InventoryUtils.similarStacks( current, item, false ) )
 				return true;
 		}
 		return false;
@@ -76,7 +76,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 	}
 
 	public void removeRecipe(ItemStack item) {
-		recipes.remove(item);
+		recipes.remove( item );
 		refreshIngredients();
 	}
 
@@ -116,50 +116,50 @@ public class IngredientsList implements Iterable<ItemStack> {
 	///////////////
 	///// NBT
 
-	public void writeToNBT( NBTTagCompound compound ) {
+	public void writeToNBT(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
 
 		// Write the ingredients.
 		NBTTagList list1 = new NBTTagList();
 		for( ItemStack stack : this ) {
 			NBTTagCompound tag = new NBTTagCompound();
-			InventoryUtils.writeItemStackToNBT(nbt, stack, "ingredient");
-			list1.appendTag(tag);
+			InventoryUtils.writeItemStackToNBT( nbt, stack, "ingredient" );
+			list1.appendTag( tag );
 		}
-		nbt.setTag("ingredientList", list1);
+		nbt.setTag( "ingredientList", list1 );
 
 		// Write the recipes
 		NBTTagList list2 = new NBTTagList();
 		for( ItemStack key : recipes.keySet() ) {
 			NBTTagCompound tag = new NBTTagCompound();
-			InventoryUtils.writeItemStackToNBT( nbt, key, "key");
+			InventoryUtils.writeItemStackToNBT( nbt, key, "key" );
 			recipes.get( key ).writeToNBT( tag );
-			list2.appendTag(tag);
+			list2.appendTag( tag );
 		}
-		nbt.setTag("recipes", list2);
+		nbt.setTag( "recipes", list2 );
 
 		compound.setTag( "projectList", nbt );
 	}
 
-	public void readFromNBT( NBTTagCompound compound ) {
-		NBTTagCompound nbt = (NBTTagCompound) compound.getTag("projectList");
+	public void readFromNBT(NBTTagCompound compound) {
+		NBTTagCompound nbt = (NBTTagCompound) compound.getTag( "projectList" );
 		if( nbt == null )
 			return;
 
 		// Read the ingredients.
-		NBTTagList list1 = nbt.getTagList("ingredientList");
-		for (int i=0; i<list1.tagCount(); i++) {
-			NBTTagCompound tag = (NBTTagCompound) list1.tagAt(i);
-			ItemStack item = InventoryUtils.readStackFromNBT((NBTTagCompound) tag.getTag("ingredient"));
+		NBTTagList list1 = nbt.getTagList( "ingredientList" );
+		for( int i = 0; i < list1.tagCount(); i++ ) {
+			NBTTagCompound tag = (NBTTagCompound) list1.tagAt( i );
+			ItemStack item = InventoryUtils.readStackFromNBT( (NBTTagCompound) tag.getTag( "ingredient" ) );
 			if( item != null )
-				ingredients.add(item);
+				ingredients.add( item );
 		}
 
 		// Read the recipes.
-		NBTTagList list2 = nbt.getTagList("recipes");
-		for (int i=0; i<list2.tagCount(); i++) {
-			NBTTagCompound tag = (NBTTagCompound) list2.tagAt(i);
-			ItemStack key = InventoryUtils.readStackFromNBT((NBTTagCompound) tag.getTag("key"));
+		NBTTagList list2 = nbt.getTagList( "recipes" );
+		for( int i = 0; i < list2.tagCount(); i++ ) {
+			NBTTagCompound tag = (NBTTagCompound) list2.tagAt( i );
+			ItemStack key = InventoryUtils.readStackFromNBT( (NBTTagCompound) tag.getTag( "key" ) );
 			if( key != null ) {
 				CraftRecipe recipe = CraftRecipe.readFromNBT( tag );
 				recipes.put( key, recipe );

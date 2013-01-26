@@ -11,8 +11,9 @@ public interface ICraftingDevice { // todo: javadoc.
 
 	/**
 	 * Provide all the inventories to be included for taking resources from, and for placing remaining items once crafted.
-	 *
+	 * <p/>
 	 * You might want (or not) to include the player's inventory at the end of this list.
+	 *
 	 * @return an array of IInventory objects.
 	 * @see CraftingHandler#createCraftingHandler(ICraftingDevice)
 	 */

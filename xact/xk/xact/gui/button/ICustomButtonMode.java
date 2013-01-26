@@ -7,7 +7,7 @@ public interface ICustomButtonMode {
 	public String toString();
 
 	public static final ICustomButtonMode NULL = new ICustomButtonMode() {
-	    @Override
+		@Override
 		public String toString() {
 			return "NULL";
 		}

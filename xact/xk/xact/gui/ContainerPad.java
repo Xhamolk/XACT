@@ -22,7 +22,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 	public boolean contentsChanged = false;
 
-	public ContainerPad(CraftPad pad, EntityPlayer player){
+	public ContainerPad(CraftPad pad, EntityPlayer player) {
 		super( player );
 		this.craftPad = pad;
 		this.player = player;
@@ -40,27 +40,28 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 
 		// output slot
-		this.addSlotToContainer(new SlotCraft(craftPad, craftPad.outputInv, player, 0, 90, 35));
+		this.addSlotToContainer( new SlotCraft( craftPad, craftPad.outputInv, player, 0, 90, 35 ) );
 
 		// grid
-		for (int i=0; i<3; i++) {
-			for (int e=0; e<3; e++) {
-				this.addSlotToContainer(new Slot(craftPad.gridInv, i*3 + e, e*18 +24, i*18 +24) {
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 3; e++ ) {
+				this.addSlotToContainer( new Slot( craftPad.gridInv, i * 3 + e, e * 18 + 24, i * 18 + 24 ) {
 					@Override
 					public boolean canTakeStack(EntityPlayer player) {
 						return false;
 					}
+
 					@Override
 					public void onSlotChanged() {
 						super.onSlotChanged();
 						onGridChanged();
 					}
-				});
+				} );
 			}
 		}
 
 		// chip
-		this.addSlotToContainer(new Slot(craftPad.chipInv, 0, 137, 40){
+		this.addSlotToContainer( new Slot( craftPad.chipInv, 0, 137, 40 ) {
 			@Override
 			public boolean isItemValid(ItemStack stack) {
 				return stack != null && stack.getItem() instanceof ItemChip;
@@ -68,27 +69,27 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 			@Override
 			public void onSlotChanged() {
-				onChipChanged(this);
+				onChipChanged( this );
 				super.onSlotChanged();
 			}
 
 			@Override
-			public int getSlotStackLimit(){
+			public int getSlotStackLimit() {
 				return 1;
 			}
 
-		});
+		} );
 
 		// main player inv
-		for (int i=0; i<3; i++) {
-			for (int e=0; e<9; e++) {
-				this.addSlotToContainer(new Slot(player.inventory, (i+1)*9 +e, e*18 +8, i*18 +98));
+		for( int i = 0; i < 3; i++ ) {
+			for( int e = 0; e < 9; e++ ) {
+				this.addSlotToContainer( new Slot( player.inventory, (i + 1) * 9 + e, e * 18 + 8, i * 18 + 98 ) );
 			}
 		}
 
 		// hot-bar
-		for (int i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(player.inventory, i, i*18 +8,  156));
+		for( int i = 0; i < 9; ++i ) {
+			this.addSlotToContainer( new Slot( player.inventory, i, i * 18 + 8, 156 ) );
 		}
 	}
 
@@ -96,20 +97,20 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		// Placing an encoded chips will replace the current recipe, by design
 
 		if( slot.getHasStack() ) { // placed a chip
-			CraftRecipe recipe = RecipeUtils.getRecipe(slot.getStack(), player.worldObj);
+			CraftRecipe recipe = RecipeUtils.getRecipe( slot.getStack(), player.worldObj );
 
 			if( recipe != null ) { // placed an encoded chip
 				// update the crafting grid, without notifying it
-				craftPad.gridInv.setContents(recipe.getIngredients());
+				craftPad.gridInv.setContents( recipe.getIngredients() );
 
 				// update the output slot
-				craftPad.outputInv.setInventorySlotContents(0, recipe.getResult());
+				craftPad.outputInv.setInventorySlotContents( 0, recipe.getResult() );
 				craftPad.outputInv.onInventoryChanged();
 
 			} else { // placing a blank chip
 				// Automatically clear invalid chips.
-				if( CraftManager.isEncoded(slot.getStack()) ) {
-					slot.putStack( new ItemStack(XActMod.itemRecipeBlank) );
+				if( CraftManager.isEncoded( slot.getStack() ) ) {
+					slot.putStack( new ItemStack( XActMod.itemRecipeBlank ) );
 				}
 			}
 
@@ -121,9 +122,9 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	private void onGridChanged() {
 
 		// update the output slot.
-		CraftRecipe recipe = craftPad.getRecipe(0);
+		CraftRecipe recipe = craftPad.getRecipe( 0 );
 		ItemStack outputStack = recipe == null ? null : recipe.getResult();
-		craftPad.outputInv.setInventorySlotContents(0, outputStack);
+		craftPad.outputInv.setInventorySlotContents( 0, outputStack );
 
 		this.notifyOfChange();
 	}
@@ -136,15 +137,15 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	public void setStack(int slotID, ItemStack stack) {
 		if( slotID == -1 ) { // Clear the grid
 			for( int i = 0; i < 9; i++ ) {
-				Slot slot = (Slot) this.inventorySlots.get(i +1);
+				Slot slot = (Slot) this.inventorySlots.get( i + 1 );
 				slot.putStack( null );
 			}
 			return;
 		}
 
-		Slot slot = (Slot) this.inventorySlots.get(slotID);
+		Slot slot = (Slot) this.inventorySlots.get( slotID );
 		if( slot != null ) {
-			slot.putStack(stack);
+			slot.putStack( stack );
 		}
 		this.notifyOfChange();
 	}
@@ -159,23 +160,23 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		InventoryPlayer inventoryPlayer = player.inventory;
 
 		// clicking out of the GUI. drop stuff.
-		if (slotID == -999) {
-			if ( inventoryPlayer.getItemStack() != null ) {
-				if (buttomPressed == 0) {
-					player.dropPlayerItem(inventoryPlayer.getItemStack());
-					inventoryPlayer.setItemStack(null);
+		if( slotID == -999 ) {
+			if( inventoryPlayer.getItemStack() != null ) {
+				if( buttomPressed == 0 ) {
+					player.dropPlayerItem( inventoryPlayer.getItemStack() );
+					inventoryPlayer.setItemStack( null );
 				}
-				if (buttomPressed == 1) {
-					player.dropPlayerItem(inventoryPlayer.getItemStack().splitStack(1));
-					if (inventoryPlayer.getItemStack().stackSize == 0) {
-						inventoryPlayer.setItemStack(null);
+				if( buttomPressed == 1 ) {
+					player.dropPlayerItem( inventoryPlayer.getItemStack().splitStack( 1 ) );
+					if( inventoryPlayer.getItemStack().stackSize == 0 ) {
+						inventoryPlayer.setItemStack( null );
 					}
 				}
 			}
 			return null;
 		}
 
-		Slot slot = ((Slot)this.inventorySlots.get(slotID));
+		Slot slot = ((Slot) this.inventorySlots.get( slotID ));
 		if( slot == null )
 			return null;
 		boolean craftingSlot = slot instanceof SlotCraft;
@@ -188,12 +189,12 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		if( 1 <= slotID && slotID < 10 ) {
 
 			if( flag == 0 ) { // regular clicking.
-				if( buttomPressed == 0 || playerStack == null ){
-					slot.putStack(null);
-				} else if( buttomPressed == 1 ){
+				if( buttomPressed == 0 || playerStack == null ) {
+					slot.putStack( null );
+				} else if( buttomPressed == 1 ) {
 					ItemStack copy = playerStack.copy();
 					copy.stackSize = 1;
-					slot.putStack(copy);
+					slot.putStack( copy );
 				}
 				slot.onSlotChanged();
 				return null;
@@ -203,12 +204,12 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 				return null; // do nothing on shift click.
 
 			if( flag == 2 ) { // interact with the hot-bar
-				ItemStack invStack = player.inventory.getStackInSlot(buttomPressed);
+				ItemStack invStack = player.inventory.getStackInSlot( buttomPressed );
 				if( invStack != null ) {
 					ItemStack copy = invStack.copy();
 					copy.stackSize = 1;
 
-					slot.putStack(copy);
+					slot.putStack( copy );
 					slot.onSlotChanged();
 					return invStack;
 				}
@@ -221,71 +222,71 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 			if( stackInSlot == null ) { // Placing player's stack on empty slot.
 
-				if( playerStack != null && slot.isItemValid(playerStack) ) {
+				if( playerStack != null && slot.isItemValid( playerStack ) ) {
 					int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
 
-					if (amount > slot.getSlotStackLimit()) {
+					if( amount > slot.getSlotStackLimit() ) {
 						amount = slot.getSlotStackLimit();
 					}
 
-					slot.putStack(playerStack.splitStack(amount));
+					slot.putStack( playerStack.splitStack( amount ) );
 
-					if (playerStack.stackSize == 0) {
-						inventoryPlayer.setItemStack(null);
+					if( playerStack.stackSize == 0 ) {
+						inventoryPlayer.setItemStack( null );
 					}
 				}
 
-			} else if( slot.canTakeStack(player) ) {  // interact with the slot.
+			} else if( slot.canTakeStack( player ) ) {  // interact with the slot.
 
 				if( playerStack == null ) { // Full extraction from slot.
 					int amount = buttomPressed == 0 || craftingSlot ? stackInSlot.stackSize : (stackInSlot.stackSize + 1) / 2;
 
 					ItemStack itemStack = craftingSlot ?
-							((SlotCraft)slot).getCraftedStack() : slot.decrStackSize(amount);
+							((SlotCraft) slot).getCraftedStack() : slot.decrStackSize( amount );
 
 					inventoryPlayer.setItemStack( itemStack );
 
 					if( stackInSlot.stackSize == 0 )
-						slot.putStack(null);
+						slot.putStack( null );
 
-					slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
+					slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
 
-				} else if( slot.isItemValid(playerStack) ) { // Merge to slot
+				} else if( slot.isItemValid( playerStack ) ) { // Merge to slot
 
-					if( equalsStacks(stackInSlot, playerStack) ) { // split player's into slot.
+					if( equalsStacks( stackInSlot, playerStack ) ) { // split player's into slot.
 						int amount = buttomPressed == 0 ? playerStack.stackSize : 1;
 
-						int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize);
+						int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize );
 						if( amount > max )
 							amount = max;
 
-						playerStack.splitStack(amount);
+						playerStack.splitStack( amount );
 						stackInSlot.stackSize += amount;
 
-						if (playerStack.stackSize == 0) {
-							inventoryPlayer.setItemStack(null);
+						if( playerStack.stackSize == 0 ) {
+							inventoryPlayer.setItemStack( null );
 						}
 
 					} else if( playerStack.stackSize <= slot.getSlotStackLimit() ) { // swap stacks.
-						slot.putStack(playerStack);
-						inventoryPlayer.setItemStack(stackInSlot);
+						slot.putStack( playerStack );
+						inventoryPlayer.setItemStack( stackInSlot );
 					}
 
-				} else if (equalsStacks(stackInSlot, playerStack) && playerStack.getMaxStackSize() > 1) { // extract some
+				} else if( equalsStacks( stackInSlot, playerStack ) && playerStack.getMaxStackSize() > 1 ) { // extract some
 					if( craftingSlot )
-						stackInSlot = ((SlotCraft)slot).getCraftedStack();
+						stackInSlot = ((SlotCraft) slot).getCraftedStack();
 					int amount = stackInSlot.stackSize;
 
-					if (amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize()) {
+					if( amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize() ) {
 						playerStack.stackSize += amount;
 						if( !craftingSlot )
-							stackInSlot = slot.decrStackSize(amount);
+							stackInSlot = slot.decrStackSize( amount );
 
-						if (stackInSlot.stackSize == 0) {
-							slot.putStack(null);
+						if( stackInSlot.stackSize == 0 ) {
+							slot.putStack( null );
 						}
 
-						slot.onPickupFromSlot(player, inventoryPlayer.getItemStack());
+						slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
 					}
 				}
 			}
@@ -295,14 +296,14 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		}
 		// Shift-clicking
 		else if( flag == 1 && (buttomPressed == 0 || buttomPressed == 1) ) {
-			if (slot != null && slot.canTakeStack(player)) {
-				ItemStack stack = this.transferStackInSlot(player, slotID);
+			if( slot != null && slot.canTakeStack( player ) ) {
+				ItemStack stack = this.transferStackInSlot( player, slotID );
 
-				if (stack != null) {
+				if( stack != null ) {
 					retValue = stack.copy();
 
-					if( craftingSlot || ( slot.getStack() != null && slot.getStack().itemID == stack.itemID) ) {
-						this.retrySlotClick(slotID, buttomPressed, true, player);
+					if( craftingSlot || (slot.getStack() != null && slot.getStack().itemID == stack.itemID) ) {
+						this.retrySlotClick( slotID, buttomPressed, true, player );
 					}
 				}
 				return retValue;
@@ -310,36 +311,34 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		}
 		// Interacting with the hot bar.
 		else if( flag == 2 ) {
-			if (slot.canTakeStack(player)) {
-				ItemStack itemStack = inventoryPlayer.getStackInSlot(buttomPressed);
-				boolean var9 = itemStack == null || slot.inventory == inventoryPlayer && slot.isItemValid(itemStack);
+			if( slot.canTakeStack( player ) ) {
+				ItemStack itemStack = inventoryPlayer.getStackInSlot( buttomPressed );
+				boolean var9 = itemStack == null || slot.inventory == inventoryPlayer && slot.isItemValid( itemStack );
 				int index = -1;
 
-				if (!var9) {
+				if( !var9 ) {
 					index = inventoryPlayer.getFirstEmptyStack();
 					var9 = index > -1;
 				}
 
-				if (slot.getHasStack() && var9) {
-					ItemStack slotStack = craftingSlot ? ((SlotCraft)slot).getCraftedStack() : slot.getStack();
-					inventoryPlayer.setInventorySlotContents(buttomPressed, slotStack);
+				if( slot.getHasStack() && var9 ) {
+					ItemStack slotStack = craftingSlot ? ((SlotCraft) slot).getCraftedStack() : slot.getStack();
+					inventoryPlayer.setInventorySlotContents( buttomPressed, slotStack );
 
-					if ((slot.inventory != inventoryPlayer || !slot.isItemValid(itemStack)) && itemStack != null) {
-						if (index > -1) {
-							inventoryPlayer.addItemStackToInventory(itemStack);
+					if( (slot.inventory != inventoryPlayer || !slot.isItemValid( itemStack )) && itemStack != null ) {
+						if( index > -1 ) {
+							inventoryPlayer.addItemStackToInventory( itemStack );
 							if( !craftingSlot )
-								slot.putStack(null);
-							slot.onPickupFromSlot(player, slotStack);
+								slot.putStack( null );
+							slot.onPickupFromSlot( player, slotStack );
 						}
 					} else {
-						slot.putStack(itemStack);
-						slot.onPickupFromSlot(player, slotStack);
+						slot.putStack( itemStack );
+						slot.onPickupFromSlot( player, slotStack );
 					}
-				}
-				else if (!slot.getHasStack() && itemStack != null && slot.isItemValid(itemStack))
-				{
-					inventoryPlayer.setInventorySlotContents(buttomPressed, null);
-					slot.putStack(itemStack);
+				} else if( !slot.getHasStack() && itemStack != null && slot.isItemValid( itemStack ) ) {
+					inventoryPlayer.setInventorySlotContents( buttomPressed, null );
+					slot.putStack( itemStack );
 				}
 			}
 		}
@@ -351,7 +350,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
 		// only the output slot and any slot with a chip on it will respond to shift-clicking
 
-		Slot slot = (Slot) inventorySlots.get(slotID);
+		Slot slot = (Slot) inventorySlots.get( slotID );
 		if( slot == null || !slot.getHasStack() )
 			return null;
 
@@ -360,11 +359,11 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 		// output's slot
 		if( slot instanceof SlotCraft ) {
-			stackInSlot = ((SlotCraft)slot).getCraftedStack();
+			stackInSlot = ((SlotCraft) slot).getCraftedStack();
 			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
 
-			if ( mergeCraftedStack(stackInSlot, 11, inventorySlots.size()) ) {
-				slot.onPickupFromSlot(player, stackInSlot);
+			if( mergeCraftedStack( stackInSlot, 11, inventorySlots.size() ) ) {
+				slot.onPickupFromSlot( player, stackInSlot );
 				slot.onSlotChanged();
 				return copy;
 			}
@@ -375,32 +374,32 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		if( stackInSlot.getItem() instanceof ItemChip ) {
 			if( slotID == 10 ) { // chip slot
 				// try add to player's inventory
-				if (!mergeItemStack(stackInSlot, 11, inventorySlots.size(), false))
+				if( !mergeItemStack( stackInSlot, 11, inventorySlots.size(), false ) )
 					return null;
 			} else if( slotID >= 11 ) { // slot on player's inv
-				ItemStack currentChip = craftPad.chipInv.getStackInSlot(0);
+				ItemStack currentChip = craftPad.chipInv.getStackInSlot( 0 );
 
 				if( currentChip == null ) { // empty chip slot
 					// add to the chip's slot
-					if (!mergeItemStack(stackInSlot.splitStack(1), 10, 11, false))
+					if( !mergeItemStack( stackInSlot.splitStack( 1 ), 10, 11, false ) )
 						return null;
 
-				} else if( CraftManager.isEncoded(currentChip) && CraftManager.isEncoded(stackInSlot) ) {
+				} else if( CraftManager.isEncoded( currentChip ) && CraftManager.isEncoded( stackInSlot ) ) {
 					// swap the chips.
-					slot.putStack(currentChip);
+					slot.putStack( currentChip );
 
-					Slot chipSlot = (Slot) inventorySlots.get(10);
-					chipSlot.putStack(stackInSlot);
+					Slot chipSlot = (Slot) inventorySlots.get( 10 );
+					chipSlot.putStack( stackInSlot );
 					chipSlot.onSlotChanged();
 				}
 			}
 		}
 
 		if( stackInSlot.stackSize == 0 ) {
-			slot.putStack(null);
+			slot.putStack( null );
 		}
 
-		slot.onPickupFromSlot(player, retValue);
+		slot.onPickupFromSlot( player, retValue );
 		slot.onSlotChanged();
 
 		return retValue;
@@ -413,7 +412,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		int emptySlots = 0;
 
 		for( int i = indexMin; i < indexMax && missingSpace > 0; i++ ) {
-			Slot tempSlot = (Slot) this.inventorySlots.get(i);
+			Slot tempSlot = (Slot) this.inventorySlots.get( i );
 			ItemStack stackInSlot = tempSlot.getStack();
 
 			if( stackInSlot == null ) {
@@ -423,9 +422,9 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 			if( stackInSlot.itemID == itemStack.itemID
 					&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
-					&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+					&& ItemStack.areItemStackTagsEqual( itemStack, stackInSlot ) ) {
 
-				missingSpace -= Math.min(stackInSlot.getMaxStackSize(), tempSlot.getSlotStackLimit()) - stackInSlot.stackSize;
+				missingSpace -= Math.min( stackInSlot.getMaxStackSize(), tempSlot.getSlotStackLimit() ) - stackInSlot.stackSize;
 			}
 		}
 
@@ -441,7 +440,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 				if( itemStack.stackSize <= 0 )
 					break;
 
-				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				Slot targetSlot = (Slot) this.inventorySlots.get( i );
 				ItemStack stackInSlot = targetSlot.getStack();
 
 				if( stackInSlot == null )
@@ -449,17 +448,16 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 				if( stackInSlot.itemID == itemStack.itemID
 						&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
-						&& ItemStack.areItemStackTagsEqual(itemStack, stackInSlot)) {
+						&& ItemStack.areItemStackTagsEqual( itemStack, stackInSlot ) ) {
 
 					int sum = itemStack.stackSize + stackInSlot.stackSize;
-					int maxStackSize = Math.min(stackInSlot.getMaxStackSize(), targetSlot.getSlotStackLimit());
+					int maxStackSize = Math.min( stackInSlot.getMaxStackSize(), targetSlot.getSlotStackLimit() );
 
 					if( sum <= maxStackSize ) {
 						stackInSlot.stackSize = sum;
 						targetSlot.onSlotChanged();
 						return true;
-					}
-					else if( stackInSlot.stackSize < maxStackSize  ) {
+					} else if( stackInSlot.stackSize < maxStackSize ) {
 						itemStack.stackSize -= maxStackSize - stackInSlot.stackSize;
 						stackInSlot.stackSize = maxStackSize;
 						targetSlot.onSlotChanged();
@@ -469,11 +467,11 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		}
 
 		// Add to an empty slot.
-		if (itemStack.stackSize > 0) {
+		if( itemStack.stackSize > 0 ) {
 
 			for( int i = indexMin; i < indexMax; i++ ) {
 
-				Slot targetSlot = (Slot)this.inventorySlots.get(i);
+				Slot targetSlot = (Slot) this.inventorySlots.get( i );
 				ItemStack stackInSlot = targetSlot.getStack();
 
 				if( stackInSlot != null )
@@ -496,22 +494,22 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		 */
 		if( slotID == 0 ) // the output slot
 			if( button == 0 ) // left click + shift button.
-				slotClick(slotID, button, 1, player); // retry
+				slotClick( slotID, button, 1, player ); // retry
 	}
 
 	@Override
 	public void onCraftGuiClosed(EntityPlayer player) {
-		super.onCraftGuiClosed(player);
+		super.onCraftGuiClosed( player );
 		ItemStack current = player.inventory.getCurrentItem();
 		if( current != null ) {
-			current.setItemDamage(0);
+			current.setItemDamage( 0 );
 		}
 	}
 
-	private boolean equalsStacks( ItemStack stack1, ItemStack stack2 ){
+	private boolean equalsStacks(ItemStack stack1, ItemStack stack2) {
 		return stack1.itemID == stack2.itemID
 				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())
-				&& ItemStack.areItemStackTagsEqual(stack1, stack2);
+				&& ItemStack.areItemStackTagsEqual( stack1, stack2 );
 	}
 
 
@@ -526,8 +524,8 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	@Override
 	public void saveContentsToNBT(ItemStack itemStack) {
 		if( !itemStack.hasTagCompound() )
-			itemStack.setTagCompound(new NBTTagCompound());
-		craftPad.writeToNBT(itemStack.stackTagCompound);
+			itemStack.setTagCompound( new NBTTagCompound() );
+		craftPad.writeToNBT( itemStack.stackTagCompound );
 	}
 
 	@Override

@@ -14,9 +14,9 @@ import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Inventory;
 
 /**
-*
-*
-*/
+ *
+ *
+ */
 
 // Used by the GUI
 public class CraftPad implements ICraftingDevice {
@@ -35,15 +35,15 @@ public class CraftPad implements ICraftingDevice {
 
 	public CraftPad(ItemStack stack, EntityPlayer player) {
 		this.player = player;
-		this.outputInv = new Inventory(1, "outputInv");
-		this.gridInv = new Inventory(9, "gridInv") {
+		this.outputInv = new Inventory( 1, "outputInv" );
+		this.gridInv = new Inventory( 9, "gridInv" ) {
 			@Override
 			public void onInventoryChanged() {
 				super.onInventoryChanged();
 				inventoryChanged = true;
 			}
 		};
-		this.chipInv = new Inventory(1, "chipInv") {
+		this.chipInv = new Inventory( 1, "chipInv" ) {
 			@Override
 			public void onInventoryChanged() {
 				super.onInventoryChanged();
@@ -51,11 +51,11 @@ public class CraftPad implements ICraftingDevice {
 			}
 		};
 
-		this.handler = CraftingHandler.createCraftingHandler(this);
+		this.handler = CraftingHandler.createCraftingHandler( this );
 
 		if( !stack.hasTagCompound() )
 			stack.stackTagCompound = new NBTTagCompound();
-		this.readFromNBT(stack.getTagCompound());
+		this.readFromNBT( stack.getTagCompound() );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -68,7 +68,7 @@ public class CraftPad implements ICraftingDevice {
 
 	@Override
 	public final IInventory[] getAvailableInventories() {
-		return new IInventory[]{ player.inventory };
+		return new IInventory[] {player.inventory};
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class CraftPad implements ICraftingDevice {
 
 	@Override
 	public CraftRecipe getRecipe(int index) {
-		return lastRecipe = RecipeUtils.getRecipe(gridInv.getContents(), player.worldObj);
+		return lastRecipe = RecipeUtils.getRecipe( gridInv.getContents(), player.worldObj );
 	}
 
 	@Override
@@ -95,13 +95,13 @@ public class CraftPad implements ICraftingDevice {
 	/// NBT
 
 	public void readFromNBT(NBTTagCompound compound) {
-		NBTTagCompound tagCraftPad = (NBTTagCompound)compound.getTag("craftPad");
+		NBTTagCompound tagCraftPad = (NBTTagCompound) compound.getTag( "craftPad" );
 		if( tagCraftPad == null )
 			return;
 
-		chipInv.readFromNBT(tagCraftPad);
-		gridInv.readFromNBT(tagCraftPad);
-		outputInv.readFromNBT(tagCraftPad);
+		chipInv.readFromNBT( tagCraftPad );
+		gridInv.readFromNBT( tagCraftPad );
+		outputInv.readFromNBT( tagCraftPad );
 	}
 
 	public void writeToNBT(NBTTagCompound compound) {
@@ -110,14 +110,14 @@ public class CraftPad implements ICraftingDevice {
 
 		NBTTagCompound tagCraftPad = new NBTTagCompound();
 
-		chipInv.writeToNBT(tagCraftPad);
-		gridInv.writeToNBT(tagCraftPad);
-		outputInv.writeToNBT(tagCraftPad);
+		chipInv.writeToNBT( tagCraftPad );
+		gridInv.writeToNBT( tagCraftPad );
+		outputInv.writeToNBT( tagCraftPad );
 
 		String loadedRecipe = lastRecipe == null ? "" : lastRecipe.toString();
-		compound.setString("loadedRecipe",  loadedRecipe);
+		compound.setString( "loadedRecipe", loadedRecipe );
 
-		compound.setTag("craftPad", tagCraftPad);
+		compound.setTag( "craftPad", tagCraftPad );
 	}
 
 	/*

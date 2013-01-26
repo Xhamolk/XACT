@@ -2,6 +2,7 @@ package xk.xact.util;
 
 
 import xk.xact.recipes.CraftRecipe;
+
 import java.util.Stack;
 
 public class RecipeDeque {
@@ -14,7 +15,7 @@ public class RecipeDeque {
 	public void pushRecipe(CraftRecipe recipe) {
 		if( recipe == null )
 			return;
-		if( current != null && !current.equals(recipe) ) {
+		if( current != null && !current.equals( recipe ) ) {
 			previousRecipes.push( current );
 		}
 		current = recipe;

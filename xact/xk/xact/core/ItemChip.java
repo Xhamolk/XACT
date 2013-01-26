@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * The item used for the encoding of recipes.
+ *
  * @author Xhamolk_
  */
 public class ItemChip extends Item {
@@ -21,13 +22,13 @@ public class ItemChip extends Item {
 	 */
 
 	public final boolean encoded;
-	
+
 	public ItemChip(int itemID, boolean encoded) {
-		super(itemID);
+		super( itemID );
 		this.encoded = encoded;
-		this.setItemName("recipeChip." + (encoded ? "encoded" : "blank"));
-		this.setTextureFile(XActMod.TEXTURE_ITEMS);
-		this.setCreativeTab(XActMod.xactTab);
+		this.setItemName( "recipeChip." + (encoded ? "encoded" : "blank") );
+		this.setTextureFile( XActMod.TEXTURE_ITEMS );
+		this.setCreativeTab( XActMod.xactTab );
 	}
 
 	@Override
@@ -39,26 +40,26 @@ public class ItemChip extends Item {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-		if( itemStack.getItem() instanceof ItemChip){
-			if( ((ItemChip)itemStack.getItem()).encoded ){
-				CraftRecipe recipe = RecipeUtils.getRecipe(itemStack, player.worldObj);
+		if( itemStack.getItem() instanceof ItemChip ) {
+			if( ((ItemChip) itemStack.getItem()).encoded ) {
+				CraftRecipe recipe = RecipeUtils.getRecipe( itemStack, player.worldObj );
 				if( recipe != null ) {
 					ItemStack result = recipe.getResult();
 
-					String itemName = result.getItem().getItemDisplayName(result);
-					list.add("\u00a73" + "Recipe: "+ itemName);
+					String itemName = result.getItem().getItemDisplayName( result );
+					list.add( "\u00a73" + "Recipe: " + itemName );
 				} else {
-					list.add("\u00a7c<invalid>");
+					list.add( "\u00a7c<invalid>" );
 				}
 			} else {
 				// blank recipes.
-				list.add("\u00a77" + "<blank>");
+				list.add( "\u00a77" + "<blank>" );
 			}
 		}
 	}
 
-    @Override
-	public int getIconFromDamage(int itemDamage){
+	@Override
+	public int getIconFromDamage(int itemDamage) {
 		return this.encoded ? 1 : 0;
 	}
 

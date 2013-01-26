@@ -11,24 +11,24 @@ public class RecipeUtils {
 
 
 	public static boolean matchesIngredient(CraftRecipe recipe, ItemStack ingredient, ItemStack otherStack, World world) {
-		try{
+		try {
 			IRecipe iRecipe = recipe.getRecipePointer().getIRecipe();
 
-			int ingredientIndex = getIngredientIndex(recipe, ingredient);
+			int ingredientIndex = getIngredientIndex( recipe, ingredient );
 			if( ingredientIndex == -1 )
 				return false;
 
 			FakeCraftingInventory craftingGrid = FakeCraftingInventory.emulateContents( recipe.getIngredients() );
-			craftingGrid.setInventorySlotContents(ingredientIndex, otherStack);
+			craftingGrid.setInventorySlotContents( ingredientIndex, otherStack );
 
-			if( !iRecipe.matches(craftingGrid, world) )
+			if( !iRecipe.matches( craftingGrid, world ) )
 				return false;
 
 			ItemStack nominalResult = recipe.getResult();
 			ItemStack realResult = iRecipe.getCraftingResult( craftingGrid );
 
 			return InventoryUtils.similarStacks( nominalResult, realResult, false );
-		} catch(NullPointerException npe) {
+		} catch ( NullPointerException npe ) {
 			return false;
 		}
 	}
@@ -36,8 +36,8 @@ public class RecipeUtils {
 	public static int getIngredientIndex(CraftRecipe recipe, ItemStack ingredient) {
 		ItemStack[] ingredients = recipe.getIngredients();
 		int size = ingredients.length;
-		for( int i=0; i<size; i++ ) {
-			if( ingredients[i] != null && ingredients[i].isItemEqual(ingredient) )
+		for( int i = 0; i < size; i++ ) {
+			if( ingredients[i] != null && ingredients[i].isItemEqual( ingredient ) )
 				return i;
 		}
 		return -1;
@@ -45,18 +45,18 @@ public class RecipeUtils {
 
 
 	public static CraftRecipe getRecipe(ItemStack recipeChip, World world) {
-		CraftRecipe recipe = CraftManager.decodeRecipe(recipeChip);
+		CraftRecipe recipe = CraftManager.decodeRecipe( recipeChip );
 		if( recipe != null ) {
-			if( recipe.validate(world) )
+			if( recipe.validate( world ) )
 				return recipe;
 		}
 		return null;
 	}
 
 	public static CraftRecipe getRecipe(ItemStack[] gridContents, World world) {
-		CraftRecipe recipe = CraftManager.generateRecipe(gridContents, world);
+		CraftRecipe recipe = CraftManager.generateRecipe( gridContents, world );
 		if( recipe != null ) {
-			if( recipe.validate(world) )
+			if( recipe.validate( world ) )
 				return recipe;
 		}
 		return null;

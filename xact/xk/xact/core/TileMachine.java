@@ -7,11 +7,11 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.ArrayList;
 
 /**
- * 
- * 
+ *
+ *
  */
 public abstract class TileMachine extends TileEntity {
-	
+
 	public abstract ArrayList<ItemStack> getDropItems();
 
 }

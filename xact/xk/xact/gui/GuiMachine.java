@@ -9,7 +9,7 @@ import net.minecraft.inventory.Container;
 public abstract class GuiMachine extends GuiContainer {
 
 	public GuiMachine(Container container) {
-		super(container);
+		super( container );
 	}
 
 	@Override
@@ -19,7 +19,6 @@ public abstract class GuiMachine extends GuiContainer {
 	}
 
 	public abstract void onInit();
-
 
 
 }

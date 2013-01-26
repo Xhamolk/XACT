@@ -7,13 +7,13 @@ import xk.xact.XActMod;
 
 public class CreativeTabXACT extends CreativeTabs {
 
-    public CreativeTabXACT() {
-        super("xact");
-    }
+	public CreativeTabXACT() {
+		super( "xact" );
+	}
 
 	@Override
-    public ItemStack getIconItemStack() {
-        return new ItemStack(XActMod.blockMachine, 1, 1);
-    }
+	public ItemStack getIconItemStack() {
+		return new ItemStack( XActMod.blockMachine, 1, 1 );
+	}
 
 }

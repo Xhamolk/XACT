@@ -21,7 +21,6 @@ import static xk.xact.util.InventoryUtils.inventoryIterator;
 
 /**
  * This handles the crafting of the recipes for the Crafter machine and for the Chips.
- *
  */
 public abstract class CraftingHandler {
 
@@ -34,10 +33,11 @@ public abstract class CraftingHandler {
 
 	/**
 	 * Easy way to create a CraftingHandler.
+	 *
 	 * @param device the ICraftingDevice from which to reference the AvailableInventories
 	 */
-	public static CraftingHandler createCraftingHandler(final ICraftingDevice device){
-		return new CraftingHandler(device) {
+	public static CraftingHandler createCraftingHandler(final ICraftingDevice device) {
+		return new CraftingHandler( device ) {
 			@Override
 			public IInventory[] getAvailableInventories() {
 				return device.getAvailableInventories();
@@ -61,10 +61,10 @@ public abstract class CraftingHandler {
 			return true;
 
 		ItemStack[] ingredients = recipe.getSimplifiedIngredients();
-		for(ItemStack cur : ingredients) {
+		for( ItemStack cur : ingredients ) {
 			if( cur == null ) continue;
 
-			int found = getCountFor(recipe, cur, false);
+			int found = getCountFor( recipe, cur, false );
 			if( found < cur.stackSize )
 				return false;
 		}
@@ -75,7 +75,7 @@ public abstract class CraftingHandler {
 	 * Manages the crafting of a recipe.
 	 * Fires the crafting event with the ingredients provided.
 	 *
-	 * @param recipe the CraftRecipe from which to take ingredients of the recipe.
+	 * @param recipe      the CraftRecipe from which to take ingredients of the recipe.
 	 * @param craftMatrix the crafting grid with the ingredients for this recipe.
 	 */
 	public ItemStack getRecipeResult(CraftRecipe recipe, InventoryCrafting craftMatrix) {
@@ -85,7 +85,7 @@ public abstract class CraftingHandler {
 		ItemStack craftedItem = recipe.getResult();
 
 		if( craftMatrix != null )
-			craftedItem = recipe.getRecipePointer().getOutputFrom(craftMatrix);
+			craftedItem = recipe.getRecipePointer().getOutputFrom( craftMatrix );
 
 		return craftedItem;
 	}
@@ -95,71 +95,71 @@ public abstract class CraftingHandler {
 
 		ArrayList<ItemStack> remainingList = new ArrayList<ItemStack>();
 
-		for( int i=0; i<craftMatrix.getSizeInventory(); i++) {
-			ItemStack stackInSlot = craftMatrix.getStackInSlot(i);
+		for( int i = 0; i < craftMatrix.getSizeInventory(); i++ ) {
+			ItemStack stackInSlot = craftMatrix.getStackInSlot( i );
 			if( stackInSlot == null )
 				continue;
 
-			craftMatrix.decrStackSize(i, 1);
+			craftMatrix.decrStackSize( i, 1 );
 
-			if (stackInSlot.getItem().hasContainerItem()) {
-				ItemStack containerStack = stackInSlot.getItem().getContainerItemStack(stackInSlot);
+			if( stackInSlot.getItem().hasContainerItem() ) {
+				ItemStack containerStack = stackInSlot.getItem().getContainerItemStack( stackInSlot );
 
-				if (containerStack.isItemStackDamageable()
-						&& containerStack.getItemDamage() > containerStack.getMaxDamage()) {
-					MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, containerStack));
+				if( containerStack.isItemStackDamageable()
+						&& containerStack.getItemDamage() > containerStack.getMaxDamage() ) {
+					MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, containerStack ) );
 					containerStack = null;
 				}
 
-				if (containerStack != null) {
-					if( stackInSlot.getItem().doesContainerItemLeaveCraftingGrid(stackInSlot) )
-						if( player.inventory.addItemStackToInventory(containerStack) )
+				if( containerStack != null ) {
+					if( stackInSlot.getItem().doesContainerItemLeaveCraftingGrid( stackInSlot ) )
+						if( player.inventory.addItemStackToInventory( containerStack ) )
 							continue;
 
-					remainingList.add(containerStack);
+					remainingList.add( containerStack );
 				}
 			}
 		}
 		craftMatrix.onInventoryChanged();
 
 		// give back the remaining items
-		for( ItemStack stack : remainingList ){
-			if(!addToInventories(stack) )
-				player.dropPlayerItem(stack);
+		for( ItemStack stack : remainingList ) {
+			if( !addToInventories( stack ) )
+				player.dropPlayerItem( stack );
 		}
-		ItemStack[] remainingItems = InventoryUtils.getContents(craftMatrix);
-		for( ItemStack stack : remainingItems ){
-			if( !addToInventories(stack) )
-				player.dropPlayerItem(stack);
+		ItemStack[] remainingItems = InventoryUtils.getContents( craftMatrix );
+		for( ItemStack stack : remainingItems ) {
+			if( !addToInventories( stack ) )
+				player.dropPlayerItem( stack );
 		}
 	}
 
 	/**
 	 * Tries to add the ItemStack on to the first available inventory,
 	 * and will iterate through them until it's correctly placed.
-	 *
+	 * <p/>
 	 * Will return true if the stack was completely merged on the inventories.
-	 *
+	 * <p/>
 	 * Note: the stack will be manipulated.
 	 *
 	 * @param stack the stack to be added to the inventories.
-	 * @see CraftingHandler#getAvailableInventories()
 	 * @return true on success. False if the stack couldn't be completely merged to the inventories.
+	 * @see CraftingHandler#getAvailableInventories()
 	 */
 	protected boolean addToInventories(ItemStack stack) {
 		if( stack == null )
 			return true; // technically, counts as a success.
 
-		for(IInventory inv : getAvailableInventories()) {
+		for( IInventory inv : getAvailableInventories() ) {
 			// Merge with existing stacks.
-			ItemStack remaining = InventoryUtils.addStackToInventory(stack, inv, true);
+			ItemStack remaining = InventoryUtils.addStackToInventory( stack, inv, true );
 			if( remaining == null ) {
 				stack.stackSize = 0;
 				return true;
 			}
 
 			// Add to the first empty slot available.
-			remaining = InventoryUtils.addStackToInventory(remaining, inv, false);
+			remaining = InventoryUtils.addStackToInventory( remaining, inv, false );
 			if( remaining == null ) {
 				stack.stackSize = 0;
 				return true;
@@ -174,7 +174,7 @@ public abstract class CraftingHandler {
 
 	/**
 	 * Provide all the inventories to be included for taking resources from, and for placing remaining items once crafted.
-	 *
+	 * <p/>
 	 * You might want (or not) to include the player's inventory at the end of this list.
 	 *
 	 * @return an array of IInventory objects.
@@ -185,23 +185,23 @@ public abstract class CraftingHandler {
 	/**
 	 * Gets the amount of items of the same kind of the passed stack on the available inventories.
 	 *
-	 * @param recipe the CraftRecipe to check
-	 * @param stack the stack to compare with.
+	 * @param recipe   the CraftRecipe to check
+	 * @param stack    the stack to compare with.
 	 * @param countAll whether if this should keep counting after finding enough.
-	 *               Enough implies that the amount found is equal or higher than the amount required.
+	 *                 Enough implies that the amount found is equal or higher than the amount required.
 	 * @return the count of the items found.
 	 */
 	public int getCountFor(CraftRecipe recipe, ItemStack stack, boolean countAll) {
 		int found = 0;
 		IInventory[] inventories = getAvailableInventories();
 		for( IInventory inv : inventories ) {
-            for(InvSlot slot : inventoryIterator(inv)){
-                if( !countAll && found >= stack.stackSize )
-                    break; // prevent counting on more if found enough already.
+			for( InvSlot slot : inventoryIterator( inv ) ) {
+				if( !countAll && found >= stack.stackSize )
+					break; // prevent counting on more if found enough already.
 
-                if( slot != null && !slot.isEmpty() && slotContainsIngredient(slot, recipe, stack) )
-                    found += slot.stack.stackSize;
-            }
+				if( slot != null && !slot.isEmpty() && slotContainsIngredient( slot, recipe, stack ) )
+					found += slot.stack.stackSize;
+			}
 		}
 		return found;
 	}
@@ -214,16 +214,16 @@ public abstract class CraftingHandler {
 	 * @return A FakeCraftingInventory
 	 */
 	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe, EntityPlayer player, boolean takeItems) {
-        if( !canCraft(recipe, player) ) {
-            System.err.println("XACT: generateTemporaryCraftingGridFor: !canCraft");
-            return null;
-        }
+		if( !canCraft( recipe, player ) ) {
+			System.err.println( "XACT: generateTemporaryCraftingGridFor: !canCraft" );
+			return null;
+		}
 		boolean creativeMod = player.capabilities.isCreativeMode;
 		if( creativeMod )
 			return FakeCraftingInventory.emulateContents( recipe.getIngredients() );
 
-        ItemStack[] contents = findAndGetRecipeIngredients(recipe, takeItems);
-        return FakeCraftingInventory.emulateContents(contents);
+		ItemStack[] contents = findAndGetRecipeIngredients( recipe, takeItems );
+		return FakeCraftingInventory.emulateContents( contents );
 	}
 
 	/**
@@ -237,13 +237,13 @@ public abstract class CraftingHandler {
 	public int[] getMissingIngredientsCount(CraftRecipe recipe) { // Example: Missing 3 redstone, 2 cobblestone.
 		ItemStack[] ingredients = recipe.getSimplifiedIngredients();
 		int[] retValue = new int[ingredients.length];
-		for( int i=0; i<ingredients.length; i++) {
+		for( int i = 0; i < ingredients.length; i++ ) {
 			ItemStack stack = ingredients[i];
-			if( stack == null ){
+			if( stack == null ) {
 				retValue[i] = 0;
 				continue;
 			}
-			int found = getCountFor(recipe, stack, false);
+			int found = getCountFor( recipe, stack, false );
 			retValue[i] = (found >= stack.stackSize) ? 0 : stack.stackSize - found;
 		}
 		return retValue;
@@ -251,6 +251,7 @@ public abstract class CraftingHandler {
 
 	/**
 	 * Provides a list of the missing ingredients.
+	 *
 	 * @param recipe the CraftRecipe representation of the recipe.
 	 * @return an array of ItemStack, each of which has as stackSize the amount missing.
 	 * @see CraftingHandler#getMissingIngredientsCount(xk.xact.recipes.CraftRecipe)
@@ -260,18 +261,18 @@ public abstract class CraftingHandler {
 			return new ItemStack[0];
 
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		int[] missingCount = getMissingIngredientsCount(recipe);
+		int[] missingCount = getMissingIngredientsCount( recipe );
 		ItemStack[] ingredients = copyArray( recipe.getSimplifiedIngredients() );
 
-		for( int i=0; i<missingCount.length; i++ ){
+		for( int i = 0; i < missingCount.length; i++ ) {
 			int missing = missingCount[i];
 			if( missing > 0 ) {
 				ingredients[i].stackSize = missing;
-				list.add(ingredients[i]);
+				list.add( ingredients[i] );
 			}
 		}
 
-		return list.toArray(new ItemStack[list.size()]);
+		return list.toArray( new ItemStack[list.size()] );
 	}
 
 	/**
@@ -283,14 +284,14 @@ public abstract class CraftingHandler {
 			return "<invalid recipe>";
 
 		String retValue = "";
-		ItemStack[] ingredients = getMissingIngredients(recipe);
+		ItemStack[] ingredients = getMissingIngredients( recipe );
 
-		for( int i=0; i<ingredients.length; i++ ) {
+		for( int i = 0; i < ingredients.length; i++ ) {
 			if( i > 0 )
 				retValue += ", ";
-			retValue += InventoryUtils.stackDescription(ingredients[i]);
+			retValue += InventoryUtils.stackDescription( ingredients[i] );
 		}
-		return retValue.equals("") ? "none." : retValue;
+		return retValue.equals( "" ) ? "none." : retValue;
 	}
 
 	public boolean[] getMissingIngredientsArray(CraftRecipe recipe) {
@@ -308,7 +309,7 @@ public abstract class CraftingHandler {
 
 			int remaining = currentMissed.stackSize;
 			for( int i = 0; remaining > 0 && i < ingredients.length; i++ ) {
-			    if( ingredients[i] != null && ingredients[i].isItemEqual( currentMissed ) ) {
+				if( ingredients[i] != null && ingredients[i].isItemEqual( currentMissed ) ) {
 					remaining--;
 					missingArray[i] = true;
 				}
@@ -319,29 +320,30 @@ public abstract class CraftingHandler {
 		return missingArray;
 	}
 
-    protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe, boolean doRemove) {
-        ItemStack[] ingredients = recipe.getIngredients();
-        ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
+	protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe, boolean doRemove) {
+		ItemStack[] ingredients = recipe.getIngredients();
+		ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
 
-        items: for( int i=0; i<ingredients.length; i++) {
-            ItemStack ingredient = ingredients[i];
-            if( ingredient == null ) {
-                continue;
-            }
+		items:
+		for( int i = 0; i < ingredients.length; i++ ) {
+			ItemStack ingredient = ingredients[i];
+			if( ingredient == null ) {
+				continue;
+			}
 
-            int required = ingredient.stackSize;
+			int required = ingredient.stackSize;
 
-            // iterate through every slot on every available inventory.
-            for( IInventory inv : getAvailableInventories() ) {
-                for( InvSlot slot : inventoryIterator(inv) ){
-                    if( required <= 0 ) continue items;
-                    if( slot == null )
-                        continue;
+			// iterate through every slot on every available inventory.
+			for( IInventory inv : getAvailableInventories() ) {
+				for( InvSlot slot : inventoryIterator( inv ) ) {
+					if( required <= 0 ) continue items;
+					if( slot == null )
+						continue;
 
-                    if( slotContainsIngredient(slot, recipe, ingredient) ) {
-                        ItemStack stackInSlot = inv.getStackInSlot(slot.slotIndex);
+					if( slotContainsIngredient( slot, recipe, ingredient ) ) {
+						ItemStack stackInSlot = inv.getStackInSlot( slot.slotIndex );
 
-                        if( stackInSlot.stackSize > required ) {
+						if( stackInSlot.stackSize > required ) {
 
 							if( doRemove ) {
 								contents[i] = inv.decrStackSize( slot.slotIndex, required );
@@ -350,44 +352,44 @@ public abstract class CraftingHandler {
 								contents[i] = stackInSlot.copy();
 								contents[i].stackSize = required;
 							}
-                            continue items;
-                        } else {
-                            if( contents[i] == null ){
-                                contents[i] = doRemove ? stackInSlot : stackInSlot.copy();
-                            } else {
-                                contents[i].stackSize += stackInSlot.stackSize;
-                            }
-                            required -= stackInSlot.stackSize;
+							continue items;
+						} else {
+							if( contents[i] == null ) {
+								contents[i] = doRemove ? stackInSlot : stackInSlot.copy();
+							} else {
+								contents[i].stackSize += stackInSlot.stackSize;
+							}
+							required -= stackInSlot.stackSize;
 							if( doRemove ) {
-								inv.setInventorySlotContents(slot.slotIndex, null);
+								inv.setInventorySlotContents( slot.slotIndex, null );
 								inv.onInventoryChanged();
 							}
-                        }
-                    }
-                }
-            }
-            // should find the all items, since canCraft was true.
-        }
-        return contents;
-    }
+						}
+					}
+				}
+			}
+			// should find the all items, since canCraft was true.
+		}
+		return contents;
+	}
 
-    protected boolean slotContainsIngredient(InvSlot slot, CraftRecipe recipe, ItemStack ingredient) {
+	protected boolean slotContainsIngredient(InvSlot slot, CraftRecipe recipe, ItemStack ingredient) {
 		if( slot == null || slot.isEmpty() )
 			return false;
 
 		// the direct comparison.
-		if( slot.containsItemsFrom(ingredient) )
+		if( slot.containsItemsFrom( ingredient ) )
 			return true;
 
 		// Ore dictionary?
-		if( recipe.isOreRecipe() ){
-			int oreID = OreDictionary.getOreID(ingredient);
+		if( recipe.isOreRecipe() ) {
+			int oreID = OreDictionary.getOreID( ingredient );
 
 			if( oreID != -1 ) {
-				ArrayList<ItemStack> equivalencies = OreDictionary.getOres(oreID);
+				ArrayList<ItemStack> equivalencies = OreDictionary.getOres( oreID );
 
-				for(ItemStack current : equivalencies) {
-					if( slot.containsItemsFrom(current) ) // do I need this initial check?
+				for( ItemStack current : equivalencies ) {
+					if( slot.containsItemsFrom( current ) ) // do I need this initial check?
 						return true;
 					if( slot.stack.itemID == current.itemID ) {
 						if( current.getItemDamage() == -1 || slot.stack.getItemDamage() == current.getItemDamage() )
@@ -398,7 +400,7 @@ public abstract class CraftingHandler {
 		}
 
 		// regular test: if replacing the item on that spot still matches with the recipe.
-		return recipe.matchesIngredient(ingredient, slot.stack, device.getWorld());
-    }
+		return recipe.matchesIngredient( ingredient, slot.stack, device.getWorld() );
+	}
 
 }

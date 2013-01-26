@@ -11,12 +11,13 @@ import xk.xact.gui.ContainerItem;
 
 /**
  * To be used by any item that can open a GUI.
+ *
  * @author Xhamolk_
  */
 public abstract class ItemContainer extends Item {
 
 	public ItemContainer(int itemID) {
-		super(itemID);
+		super( itemID );
 	}
 
 	/**
@@ -33,11 +34,11 @@ public abstract class ItemContainer extends Item {
 	public void onUpdate(ItemStack itemStack, World world, Entity entity, int indexInInventory, boolean isCurrentItem) {
 		if( world.isRemote || !isCurrentItem )
 			return;
-		if( ((EntityPlayer)entity).openContainer == null || ((EntityPlayer)entity).openContainer instanceof ContainerPlayer )
+		if( ((EntityPlayer) entity).openContainer == null || ((EntityPlayer) entity).openContainer instanceof ContainerPlayer )
 			return;
 
-		if( containerMatchesItem(((EntityPlayer)entity).openContainer) ) {
-			ContainerItem container = (ContainerItem) ((EntityPlayer)entity).openContainer;
+		if( containerMatchesItem( ((EntityPlayer) entity).openContainer ) ) {
+			ContainerItem container = (ContainerItem) ((EntityPlayer) entity).openContainer;
 
 			if( container.isInUse && container.hasInventoryChanged() ) {
 				container.saveContentsToNBT( itemStack );

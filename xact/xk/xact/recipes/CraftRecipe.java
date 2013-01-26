@@ -19,14 +19,14 @@ public class CraftRecipe {
 
 	protected final ItemStack[] ingredients; // template's ingredients.
 
-    private ItemStack[] simpleIngredients = null;
-	
+	private ItemStack[] simpleIngredients = null;
+
 	public final int size;
 
 	public int recipeID = -1;
 
 	// protected so it can only be accessed by CraftManager
-    protected CraftRecipe(ItemStack result, ItemStack[] ingredients) {
+	protected CraftRecipe(ItemStack result, ItemStack[] ingredients) {
 		this.result = result;
 		this.ingredients = ingredients.clone();
 		this.size = ingredients.length;
@@ -40,6 +40,7 @@ public class CraftRecipe {
 
 	/**
 	 * Gets a copy of the output item of this recipe.
+	 *
 	 * @return an ItemStack representation.
 	 */
 	public ItemStack getResult() {  // get suggested output.
@@ -66,20 +67,20 @@ public class CraftRecipe {
 	 * @return an array of ItemStack containing the ingredients.
 	 */
 	public ItemStack[] getSimplifiedIngredients() {
-        if( simpleIngredients != null )
-            return simpleIngredients;
+		if( simpleIngredients != null )
+			return simpleIngredients;
 
 		StackList list = new StackList();
-        for( ItemStack current : getIngredients() ){
-            try {
-                if( current != null ) {
-					list.addStack(current.copy(), 1);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-                System.out.println("|>>>>>>>>>  getSimplifiedIngredients() ");
-            }
-        }
+		for( ItemStack current : getIngredients() ) {
+			try {
+				if( current != null ) {
+					list.addStack( current.copy(), 1 );
+				}
+			} catch ( Exception e ) {
+				e.printStackTrace();
+				System.out.println( "|>>>>>>>>>  getSimplifiedIngredients() " );
+			}
+		}
 
 		return simpleIngredients = list.toArray();
 	}
@@ -90,7 +91,7 @@ public class CraftRecipe {
 	public boolean isOreRecipe() {
 		try {
 			return getRecipePointer().isOreRecipe();
-		} catch( NegativeArraySizeException npe ) {
+		} catch ( NegativeArraySizeException npe ) {
 			return false;
 		}
 	}
@@ -102,28 +103,28 @@ public class CraftRecipe {
 	public RecipePointer getRecipePointer() {
 		if( recipeID == -1 )
 			return null;
-		return RecipePointer.getRecipe(recipeID);
+		return RecipePointer.getRecipe( recipeID );
 	}
 
 	public RecipePointer getRecipePointer(World world) {
 		if( recipeID == -1 ) {
-			RecipePointer pointer = CraftManager.getRecipeFrom(FakeCraftingInventory.emulateContents(ingredients), world);
+			RecipePointer pointer = CraftManager.getRecipeFrom( FakeCraftingInventory.emulateContents( ingredients ), world );
 			if( pointer == null )
 				return null;
 			this.recipeID = pointer.recipeID;
 			return pointer;
 		}
-		return RecipePointer.getRecipe(recipeID);
+		return RecipePointer.getRecipe( recipeID );
 	}
 
 
 	public boolean matchesIngredient(ItemStack ingredient, ItemStack otherStack, World world) {
-		return RecipeUtils.matchesIngredient(this, ingredient, otherStack, world);
+		return RecipeUtils.matchesIngredient( this, ingredient, otherStack, world );
 	}
 
 	public boolean validate(World world) {
-		RecipePointer pointer = getRecipePointer(world);
-		this.recipeID = ( pointer == null ) ? -1 : pointer.recipeID;
+		RecipePointer pointer = getRecipePointer( world );
+		this.recipeID = (pointer == null) ? -1 : pointer.recipeID;
 
 		// Make sure there's an IRecipe associated with this.
 		return result != null && recipeID != -1;
@@ -134,16 +135,16 @@ public class CraftRecipe {
 	}
 
 	// the output's name.
-    public String toString() {
-		String string = this.result.getItem().getItemDisplayName(result);
+	public String toString() {
+		String string = this.result.getItem().getItemDisplayName( result );
 		if( XActMod.DEBUG_MODE )
-			string += " ("+recipeID+ ( this.isOreRecipe() ? " ore" : "" ) +") ";
-        return string;
-    }
+			string += " (" + recipeID + (this.isOreRecipe() ? " ore" : "") + ") ";
+		return string;
+	}
 
 	public boolean equals(Object o) {
 		return o != null && o instanceof CraftRecipe
-				&& ItemStack.areItemStacksEqual(this.getResult(), ((CraftRecipe) o).getResult());
+				&& ItemStack.areItemStacksEqual( this.getResult(), ((CraftRecipe) o).getResult() );
 	}
 
 	/**
@@ -151,20 +152,20 @@ public class CraftRecipe {
 	 *
 	 * @see xk.xact.recipes.CraftRecipe#getSimplifiedIngredients()
 	 */
-    public String ingredientsToString() {
-        String retValue = "";
-        ItemStack[] ingredients = this.getSimplifiedIngredients();
-        for( int i=0; i<ingredients.length; i++){
-            ItemStack stack = ingredients[i];
-            if( stack == null )
-                continue;
+	public String ingredientsToString() {
+		String retValue = "";
+		ItemStack[] ingredients = this.getSimplifiedIngredients();
+		for( int i = 0; i < ingredients.length; i++ ) {
+			ItemStack stack = ingredients[i];
+			if( stack == null )
+				continue;
 
-            retValue += stack.stackSize + "x " + stack.getItem().getItemDisplayName(stack);
-            if( i < ingredients.length-1 )
-                retValue += ", ";
-        }
-        return retValue;
-    }
+			retValue += stack.stackSize + "x " + stack.getItem().getItemDisplayName( stack );
+			if( i < ingredients.length - 1 )
+				retValue += ", ";
+		}
+		return retValue;
+	}
 
 	/**
 	 * Create a CraftRecipe from the NBT.
@@ -173,37 +174,38 @@ public class CraftRecipe {
 	 * @param nbtCompound the tag from which to read.
 	 * @return a CraftRecipe object, or null if something went wrong.
 	 */
-	public static CraftRecipe readFromNBT( NBTTagCompound nbtCompound ) {
-		NBTTagCompound compound = (NBTTagCompound) nbtCompound.getTag("encodedRecipe");
+	public static CraftRecipe readFromNBT(NBTTagCompound nbtCompound) {
+		NBTTagCompound compound = (NBTTagCompound) nbtCompound.getTag( "encodedRecipe" );
 		if( compound == null ) return null;
 
 		ItemStack[] ingredients = new ItemStack[9];
-		NBTTagList tagList = compound.getTagList("recipeIngredients");
+		NBTTagList tagList = compound.getTagList( "recipeIngredients" );
 		if( tagList == null )
 			return null;
 		for( int i = 0; i < tagList.tagCount(); i++ ) {
-			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			int index = tag.getInteger("index");
-			ingredients[index] = InventoryUtils.readStackFromNBT(tag);
+			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt( i );
+			int index = tag.getInteger( "index" );
+			ingredients[index] = InventoryUtils.readStackFromNBT( tag );
 		}
 
-		NBTTagCompound stackTag = (NBTTagCompound) compound.getTag("recipeResult");
+		NBTTagCompound stackTag = (NBTTagCompound) compound.getTag( "recipeResult" );
 		if( stackTag == null )
 			return null;
 
-		ItemStack result = InventoryUtils.readStackFromNBT(stackTag);
+		ItemStack result = InventoryUtils.readStackFromNBT( stackTag );
 
-		return new CraftRecipe(result, ingredients);
+		return new CraftRecipe( result, ingredients );
 	}
 
 	/**
 	 * Write this CraftRecipe to the NBT.
+	 *
 	 * @param nbtCompound the tag to which write.
 	 */
-	public void writeToNBT( NBTTagCompound nbtCompound ) {
-		NBTTagCompound tag = CraftManager.generateNBTTagFor(this);
-		if( tag != null)
-			nbtCompound.setTag("encodedRecipe", tag);
+	public void writeToNBT(NBTTagCompound nbtCompound) {
+		NBTTagCompound tag = CraftManager.generateNBTTagFor( this );
+		if( tag != null )
+			nbtCompound.setTag( "encodedRecipe", tag );
 	}
 
 }
