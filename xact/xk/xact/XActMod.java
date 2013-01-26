@@ -130,6 +130,7 @@ public class XActMod {
 		LanguageRegistry.instance().addStringLocalization( "xact.prev", "XACT: Get Previous Recipe" );
 		LanguageRegistry.instance().addStringLocalization( "xact.next", "XACT: Get Next Recipe" );
 		LanguageRegistry.instance().addStringLocalization( "xact.delete", "XACT: Clear Recipe List" );
+		LanguageRegistry.instance().addStringLocalization( "xact.reveal", "XACT: Hold to Reveal Chip's Recipe" );
 
 		// Register GUIs
 		NetworkRegistry.instance().registerGuiHandler( XActMod.instance, proxy );

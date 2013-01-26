@@ -21,6 +21,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
+import xk.xact.config.KeyBindingHandler;
 import xk.xact.util.CustomPacket;
 
 import java.io.IOException;
@@ -113,6 +114,10 @@ public class GuiUtils {
 
 	public static boolean isShiftKeyPressed() {
 		return Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
+	}
+
+	public static boolean isRevealKeyPressed() {
+		return KeyBindingHandler.revealKeyDown;
 	}
 
 	public static void sendItemToServer(NetClientHandler sendQueue, byte slotID, ItemStack item) {

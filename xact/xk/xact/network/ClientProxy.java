@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.MinecraftForgeClient;
+import org.lwjgl.input.Keyboard;
 import xk.xact.XActMod;
 import xk.xact.config.KeyBindingHandler;
 import xk.xact.gui.client.ChipRenderer;
@@ -34,8 +35,10 @@ public class ClientProxy extends CommonProxy {
 					new KeyBinding( "xact.load", 200 ),
 					new KeyBinding( "xact.prev", 203 ),
 					new KeyBinding( "xact.next", 205 ),
-					new KeyBinding( "xact.delete", 211 )
+					new KeyBinding( "xact.delete", 211 ),
+					new KeyBinding( "xact.reveal", Keyboard.KEY_LSHIFT )
 				}, new boolean[] {
+					false,
 					false,
 					false,
 					false,

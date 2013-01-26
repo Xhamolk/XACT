@@ -18,15 +18,9 @@ public class ChipRenderer implements IItemRenderer {
 	// Prevents an infinite loop when drawing a recipe chip on a recipe chip...
 	private boolean drawing = false;
 
-
-	public static boolean isRevealKeyDown() {
-		return GuiUtils.isShiftKeyPressed(); // todo: this should be configurable.
-	}
-
-
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return isRevealKeyDown() && !drawing && item.getItem() instanceof ItemChip
+		return canRevealRecipe() && item.getItem() instanceof ItemChip
 				&& ((ItemChip) item.getItem()).encoded && type == ItemRenderType.INVENTORY;
 	}
 
@@ -48,6 +42,10 @@ public class ChipRenderer implements IItemRenderer {
 
 		drawing = false;
 		GL11.glEnable( GL11.GL_CULL_FACE );
+	}
+
+	private boolean canRevealRecipe() {
+		return !drawing && GuiUtils.isRevealKeyPressed();
 	}
 
 }
