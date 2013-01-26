@@ -29,10 +29,10 @@ public abstract class CraftingGui extends GuiContainer implements InteractiveCra
 
 	@Override
 	public void handleKeyBinding(int keyCode, String keyDescription) {
-		CraftRecipe recipe = null;
+		CraftRecipe recipe;
 
 		if( keyDescription.equals( "xact.clear" ) ) {
-			recipe = null;
+			setRecipe( null );
 
 		} else if( keyDescription.equals( "xact.load" ) ) {
 			Slot hoveredSlot = GuiUtils.getHoveredSlot();
@@ -41,29 +41,28 @@ public abstract class CraftingGui extends GuiContainer implements InteractiveCra
 				ItemStack stackInSlot = hoveredSlot.getStack();
 				if( CraftManager.isEncoded( stackInSlot ) ) {
 					recipe = RecipeUtils.getRecipe( stackInSlot, GuiUtils.getWorld() );
-					if( !recipe.isValid() )
-						recipe = null;
+					if( recipe != null && recipe.isValid() ) {
+						setRecipe( recipe );
+					}
 				}
 			}
 
 		} else if( keyDescription.equals( "xact.prev" ) ) {
 			recipe = getPreviousRecipe();
-			if( recipe == null ) {
-				return;
+			if( recipe != null ) {
+				setRecipe( recipe );
 			}
 
 		} else if( keyDescription.equals( "xact.next" ) ) {
 			recipe = getNextRecipe();
-			if( recipe == null ) {
-				return;
+			if( recipe != null ) {
+				setRecipe( recipe );
 			}
 
 		} else if( keyDescription.equals( "xact.delete" ) ) {
 			clearRecipeDeque();
-			return;
 		}
 
-		setRecipe( recipe );
 	}
 
 

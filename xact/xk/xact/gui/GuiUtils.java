@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import xk.xact.XActMod;
 import xk.xact.util.CustomPacket;
 
 import java.io.IOException;
@@ -167,13 +168,16 @@ public class GuiUtils {
 			return null;
 
 		Container container = Minecraft.getMinecraft().thePlayer.openContainer;
-		int mouseX = getMouseX( Minecraft.getMinecraft() );
-		int mouseY = getMouseY( Minecraft.getMinecraft() );
+		int mouseX = getMouseX( Minecraft.getMinecraft() ) - gui.guiLeft;
+		int mouseY = getMouseY( Minecraft.getMinecraft() ) - gui.guiTop;
 
 		return getHoveredSlot( container, mouseX, mouseY );
 	}
 
 	public static Slot getHoveredSlot(Container container, int mouseX, int mouseY) {
+		if( XActMod.DEBUG_MODE )
+			System.out.println( String.format( "Getting slot at: (%s, %s)", mouseX, mouseY ) );
+
 		for( int i = 0; i < container.inventorySlots.size(); i++ ) {
 			Slot slot = container.getSlot( i );
 			if( slot != null ) {
@@ -188,9 +192,9 @@ public class GuiUtils {
 	public static boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
 		if( slot == null )
 			return false;
-		int xMin = slot.xDisplayPosition -1;
-		int yMin = slot.yDisplayPosition -1;
-		return mouseX >= xMin - 1 && mouseX < xMin + 18 + 1 && mouseY >= yMin - 1 && mouseY < yMin + 18 + 1;
+		int xMin = slot.xDisplayPosition;
+		int yMin = slot.yDisplayPosition;
+		return mouseX >= xMin - 1 && mouseX < xMin + 16 + 1 && mouseY >= yMin - 1 && mouseY < yMin + 16 + 1;
 	}
 
 	@SideOnly(Side.CLIENT)
