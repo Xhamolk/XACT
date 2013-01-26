@@ -3,6 +3,7 @@ package xk.xact.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingContainer;
@@ -14,7 +15,7 @@ import xk.xact.recipes.CraftManager;
 /**
  * The container used for the Crafter's GUI.
  */
-public class ContainerCrafter extends ContainerMachine implements InteractiveCraftingContainer {
+public class ContainerCrafter extends Container implements InteractiveCraftingContainer {
 
 	TileCrafter crafter;
 
@@ -86,6 +87,10 @@ public class ContainerCrafter extends ContainerMachine implements InteractiveCra
 
 	}
 
+	@Override
+	public boolean canInteractWith(EntityPlayer player) {
+		return true;
+	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
