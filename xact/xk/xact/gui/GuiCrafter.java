@@ -223,9 +223,6 @@ public class GuiCrafter extends CraftingGui {
 			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
 			return;
 		}
-//		for( int i = 0; i < ingredients.length; i++ ) {
-//			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 8), ingredients[i] );
-//		}
 		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 8 );
 	}
 

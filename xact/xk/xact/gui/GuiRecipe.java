@@ -113,9 +113,7 @@ public class GuiRecipe extends CraftingGui {
 			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
 			return;
 		}
-		for( int i = 0; i < ingredients.length; i++ ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 1), ingredients[i] );
-		}
+		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 1);
 	}
 
 }
