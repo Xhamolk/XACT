@@ -3,6 +3,7 @@ package xk.xact.keybinding;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.TickType;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import xk.xact.api.InteractiveCraftingGui;
 
@@ -22,8 +23,9 @@ public class KeyBindingHandler extends KeyBindingRegistry.KeyHandler {
 	@Override
 	public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {
 		if( tickEnd ) {
-			if( FMLClientHandler.instance().getClient().currentScreen instanceof InteractiveCraftingGui ) {
-				((InteractiveCraftingGui) FMLClientHandler.instance().getClient().currentScreen).handleKeyBinding( kb.keyDescription );
+			GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
+			if( currentScreen instanceof InteractiveCraftingGui ) {
+				((InteractiveCraftingGui) currentScreen).handleKeyBinding( kb.keyCode, kb.keyDescription );
 			}
 		}
 	}

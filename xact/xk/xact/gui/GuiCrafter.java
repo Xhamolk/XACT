@@ -6,7 +6,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
-import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
 import xk.xact.gui.button.CustomButtons;
@@ -15,9 +14,8 @@ import xk.xact.gui.button.ICustomButtonMode;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.RecipeDeque;
 
-public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
+public class GuiCrafter extends CraftingGui {
 
 	private TileCrafter crafter;
 
@@ -27,8 +25,10 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 		this.ySize = 256;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	public void onInit() {
+	public void initGui() {
+		super.initGui();
 		crafter.updateRecipes();
 		crafter.updateStates();
 		updateGhostContents( -1 );
@@ -186,19 +186,6 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 		return -1;
 	}
 
-	private Slot getHoveredSlot(int mouseX, int mouseY) {
-		for( int i = 0; i < inventorySlots.inventorySlots.size(); i++ ) {
-			Slot slot = this.inventorySlots.getSlot( i );
-
-			if( slot != null ) {
-				if( func_74188_c( slot.xDisplayPosition - 3, slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY ) ) {
-					return slot;
-				}
-			}
-		}
-		return null;
-	}
-
 	private int hoveredRecipe = -1;
 	public ItemStack[] gridContents = new ItemStack[9];
 	public boolean[] missingIngredients = new boolean[9];
@@ -229,15 +216,17 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 	///////////////
 	///// InteractiveCraftingGui
+
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
 		if( ingredients == null ) {
 			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
 			return;
 		}
-		for( int i = 0; i < ingredients.length; i++ ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 8), ingredients[i] );
-		}
+//		for( int i = 0; i < ingredients.length; i++ ) {
+//			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 8), ingredients[i] );
+//		}
+		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 8 );
 	}
 
 	///////////////
@@ -261,59 +250,6 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (4 + button.id), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
-	}
-
-	///////////////
-	///// Key input
-
-	public void handleKeyBinding(String keyDescription) {
-
-		CraftRecipe recipe = null;
-
-		if( keyDescription.equals( "xact.clear" ) ) {
-			recipe = null;
-		} else if( keyDescription.equals( "xact.load" ) ) {
-			int mouseX = GuiUtils.getMouseX( this.mc );
-			int mouseY = GuiUtils.getMouseY( this.mc );
-
-			Slot hoveredSlot = getHoveredSlot( mouseX, mouseY );
-			if( hoveredSlot != null && hoveredSlot.getHasStack() ) {
-				ItemStack stackInSlot = hoveredSlot.getStack();
-				if( CraftManager.isEncoded( stackInSlot ) ) {
-					recipe = RecipeUtils.getRecipe( stackInSlot, this.crafter.worldObj );
-				}
-			}
-		} else if( keyDescription.equals( "xact.prev" ) ) {
-			recipe = recipeDeque.getPrevious();
-			if( recipe == null ) {
-				return;
-			}
-		} else if( keyDescription.equals( "xact.next" ) ) {
-			recipe = recipeDeque.getNext();
-			if( recipe == null ) {
-				return;
-			}
-		} else if( keyDescription.equals( "xact.delete" ) ) {
-			recipeDeque.clear();
-		}
-
-		setRecipe( recipe );
-	}
-
-
-	///////////////
-	///// Recipe Deque
-
-	private RecipeDeque recipeDeque = new RecipeDeque();
-
-	public void setRecipe(CraftRecipe recipe) {
-		ItemStack[] ingredients = (recipe == null) ? null : recipe
-				.getIngredients();
-		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 8 );
-	}
-
-	public void pushRecipe(CraftRecipe recipe) {
-		recipeDeque.pushRecipe( recipe );
 	}
 
 }

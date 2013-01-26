@@ -7,6 +7,6 @@ public interface InteractiveCraftingGui {
 
 	public void sendGridIngredients(ItemStack[] ingredients);
 
-	public void handleKeyBinding(String keyDescription);
+	public void handleKeyBinding(int keyCode, String keyDescription);
 
 }

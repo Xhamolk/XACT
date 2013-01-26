@@ -1,17 +1,15 @@
 package xk.xact.gui;
 
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.util.InventoryUtils;
 
 // GUI used to set the recipe of a node.
-public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui {
+public class GuiRecipe extends CraftingGui {
 
 	private EntityPlayer player;
 
@@ -75,14 +73,6 @@ public class GuiRecipe extends GuiContainer implements InteractiveCraftingGui {
 		}
 		super.keyTyped( par1, key );
 	}
-
-	@Override
-	public void handleKeyBinding(String keyDescription) {
-		if( keyDescription.equals( "xact.clear" ) ) {
-			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null, 0 );
-		}
-	}
-
 
 	private boolean matching = false;
 

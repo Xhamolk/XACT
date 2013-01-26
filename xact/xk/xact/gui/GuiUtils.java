@@ -7,13 +7,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -154,6 +157,44 @@ public class GuiUtils {
 		ScaledResolution resolution = new ScaledResolution( minecraft.gameSettings, minecraft.displayWidth, minecraft.displayHeight );
 		int height = resolution.getScaledHeight();
 		return height - Mouse.getY() * height / minecraft.displayHeight - 1;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static Slot getHoveredSlot() {
+		GuiContainer gui = (GuiContainer) Minecraft.getMinecraft().currentScreen;
+		if( gui == null )
+			return null;
+
+		Container container = Minecraft.getMinecraft().thePlayer.openContainer;
+		int mouseX = getMouseX( Minecraft.getMinecraft() );
+		int mouseY = getMouseY( Minecraft.getMinecraft() );
+
+		return getHoveredSlot( container, mouseX, mouseY );
+	}
+
+	public static Slot getHoveredSlot(Container container, int mouseX, int mouseY) {
+		for( int i = 0; i < container.inventorySlots.size(); i++ ) {
+			Slot slot = container.getSlot( i );
+			if( slot != null ) {
+				if( isMouseOverSlot( slot, mouseX, mouseY ) ) {
+					return slot;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
+		if( slot == null )
+			return false;
+		int xMin = slot.xDisplayPosition -1;
+		int yMin = slot.yDisplayPosition -1;
+		return mouseX >= xMin - 1 && mouseX < xMin + 18 + 1 && mouseY >= yMin - 1 && mouseY < yMin + 18 + 1;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static World getWorld() {
+		return Minecraft.getMinecraft().thePlayer.worldObj;
 	}
 
 }

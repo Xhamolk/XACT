@@ -1,13 +1,11 @@
 package xk.xact.gui;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
-import xk.xact.api.InteractiveCraftingGui;
 import xk.xact.core.CraftPad;
 import xk.xact.core.ItemChip;
 import xk.xact.gui.button.CustomButtons;
@@ -17,7 +15,7 @@ import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
-public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
+public class GuiPad extends CraftingGui {
 
 	private CraftPad craftPad;
 
@@ -92,9 +90,9 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
 			return;
 		}
-		for( int i = 0; i < ingredients.length; i++ ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 1), ingredients[i] );
-		}
+//		for( int i = 0; i < ingredients.length; i++ ) {
+//			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 1), ingredients[i] );
+//		}
 		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 1 );
 	}
 
@@ -133,15 +131,6 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			}
 			invalidated = false;
 			pad.contentsChanged = false;
-		}
-
-	}
-
-	@Override
-	public void handleKeyBinding(String keyDescription) {
-
-		if( keyDescription.equals( "xact.clear" ) ) {
-			GuiUtils.sendItemsToServer( this.mc.getSendQueue(), null, 0 );
 		}
 
 	}
