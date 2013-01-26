@@ -9,6 +9,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.MinecraftForgeClient;
 import xk.xact.XActMod;
 import xk.xact.config.KeyBindingHandler;
+import xk.xact.gui.client.ChipRenderer;
 
 public class ClientProxy extends CommonProxy {
 
@@ -18,8 +19,12 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	public void registerRenderInformation() {
+		// Textures
 		MinecraftForgeClient.preloadTexture( XActMod.TEXTURE_ITEMS );
 		MinecraftForgeClient.preloadTexture( XActMod.TEXTURE_BLOCKS );
+
+		// Custom IItemRenderer
+		MinecraftForgeClient.registerItemRenderer( XActMod.itemRecipeEncoded.shiftedIndex, new ChipRenderer() );
 	}
 
 	public void registerKeyBindings() {

@@ -87,8 +87,6 @@ public class XActMod {
 
 	@Mod.Init
 	public void initializeAll(FMLInitializationEvent ignoredEvent) {
-		proxy.registerRenderInformation();
-		proxy.registerKeyBindings();
 
 		xactTab = new CreativeTabXACT();
 
@@ -102,6 +100,10 @@ public class XActMod {
 		blockMachine = new BlockMachine( machineID );
 		if( REPLACE_WORKBENCH )
 			blockWorkbench = BlockVanillaWorkbench.createNew();
+
+		// Register side-sensitive Stuff
+		proxy.registerRenderInformation();
+		proxy.registerKeyBindings();
 
 		// Register Blocks
 		GameRegistry.registerBlock( blockMachine, ItemMachine.class, "XACT Mod" );
