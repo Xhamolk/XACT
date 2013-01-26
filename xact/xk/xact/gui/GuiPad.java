@@ -34,8 +34,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 	public void initGui() {
 		super.initGui();
 		super.controlList.clear();
-		this.button = CustomButtons.createdDeviceButton( this.guiLeft + 97,
-				this.guiTop + 63 );
+		this.button = CustomButtons.createdDeviceButton( this.guiLeft + 97, this.guiTop + 63 );
 		button.id = 0;
 		controlList.add( button );
 		invalidated = true;
@@ -43,8 +42,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 	@Override
 	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int texture = this.mc.renderEngine
-				.getTexture( "/gfx/xact/gui/pad_1.png" );
+		int texture = this.mc.renderEngine .getTexture( "/gfx/xact/gui/pad_1.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		this.mc.renderEngine.bindTexture( texture );
 		int cornerX = (this.width - this.xSize) / 2;
@@ -74,9 +72,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 				CraftRecipe recipe = RecipeUtils.getRecipe( stack,
 						this.mc.theWorld );
 				if( recipe != null ) {
-					GuiUtils.paintItem( recipe.getResult(),
-							slot.xDisplayPosition, slot.yDisplayPosition,
-							this.mc, itemRenderer );
+					GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
 					GuiUtils.paintGreenEffect( slot, itemRenderer );
 					return;
 				}
@@ -97,8 +93,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			return;
 		}
 		for( int i = 0; i < ingredients.length; i++ ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 1),
-					ingredients[i] );
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 1), ingredients[i] );
 		}
 		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 1 );
 	}
@@ -125,11 +120,7 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 
 				if( chip.getItem() instanceof ItemChip ) {
 					if( !((ItemChip) chip.getItem()).encoded ) {
-						CraftRecipe mainRecipe = craftPad.getRecipe( 0 ); // the
-						// recipe
-						// on
-						// the
-						// grid
+						CraftRecipe mainRecipe = craftPad.getRecipe( 0 ); // the recipe on the grid
 						if( mainRecipe != null && mainRecipe.isValid() ) {
 							button.setMode( ICustomButtonMode.DeviceModes.SAVE );
 							continue;
@@ -193,16 +184,12 @@ public class GuiPad extends GuiContainer implements InteractiveCraftingGui {
 			int action = ((GuiButtonCustom) button).getAction();
 
 			if( action == 1 ) { // SAVE
-				ItemStack stack = CraftManager.encodeRecipe( craftPad
-						.getRecipe( 0 ) );
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(),
-						(byte) (button.id + 10), stack );
+				ItemStack stack = CraftManager.encodeRecipe( craftPad .getRecipe( 0 ) );
+				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (button.id + 10), stack );
 				return;
 			}
 			if( action == 3 ) { // CLEAR
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(),
-						(byte) (button.id + 10), new ItemStack(
-						XActMod.itemRecipeBlank ) );
+				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (button.id + 10), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
 	}

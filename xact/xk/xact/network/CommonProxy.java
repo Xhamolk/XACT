@@ -8,23 +8,20 @@ import xk.xact.gui.*;
 
 public class CommonProxy implements IGuiHandler {
 
-	public void registerRenderInformation() {
-	}
+	public void registerRenderInformation() { }
 
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
-	                                  int x, int y, int z) {
+	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		// ID:
-		// 0: crafter
-		// 1: library
-		// 2: vanilla workbench
-		// 3: craft pad
-		// 4: <none> (client only)
-		// 5: recipe
+			// 0: crafter
+			// 1: library
+			// 2: vanilla workbench
+			// 3: craft pad
+			// 4: <none> (client only)
+			// 5: recipe
 
 		if( ID == 0 ) { // Crafter
-			TileMachine machine = (TileMachine) world.getBlockTileEntity( x, y,
-					z );
+			TileMachine machine = (TileMachine) world.getBlockTileEntity( x, y, z );
 			if( machine == null )
 				return null;
 
@@ -34,8 +31,7 @@ public class CommonProxy implements IGuiHandler {
 		}
 
 		if( ID == 2 ) {
-			TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity(
-					x, y, z );
+			TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity( x, y, z );
 			if( workbench == null )
 				return null;
 
@@ -48,8 +44,7 @@ public class CommonProxy implements IGuiHandler {
 		}
 
 		if( ID == 3 ) { // Craft Pad
-			CraftPad craftPad = new CraftPad( player.inventory.getCurrentItem(),
-					player );
+			CraftPad craftPad = new CraftPad( player.inventory.getCurrentItem(), player );
 			return new ContainerPad( craftPad, player );
 		}
 
@@ -63,15 +58,14 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
-	                                  int x, int y, int z) {
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		// ID:
-		// 0: crafter
-		// 1: library
-		// 2: vanilla workbench
-		// 3: craft pad
-		// 4: plan (client only)
-		// 5: recipe
+			// 0: crafter
+			// 1: library
+			// 2: vanilla workbench
+			// 3: craft pad
+			// 4: plan (client only)
+			// 5: recipe
 
 		if( ID == 0 ) { // Crafter
 			TileMachine machine = (TileMachine) world.getBlockTileEntity( x, y,
@@ -90,18 +84,15 @@ public class CommonProxy implements IGuiHandler {
 		}
 
 		if( ID == 2 ) {
-			TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity(
-					x, y, z );
+			TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity( x, y, z );
 			if( workbench == null )
 				return null;
 
-			return new GuiVanillaWorkbench( new ContainerVanillaWorkbench(
-					workbench, player ) );
+			return new GuiVanillaWorkbench( new ContainerVanillaWorkbench( workbench, player ) );
 		}
 
 		if( ID == 3 ) { // Craft Pad
-			CraftPad craftPad = new CraftPad( player.inventory.getCurrentItem(),
-					player );
+			CraftPad craftPad = new CraftPad( player.inventory.getCurrentItem(), player );
 			return new GuiPad( craftPad, new ContainerPad( craftPad, player ) );
 		}
 
@@ -152,6 +143,6 @@ public class CommonProxy implements IGuiHandler {
 		return null;
 	}
 
-	public void registerKeyBindings() {
-	}
+	public void registerKeyBindings() { }
+
 }

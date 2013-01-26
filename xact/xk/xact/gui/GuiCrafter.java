@@ -64,18 +64,12 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 				if( chip.getItem() instanceof ItemChip ) {
 					if( !((ItemChip) chip.getItem()).encoded ) {
-						CraftRecipe mainRecipe = crafter.getRecipe( 4 ); // the
-						// recipe
-						// on
-						// the
-						// grid
+						CraftRecipe mainRecipe = crafter.getRecipe( 4 ); // the recipe on the grid
 						if( mainRecipe != null && mainRecipe.isValid() ) {
-							buttons[i]
-									.setMode( ICustomButtonMode.DeviceModes.SAVE );
+							buttons[i] .setMode( ICustomButtonMode.DeviceModes.SAVE );
 							continue;
 						}
-						buttons[i]
-								.setMode( ICustomButtonMode.DeviceModes.INACTIVE );
+						buttons[i] .setMode( ICustomButtonMode.DeviceModes.INACTIVE );
 						continue;
 					}
 					buttons[i].setMode( ICustomButtonMode.DeviceModes.CLEAR );
@@ -88,24 +82,20 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		int xPos = (this.xSize - fontRenderer
-				.getStringWidth( "X.A.C.T. Crafter" )) / 2;
+		int xPos = (this.xSize - fontRenderer .getStringWidth( "X.A.C.T. Crafter" )) / 2;
 		this.fontRenderer.drawString( "X.A.C.T. Crafter", xPos, 6, 4210752 );
-		this.fontRenderer.drawString( "Player's Inventory", 8, this.ySize - 94,
-				4210752 );
+		this.fontRenderer.drawString( "Player's Inventory", 8, this.ySize - 94, 4210752 );
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int mouseX,
-	                                               int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY) {
 		int texture = this.mc.renderEngine
 				.getTexture( "/gfx/xact/gui/crafter_4.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		this.mc.renderEngine.bindTexture( texture );
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize,
-				this.ySize );
+		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );
 
 		// Draw crafting grid
 		int currentRecipe = getHoveredRecipe( mouseX, mouseY );
@@ -126,24 +116,20 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 			// hovered.
 			if( hoveredRecipe == -1 ) {
 				super.drawSlotInventory( slot );
-				color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED
-						: GuiUtils.COLOR_GRAY;
+				color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 			}
 			// If a recipe is being hovered, paint those ingredients instead.
 			else {
 				ItemStack itemToPaint = gridContents[index];
 
 				// Paint the "ghost item"
-				GuiUtils.paintItem( itemToPaint, slot.xDisplayPosition,
-						slot.yDisplayPosition, this.mc, itemRenderer );
-				color = missingIngredients[index] ? GuiUtils.COLOR_RED
-						: GuiUtils.COLOR_GRAY;
+				GuiUtils.paintItem( itemToPaint, slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
+				color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 			}
 
 			// Paint the item's overlay.
 			color |= TRANSPARENCY;
-			GuiUtils.paintOverlay( slot.xDisplayPosition, slot.yDisplayPosition,
-					16, color );
+			GuiUtils.paintOverlay( slot.xDisplayPosition, slot.yDisplayPosition, 16, color );
 
 			return;
 		}
@@ -153,20 +139,16 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 			if( slot.slotNumber < 4 ) {
 				// paint slot's colored underlay if the slot is hovered.
 				if( slot.slotNumber == hoveredRecipe )
-					GuiUtils.paintSlotOverlay( slot, 22,
-							getColorFor( slot.getSlotIndex() ) );
+					GuiUtils.paintSlotOverlay( slot, 22, getColorFor( slot.getSlotIndex() ) );
 			}
 			// show the chip's recipe's output when holding shift.
 			else if( slot.slotNumber >= 18 && GuiUtils.isShiftKeyPressed() ) {
 				ItemStack stack = slot.getStack();
 				if( CraftManager.isEncoded( stack ) ) {
 					// paint chip's recipe's result
-					CraftRecipe recipe = RecipeUtils.getRecipe( stack,
-							this.mc.theWorld );
+					CraftRecipe recipe = RecipeUtils.getRecipe( stack, this.mc.theWorld );
 					if( recipe != null ) {
-						GuiUtils.paintItem( recipe.getResult(),
-								slot.xDisplayPosition, slot.yDisplayPosition,
-								this.mc, itemRenderer );
+						GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
 						GuiUtils.paintGreenEffect( slot, itemRenderer );
 						return;
 					}
@@ -196,8 +178,7 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( i );
 
 			if( slot != null && slot.getHasStack() ) {
-				if( func_74188_c( slot.xDisplayPosition - 3,
-						slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY ) ) {
+				if( func_74188_c( slot.xDisplayPosition - 3, slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY ) ) {
 					return i;
 				}
 			}
@@ -210,8 +191,7 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 			Slot slot = this.inventorySlots.getSlot( i );
 
 			if( slot != null ) {
-				if( func_74188_c( slot.xDisplayPosition - 3,
-						slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY ) ) {
+				if( func_74188_c( slot.xDisplayPosition - 3, slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY ) ) {
 					return slot;
 				}
 			}
@@ -235,24 +215,20 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 
 		CraftRecipe recipe;
 		if( hoveredRecipe == -1 ) {
-			recipe = RecipeUtils.getRecipe( crafter.craftGrid.getContents(),
-					crafter.worldObj );
+			recipe = RecipeUtils.getRecipe( crafter.craftGrid.getContents(), crafter.worldObj );
 		} else if( hoveredRecipe < crafter.getRecipeCount() ) {
 			recipe = crafter.getRecipe( hoveredRecipe );
 		} else {
-			throw new IllegalStateException(
-					"XACT-GuiCrafter: invalid hoveredRecipe index" );
+			throw new IllegalStateException( "XACT-GuiCrafter: invalid hoveredRecipe index" );
 		}
 
-		gridContents = recipe == null ? new ItemStack[9] : recipe
-				.getIngredients();
-		missingIngredients = hoveredRecipe == -1 ? crafter.missingIngredients
-				: crafter.getHandler().getMissingIngredientsArray( recipe );
+		gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
+		missingIngredients = hoveredRecipe == -1 ? crafter.missingIngredients : crafter.getHandler().getMissingIngredientsArray( recipe );
 	}
 
 
-	// /////////////
-	// /// InteractiveCraftingGui
+	///////////////
+	///// InteractiveCraftingGui
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
 		if( ingredients == null ) {
@@ -260,13 +236,12 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 			return;
 		}
 		for( int i = 0; i < ingredients.length; i++ ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 8),
-					ingredients[i] );
+			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (i + 8), ingredients[i] );
 		}
 	}
 
-	// /////////////
-	// /// Buttons
+	///////////////
+	///// Buttons
 
 	private GuiButtonCustom[] buttons = new GuiButtonCustom[4];
 
@@ -278,22 +253,18 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 			int action = ((GuiButtonCustom) button).getAction();
 
 			if( action == 1 ) { // SAVE
-				ItemStack stack = CraftManager.encodeRecipe( crafter
-						.getRecipe( 4 ) );
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(),
-						(byte) (4 + button.id), stack );
+				ItemStack stack = CraftManager.encodeRecipe( crafter.getRecipe( 4 ) );
+				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (4 + button.id), stack );
 				return;
 			}
 			if( action == 3 ) { // CLEAR
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(),
-						(byte) (4 + button.id), new ItemStack(
-						XActMod.itemRecipeBlank ) );
+				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (4 + button.id), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
 	}
 
-	// /////////////
-	// /// Key input
+	///////////////
+	///// Key input
 
 	public void handleKeyBinding(String keyDescription) {
 
@@ -309,8 +280,7 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 			if( hoveredSlot != null && hoveredSlot.getHasStack() ) {
 				ItemStack stackInSlot = hoveredSlot.getStack();
 				if( CraftManager.isEncoded( stackInSlot ) ) {
-					recipe = RecipeUtils.getRecipe( stackInSlot,
-							this.crafter.worldObj );
+					recipe = RecipeUtils.getRecipe( stackInSlot, this.crafter.worldObj );
 				}
 			}
 		} else if( keyDescription.equals( "xact.prev" ) ) {
@@ -331,8 +301,8 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 	}
 
 
-	// /////////////
-	// /// Recipe Deque
+	///////////////
+	///// Recipe Deque
 
 	private RecipeDeque recipeDeque = new RecipeDeque();
 
@@ -345,6 +315,5 @@ public class GuiCrafter extends GuiMachine implements InteractiveCraftingGui {
 	public void pushRecipe(CraftRecipe recipe) {
 		recipeDeque.pushRecipe( recipe );
 	}
-
 
 }
