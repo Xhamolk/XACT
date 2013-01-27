@@ -17,7 +17,7 @@ public class ChipHandler extends TemplateRecipeHandler {
 	class EncoderRecipe extends CachedRecipe {
 
 		public EncoderRecipe(int width, int height, Object[] items, ItemStack out, ItemStack chip) {
-			result = new PositionedStack( chip, 129, 40 );
+			result = new PositionedStack( chip, 128, 36 );
 			ingredients = new ArrayList<PositionedStack>();
 			setIngredients( width, height, items, out );
 		}
@@ -71,7 +71,7 @@ public class ChipHandler extends TemplateRecipeHandler {
 
 	@Override
 	public String getRecipeName() {
-		return "Encode";
+		return "Recipe Chip";
 	}
 
 	@Override
