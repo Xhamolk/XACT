@@ -141,19 +141,6 @@ public class GuiCrafter extends CraftingGui {
 				if( slot.slotNumber == hoveredRecipe )
 					GuiUtils.paintSlotOverlay( slot, 22, getColorFor( slot.getSlotIndex() ) );
 			}
-			// show the chip's recipe's output when holding shift.
-			else if( slot.slotNumber >= 18 && GuiUtils.isShiftKeyPressed() ) {
-				ItemStack stack = slot.getStack();
-				if( CraftManager.isEncoded( stack ) ) {
-					// paint chip's recipe's result
-					CraftRecipe recipe = RecipeUtils.getRecipe( stack, this.mc.theWorld );
-					if( recipe != null ) {
-						GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
-						GuiUtils.paintGreenEffect( slot, itemRenderer );
-						return;
-					}
-				}
-			}
 		}
 
 		super.drawSlotInventory( slot );

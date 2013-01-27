@@ -56,22 +56,6 @@ public class GuiCase extends GuiContainer {
 	// func_85044_b(ItemStack stack, int x, int y)        // copy this method, as it's private.
 	// tooltip: func_74184_a(ItemStack stack, int x, int y)   // this one is protected, so don't copy.
 
-	@Override
-	protected void drawSlotInventory(Slot slot) {
-		if( GuiUtils.isShiftKeyPressed() && slot.getHasStack() ) {
-			ItemStack stack = slot.getStack();
-			if( CraftManager.isEncoded( stack ) ) {
-				CraftRecipe recipe = RecipeUtils.getRecipe( stack, this.mc.theWorld );
-				if( recipe != null ) {
-					GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
-					GuiUtils.paintGreenEffect( slot, itemRenderer );
-					return;
-				}
-			}
-		}
-		super.drawSlotInventory( slot );
-	}
-
 	private Slot findSlotAt(int x, int y) {
 		Slot slot = getSlotAt( x, y );
 		if( slot != null && slot.getHasStack() ) {

@@ -13,7 +13,6 @@ import xk.xact.gui.button.GuiButtonCustom;
 import xk.xact.gui.button.ICustomButtonMode;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
-import xk.xact.recipes.RecipeUtils;
 
 public class GuiPad extends CraftingGui {
 
@@ -60,23 +59,6 @@ public class GuiPad extends CraftingGui {
 
 		// Paint the grid's overlays.
 		paintSlotOverlays();
-	}
-
-	@Override
-	protected void drawSlotInventory(Slot slot) {
-		if( GuiUtils.isShiftKeyPressed() && slot.getHasStack() ) {
-			ItemStack stack = slot.getStack();
-			if( CraftManager.isEncoded( stack ) ) {
-				CraftRecipe recipe = RecipeUtils.getRecipe( stack,
-						this.mc.theWorld );
-				if( recipe != null ) {
-					GuiUtils.paintItem( recipe.getResult(), slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
-					GuiUtils.paintGreenEffect( slot, itemRenderer );
-					return;
-				}
-			}
-		}
-		super.drawSlotInventory( slot );
 	}
 
 	// title: (43,8) size: 88x12
