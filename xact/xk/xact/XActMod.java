@@ -63,6 +63,7 @@ public class XActMod {
 	public static boolean REPLACE_WORKBENCH;
 
 	@Mod.PreInit
+	@SuppressWarnings("unused")
 	public void preInit(FMLPreInitializationEvent event) {
 		Configuration config = new Configuration( event.getSuggestedConfigurationFile() );
 		config.load();
@@ -82,6 +83,7 @@ public class XActMod {
 	}
 
 	@Mod.Init
+	@SuppressWarnings("unused")
 	public void initializeAll(FMLInitializationEvent ignoredEvent) {
 
 		xactTab = new CreativeTabXACT();
