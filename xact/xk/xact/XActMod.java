@@ -11,17 +11,13 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import xk.xact.core.*;
 import xk.xact.gui.CreativeTabXACT;
 import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
-
-import java.util.ArrayList;
 
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
@@ -143,8 +139,12 @@ public class XActMod {
 		ItemStack[] ingredients;
 
 		// Recipe Chip
-		ingredients = ingredients( Item.ingotIron, Item.paper );
-		GameRegistry.addRecipe( shapelessRecipe( new ItemStack( itemRecipeBlank, 4 ), ingredients ) );
+		GameRegistry.addRecipe( new ItemStack( itemRecipeBlank, 16 ),
+				new String[] {"ii", "ir", "gg"},
+				'i', Item.ingotIron,
+				'r', Item.redstone,
+				'g', Item.goldNugget
+		);
 
 		// Chip Case
 		ItemStack chip = new ItemStack( itemRecipeBlank );
@@ -171,16 +171,6 @@ public class XActMod {
 				Item.ingotIron, Block.chest, Item.ingotIron
 		);
 		GameRegistry.addRecipe( new ShapedRecipes( 3, 3, ingredients, new ItemStack( blockMachine, 1, 0 ) ) );
-	}
-
-
-	private IRecipe shapelessRecipe(ItemStack output, ItemStack... ingredients) {
-		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		for( ItemStack ingredient : ingredients ) {
-			if( ingredient != null )
-				list.add( ingredient );
-		}
-		return new ShapelessRecipes( output, list );
 	}
 
 	private ItemStack[] ingredients(Object... objects) {
