@@ -1,5 +1,6 @@
 package xk.xact.network;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -36,7 +37,7 @@ public class ClientProxy extends CommonProxy {
 					new KeyBinding( "xact.prev", Keyboard.KEY_LEFT ),
 					new KeyBinding( "xact.next", Keyboard.KEY_RIGHT ),
 					new KeyBinding( "xact.delete", Keyboard.KEY_DELETE ),
-					new KeyBinding( "xact.reveal", Keyboard.KEY_LSHIFT )
+					FMLClientHandler.instance().getClient().gameSettings.keyBindSneak
 				}, new boolean[] {
 					false,
 					false,
