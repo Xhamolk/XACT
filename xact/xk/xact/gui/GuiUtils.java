@@ -1,6 +1,7 @@
 package xk.xact.gui;
 
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -117,7 +118,7 @@ public class GuiUtils {
 	}
 
 	public static boolean isRevealKeyPressed() {
-		return KeyBindingHandler.revealKeyDown;
+		return Keyboard.isKeyDown(FMLClientHandler.instance().getClient().gameSettings.keyBindSneak.keyCode);
 	}
 
 	public static void sendItemToServer(NetClientHandler sendQueue, byte slotID, ItemStack item) {
