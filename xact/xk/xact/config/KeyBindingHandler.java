@@ -11,8 +11,6 @@ import java.util.EnumSet;
 
 public class KeyBindingHandler extends KeyBindingRegistry.KeyHandler {
 
-	public static boolean revealKeyDown = false;
-
 	public KeyBindingHandler(KeyBinding[] keyBindings, boolean[] repeatings) {
 		super( keyBindings, repeatings );
 	}
@@ -25,11 +23,6 @@ public class KeyBindingHandler extends KeyBindingRegistry.KeyHandler {
 	@Override
 	public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {
 		if( tickEnd ) {
-			if( kb.keyDescription.equals( "key.sneak" ) ) { // the vanilla sneak key.
-				revealKeyDown = true;
-				return;
-			}
-
 			GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
 			if( currentScreen instanceof InteractiveCraftingGui ) {
 				((InteractiveCraftingGui) currentScreen).handleKeyBinding( kb.keyCode, kb.keyDescription );
@@ -39,11 +32,7 @@ public class KeyBindingHandler extends KeyBindingRegistry.KeyHandler {
 
 	@Override
 	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) {
-		if( tickEnd ) {
-			if( kb.keyDescription.equals( "key.sneak" ) ) { // the vanilla sneak key.
-				revealKeyDown = false;
-			}
-		}
+
 	}
 
 	@Override

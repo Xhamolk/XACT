@@ -35,10 +35,8 @@ public class ClientProxy extends CommonProxy {
 					new KeyBinding( "xact.load", Keyboard.KEY_UP ),
 					new KeyBinding( "xact.prev", Keyboard.KEY_LEFT ),
 					new KeyBinding( "xact.next", Keyboard.KEY_RIGHT ),
-					new KeyBinding( "xact.delete", Keyboard.KEY_DELETE ),
-					new KeyBinding( "xact.reveal", Keyboard.KEY_LSHIFT )
+					new KeyBinding( "xact.delete", Keyboard.KEY_DELETE )
 				}, new boolean[] {
-					false,
 					false,
 					false,
 					false,
