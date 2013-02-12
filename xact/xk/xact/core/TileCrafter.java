@@ -4,14 +4,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
+import xk.xact.gui.ContainerCrafter;
 import xk.xact.gui.CraftingGui;
+import xk.xact.gui.GuiCrafter;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Inventory;
@@ -107,6 +111,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		return list;
 	}
 
+	public Container getContainerFor(EntityPlayer player) {
+		return new ContainerCrafter( this, player );
+	}
+
+	public GuiContainer getGuiContainerFor(EntityPlayer player) {
+		return new GuiCrafter( this, player );
+	}
 
 	///////////////
 	///// Current State (requires updates)
