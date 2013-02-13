@@ -21,9 +21,8 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import xk.xact.XActMod;
-import xk.xact.config.KeyBindingHandler;
 import xk.xact.util.CustomPacket;
+import xk.xact.util.Utils;
 
 import java.io.IOException;
 
@@ -118,7 +117,7 @@ public class GuiUtils {
 	}
 
 	public static boolean isRevealKeyPressed() {
-		return Keyboard.isKeyDown(FMLClientHandler.instance().getClient().gameSettings.keyBindSneak.keyCode);
+		return Keyboard.isKeyDown( FMLClientHandler.instance().getClient().gameSettings.keyBindSneak.keyCode );
 	}
 
 	public static void sendItemToServer(NetClientHandler sendQueue, byte slotID, ItemStack item) {
@@ -181,8 +180,7 @@ public class GuiUtils {
 	}
 
 	public static Slot getHoveredSlot(Container container, int mouseX, int mouseY) {
-		if( XActMod.DEBUG_MODE )
-			System.out.println( String.format( "Getting slot at: (%s, %s)", mouseX, mouseY ) );
+		Utils.debug( String.format( "Getting slot at: (%s, %s)", mouseX, mouseY ) );
 
 		for( int i = 0; i < container.inventorySlots.size(); i++ ) {
 			Slot slot = container.getSlot( i );

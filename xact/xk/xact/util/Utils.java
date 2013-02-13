@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import xk.xact.XActMod;
 
 import java.util.Random;
 
@@ -15,6 +16,11 @@ public class Utils {
 		if( player.worldObj.isRemote ) {
 			player.sendChatToPlayer( message );
 		}
+	}
+
+	public static void debug(String message) {
+		if( XActMod.DEBUG_MODE )
+			System.out.println( message );
 	}
 
 	/**
