@@ -163,14 +163,14 @@ public class GuiUtils {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static Slot getHoveredSlot() {
+	public static Slot getHoveredSlot(int guiLeft, int guiTop) {
 		GuiContainer gui = (GuiContainer) Minecraft.getMinecraft().currentScreen;
 		if( gui == null )
 			return null;
 
 		Container container = Minecraft.getMinecraft().thePlayer.openContainer;
-		int mouseX = getMouseX( Minecraft.getMinecraft() ) - gui.guiLeft;
-		int mouseY = getMouseY( Minecraft.getMinecraft() ) - gui.guiTop;
+		int mouseX = getMouseX( Minecraft.getMinecraft() ) - guiLeft;
+		int mouseY = getMouseY( Minecraft.getMinecraft() ) - guiTop;
 
 		return getHoveredSlot( container, mouseX, mouseY );
 	}

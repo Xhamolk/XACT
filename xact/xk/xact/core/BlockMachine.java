@@ -28,7 +28,7 @@ public class BlockMachine extends BlockContainer {
 
 	// update block when it's placed on the world.
 	@Override
-	public int func_85104_a(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff, int metadata) { //updateBlockMetadata
+	public int onBlockPlaced(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff, int metadata) { //updateBlockMetadata
 		return side;
 	}
 

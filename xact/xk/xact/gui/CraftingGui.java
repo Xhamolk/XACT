@@ -35,7 +35,7 @@ public abstract class CraftingGui extends GuiContainer implements InteractiveCra
 			setRecipe( null );
 
 		} else if( keyDescription.equals( "xact.load" ) ) {
-			Slot hoveredSlot = GuiUtils.getHoveredSlot();
+			Slot hoveredSlot = GuiUtils.getHoveredSlot( guiLeft, guiTop );
 
 			if( hoveredSlot != null && hoveredSlot.getHasStack() ) {
 				ItemStack stackInSlot = hoveredSlot.getStack();

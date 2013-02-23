@@ -67,7 +67,7 @@ public class GuiCase extends GuiContainer {
 	}
 
 	private boolean isMouseOverSlot(Slot slot, int x, int y) {
-		return this.func_74188_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y );
+		return this.isPointInRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y );
 	}
 
 	private Slot getSlotAt(int x, int y) {

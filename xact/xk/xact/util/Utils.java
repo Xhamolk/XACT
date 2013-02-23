@@ -65,7 +65,7 @@ public class Utils {
 			item.motionZ = (random.nextGaussian() * var15);
 
 			if( itemStack.hasTagCompound() ) {
-				item.func_92014_d().setTagCompound( (NBTTagCompound) itemStack.getTagCompound().copy() );
+				item.getEntityItem().setTagCompound( (NBTTagCompound) itemStack.getTagCompound().copy() );
 			}
 		}
 	}

@@ -165,7 +165,7 @@ public class GuiCrafter extends CraftingGui {
 			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( i );
 
 			if( slot != null && slot.getHasStack() ) {
-				if( func_74188_c( slot.xDisplayPosition - 3, slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY ) ) {
+				if( isPointInRegion( slot.xDisplayPosition - 3, slot.yDisplayPosition - 3, 22, 22, mouseX, mouseY ) ) {
 					return i;
 				}
 			}
