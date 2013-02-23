@@ -19,6 +19,19 @@ public class InvSlotIterator implements Iterable<InvSlot>, Iterator<InvSlot> {
 		this.size = inventory.getSizeInventory();
 	}
 
+	/**
+	 * Generates an Iterator for the specified IInventory.
+	 * This is helpful to iterate through every slot on the inventory.
+	 *
+	 * @param inventory the inventory that holds the items.
+	 * @return an iterable representation of the IInventory.
+	 */
+	public static InvSlotIterator createNewFor(IInventory inventory) {
+		if( inventory != null )
+			return new InvSlotIterator( inventory );
+		return null;
+	}
+
 	@Override
 	public Iterator<InvSlot> iterator() {
 		return this;

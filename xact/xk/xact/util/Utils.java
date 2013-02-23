@@ -24,6 +24,22 @@ public class Utils {
 	}
 
 	/**
+	 * The description of the ItemStack passed.
+	 * Includes the stack size and the 'display' name.
+	 * <p/>
+	 * Example: 64x Redstone Dust
+	 *
+	 * @param stack the item stack.
+	 * @return the description of the stack's contents. Or "null" if the stack is null.
+	 */
+	public static String stackDescription(ItemStack stack) {
+		if( stack == null )
+			return "null";
+
+		return stack.stackSize + "x " + stack.getItem().getItemDisplayName( stack );
+	}
+
+	/**
 	 * Drops an item on the world as an EntityItem.
 	 *
 	 * @param itemStack the ItemStack to drop. Shall not be null.
@@ -52,6 +68,30 @@ public class Utils {
 				item.func_92014_d().setTagCompound( (NBTTagCompound) itemStack.getTagCompound().copy() );
 			}
 		}
+	}
+
+	public static ItemStack[] copyArray(ItemStack... oldArray) {
+		int length = oldArray.length;
+		ItemStack[] newArray = new ItemStack[length];
+		for( int i = 0; i < length; i++ ) {
+			newArray[i] = oldArray[i] == null ? null : oldArray[i].copy();
+		}
+		return newArray;
+	}
+
+	public static void writeItemStackToNBT(NBTTagCompound compound, ItemStack item, String tagName) {
+		NBTTagCompound itemTag = new NBTTagCompound();
+		item.writeToNBT( itemTag );
+		compound.setTag( tagName, itemTag );
+	}
+
+	public static ItemStack readStackFromNBT(NBTTagCompound nbt) {
+		try {
+			return ItemStack.loadItemStackFromNBT( nbt );
+		} catch ( NullPointerException npe ) {
+			return null;
+		}
+
 	}
 
 }

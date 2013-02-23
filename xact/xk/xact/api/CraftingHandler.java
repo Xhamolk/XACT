@@ -8,14 +8,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import xk.xact.recipes.CraftRecipe;
-import xk.xact.util.FakeCraftingInventory;
-import xk.xact.util.InvSlot;
-import xk.xact.util.InventoryUtils;
+import xk.xact.util.*;
 
 import java.util.ArrayList;
 
-import static xk.xact.util.InventoryUtils.copyArray;
-import static xk.xact.util.InventoryUtils.inventoryIterator;
+import static xk.xact.util.Utils.copyArray;
 
 // Used to craft, check if can craft, etc.
 
@@ -195,7 +192,7 @@ public abstract class CraftingHandler {
 		int found = 0;
 		IInventory[] inventories = getAvailableInventories();
 		for( IInventory inv : inventories ) {
-			for( InvSlot slot : inventoryIterator( inv ) ) {
+			for( InvSlot slot : InvSlotIterator.createNewFor( inv ) ) {
 				if( !countAll && found >= stack.stackSize )
 					break; // prevent counting on more if found enough already.
 
@@ -289,7 +286,7 @@ public abstract class CraftingHandler {
 		for( int i = 0; i < ingredients.length; i++ ) {
 			if( i > 0 )
 				retValue += ", ";
-			retValue += InventoryUtils.stackDescription( ingredients[i] );
+			retValue += Utils.stackDescription( ingredients[i] );
 		}
 		return retValue.equals( "" ) ? "none." : retValue;
 	}
@@ -335,7 +332,7 @@ public abstract class CraftingHandler {
 
 			// iterate through every slot on every available inventory.
 			for( IInventory inv : getAvailableInventories() ) {
-				for( InvSlot slot : inventoryIterator( inv ) ) {
+				for( InvSlot slot : InvSlotIterator.createNewFor( inv ) ) {
 					if( required <= 0 ) continue items;
 					if( slot == null )
 						continue;

@@ -3,22 +3,8 @@ package xk.xact.util;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryUtils {
-
-	/**
-	 * Generates an Iterator for the specified IInventory.
-	 * This is helpful to iterate through every slot on the inventory.
-	 *
-	 * @param inventory the inventory that holds the items.
-	 * @return an iterable representation of the IInventory.
-	 */
-	public static Iterable<InvSlot> inventoryIterator(IInventory inventory) {
-		if( inventory != null )
-			return new InvSlotIterator( inventory );
-		return null;
-	}
 
 	/**
 	 * Whether if two stacks contain the same kind of items.
@@ -98,7 +84,7 @@ public class InventoryUtils {
 			 */
 
 		int remaining = stack.stackSize;
-		for( InvSlot slot : inventoryIterator( inv ) ) {
+		for( InvSlot slot : InvSlotIterator.createNewFor( inv ) ) {
 			if( slot == null )
 				continue;
 
@@ -137,23 +123,6 @@ public class InventoryUtils {
 		return stack;
 	}
 
-	/**
-	 * The description of the ItemStack passed.
-	 * Includes the stack size and the 'display' name.
-	 * <p/>
-	 * Example: 64x Redstone
-	 *
-	 * @param stack the item stack.
-	 * @return the description of the stack's contents. Or "null" if the stack is null.
-	 */
-	public static String stackDescription(ItemStack stack) {
-		if( stack == null )
-			return "null";
-
-		return stack.stackSize + "x " + stack.getItem().getItemDisplayName( stack );
-	}
-
-
 	public static ItemStack[] getContents(IInventory inventory) {
 		int size = inventory.getSizeInventory();
 		ItemStack[] contents = new ItemStack[size];
@@ -164,27 +133,4 @@ public class InventoryUtils {
 		return contents;
 	}
 
-	public static void writeItemStackToNBT(NBTTagCompound compound, ItemStack item, String tagName) {
-		NBTTagCompound itemTag = new NBTTagCompound();
-		item.writeToNBT( itemTag );
-		compound.setTag( tagName, itemTag );
-	}
-
-	public static ItemStack readStackFromNBT(NBTTagCompound nbt) {
-		try {
-			return ItemStack.loadItemStackFromNBT( nbt );
-		} catch ( NullPointerException npe ) {
-			return null;
-		}
-
-	}
-
-	public static ItemStack[] copyArray(ItemStack... oldArray) {
-		int length = oldArray.length;
-		ItemStack[] newArray = new ItemStack[length];
-		for( int i = 0; i < length; i++ ) {
-			newArray[i] = oldArray[i] == null ? null : oldArray[i].copy();
-		}
-		return newArray;
-	}
 }

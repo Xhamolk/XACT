@@ -5,8 +5,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import xk.xact.util.InvSlot;
+import xk.xact.util.InvSlotIterator;
 import xk.xact.util.Inventory;
-import xk.xact.util.InventoryUtils;
 
 public class ChipCase {
 
@@ -35,7 +35,7 @@ public class ChipCase {
 
 	private int getChipsCount() {
 		int count = 0;
-		for( InvSlot current : InventoryUtils.inventoryIterator( internalInventory ) ) {
+		for( InvSlot current : InvSlotIterator.createNewFor( internalInventory ) ) {
 			if( current != null && !current.isEmpty() ) {
 				count += current.stack.stackSize;
 			}

@@ -6,8 +6,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.util.FakeCraftingInventory;
-import xk.xact.util.InventoryUtils;
 import xk.xact.util.StackList;
+import xk.xact.util.Utils;
 
 /**
  * The representation of a crafting recipe.
@@ -185,14 +185,14 @@ public class CraftRecipe {
 		for( int i = 0; i < tagList.tagCount(); i++ ) {
 			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt( i );
 			int index = tag.getInteger( "index" );
-			ingredients[index] = InventoryUtils.readStackFromNBT( tag );
+			ingredients[index] = Utils.readStackFromNBT( tag );
 		}
 
 		NBTTagCompound stackTag = (NBTTagCompound) compound.getTag( "recipeResult" );
 		if( stackTag == null )
 			return null;
 
-		ItemStack result = InventoryUtils.readStackFromNBT( stackTag );
+		ItemStack result = Utils.readStackFromNBT( stackTag );
 
 		return new CraftRecipe( result, ingredients );
 	}

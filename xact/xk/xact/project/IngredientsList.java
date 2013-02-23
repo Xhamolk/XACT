@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.InventoryUtils;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +124,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 		NBTTagList list1 = new NBTTagList();
 		for( ItemStack stack : this ) {
 			NBTTagCompound tag = new NBTTagCompound();
-			InventoryUtils.writeItemStackToNBT( nbt, stack, "ingredient" );
+			Utils.writeItemStackToNBT( nbt, stack, "ingredient" );
 			list1.appendTag( tag );
 		}
 		nbt.setTag( "ingredientList", list1 );
@@ -132,7 +133,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 		NBTTagList list2 = new NBTTagList();
 		for( ItemStack key : recipes.keySet() ) {
 			NBTTagCompound tag = new NBTTagCompound();
-			InventoryUtils.writeItemStackToNBT( nbt, key, "key" );
+			Utils.writeItemStackToNBT( nbt, key, "key" );
 			recipes.get( key ).writeToNBT( tag );
 			list2.appendTag( tag );
 		}
@@ -150,7 +151,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 		NBTTagList list1 = nbt.getTagList( "ingredientList" );
 		for( int i = 0; i < list1.tagCount(); i++ ) {
 			NBTTagCompound tag = (NBTTagCompound) list1.tagAt( i );
-			ItemStack item = InventoryUtils.readStackFromNBT( (NBTTagCompound) tag.getTag( "ingredient" ) );
+			ItemStack item = Utils.readStackFromNBT( (NBTTagCompound) tag.getTag( "ingredient" ) );
 			if( item != null )
 				ingredients.add( item );
 		}
@@ -159,7 +160,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 		NBTTagList list2 = nbt.getTagList( "recipes" );
 		for( int i = 0; i < list2.tagCount(); i++ ) {
 			NBTTagCompound tag = (NBTTagCompound) list2.tagAt( i );
-			ItemStack key = InventoryUtils.readStackFromNBT( (NBTTagCompound) tag.getTag( "key" ) );
+			ItemStack key = Utils.readStackFromNBT( (NBTTagCompound) tag.getTag( "key" ) );
 			if( key != null ) {
 				CraftRecipe recipe = CraftRecipe.readFromNBT( tag );
 				recipes.put( key, recipe );

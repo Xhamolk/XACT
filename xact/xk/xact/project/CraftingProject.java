@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.InventoryUtils;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 
@@ -115,7 +116,7 @@ public class CraftingProject {
 		NBTTagCompound nbt = new NBTTagCompound();
 
 		// Write target item
-		InventoryUtils.writeItemStackToNBT( nbt, targetItem, "targetItem" );
+		Utils.writeItemStackToNBT( nbt, targetItem, "targetItem" );
 
 		// Write target recipe
 		targetRecipe.writeToNBT( nbt );
@@ -137,7 +138,7 @@ public class CraftingProject {
 			return project;
 
 		// Read target item
-		ItemStack item = InventoryUtils.readStackFromNBT( (NBTTagCompound) nbt.getTag( "targetItem" ) );
+		ItemStack item = Utils.readStackFromNBT( (NBTTagCompound) nbt.getTag( "targetItem" ) );
 
 		// Read target recipe
 		CraftRecipe recipe = CraftRecipe.readFromNBT( nbt );
