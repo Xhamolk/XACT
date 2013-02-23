@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xk.xact.util.FakeCraftingInventory;
-import xk.xact.util.InventoryUtils;
+import xk.xact.inventory.InventoryUtils;
 
 public class RecipeUtils {
 

@@ -9,7 +9,7 @@ import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.FakeCraftingInventory;
-import xk.xact.util.Inventory;
+import xk.xact.inventory.Inventory;
 
 import java.util.Arrays;
 

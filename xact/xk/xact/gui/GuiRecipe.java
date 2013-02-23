@@ -6,7 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import xk.xact.util.InventoryUtils;
+import xk.xact.inventory.InventoryUtils;
 
 // GUI used to set the recipe of a node.
 public class GuiRecipe extends CraftingGui {

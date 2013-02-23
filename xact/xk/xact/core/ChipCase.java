@@ -4,9 +4,9 @@ package xk.xact.core;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import xk.xact.util.InvSlot;
-import xk.xact.util.InvSlotIterator;
-import xk.xact.util.Inventory;
+import xk.xact.inventory.InvSlot;
+import xk.xact.inventory.InvSlotIterator;
+import xk.xact.inventory.Inventory;
 
 public class ChipCase {
 

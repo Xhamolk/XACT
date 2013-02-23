@@ -7,6 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import xk.xact.inventory.InvSlot;
+import xk.xact.inventory.InvSlotIterator;
+import xk.xact.inventory.InventoryUtils;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.*;
 

@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import xk.xact.recipes.CraftRecipe;
-import xk.xact.util.InventoryUtils;
+import xk.xact.inventory.InventoryUtils;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;

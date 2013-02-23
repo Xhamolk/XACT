@@ -6,7 +6,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import xk.xact.util.FakeCraftingInventory;
-import xk.xact.util.Inventory;
+import xk.xact.inventory.Inventory;
 
 // the TE for the vanilla crafting table
 public class TileWorkbench extends TileEntity {

@@ -14,7 +14,7 @@ import xk.xact.api.ICraftingDevice;
 import xk.xact.gui.CraftingGui;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.Inventory;
+import xk.xact.inventory.Inventory;
 
 /**
  *
