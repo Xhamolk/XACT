@@ -11,21 +11,28 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.inventory.ICustomInventory;
+import net.minecraftforge.inventory.IDynamicInventory;
+import net.minecraftforge.inventory.IInventoryHandler;
+import xk.xact.XActMod;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
 import xk.xact.gui.ContainerCrafter;
 import xk.xact.gui.CraftingGui;
 import xk.xact.gui.GuiCrafter;
+import xk.xact.inventory.Inventory;
+import xk.xact.inventory.MixedInventory;
+import xk.xact.inventory.TransitionInventory;
+import xk.xact.inventory.TransitionInventoryHandler;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.Inventory;
 
 import java.util.ArrayList;
 
 /**
  * @author Xhamolk_
  */
-public class TileCrafter extends TileMachine implements IInventory, ICraftingDevice {
+public class TileCrafter extends TileMachine implements IInventory, ICraftingDevice, ICustomInventory, TransitionInventory {
 
 	/*
 	Available Inventories:
@@ -60,6 +67,8 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public final Inventory resources; // size = 3*9 = 27
 
+	public final MixedInventory mixedInventory;
+
 	public boolean contentsChanged = false;
 
 	public TileCrafter() {
@@ -93,6 +102,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				TileCrafter.this.updateStates();
 			}
 		};
+		this.mixedInventory = new CrafterMixedInventory();
 	}
 
 	@Override // the items to be dropped when the block is destroyed.
@@ -122,7 +132,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///////////////
 	///// Current State (requires updates)
 
-	private boolean[] redState = new boolean[getRecipeCount()];
+	private boolean[] canCraftRecipes = new boolean[getRecipeCount()];
 
 	private CraftRecipe[] recipes = new CraftRecipe[getRecipeCount()];
 
@@ -130,7 +140,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	// whether if the recipe's state must be red.
 	public boolean isRedState(int i) {
-		return redState[i];
+		return canCraftRecipes[i];
 	}
 
 	// Gets the recipe's result.
@@ -168,7 +178,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public void updateStates() {
 		for( int i = 0; i < getRecipeCount(); i++ ) {
 			// if there are not enough ingredients, color is red.
-			redState[i] = (recipes[i] != null) && !getHandler().canCraft( this.getRecipe( i ), null );
+			canCraftRecipes[i] = (recipes[i] != null) && !getHandler().canCraft( this.getRecipe( i ), null );
 		}
 		this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[4] );
 	}
@@ -307,6 +317,74 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 		if( screen != null && screen instanceof CraftingGui ) {
 			((CraftingGui) screen).pushRecipe( recipes[4] );
+		}
+	}
+
+	//////////
+	///// ICustomInventory
+
+	@Override
+	public IInventoryHandler getInventoryHandler() {
+		return TransitionInventoryHandler.INSTANCE;
+	}
+
+	//////////
+	///// TransitionInventory
+
+	@Override
+	public MixedInventory getMixedInventory() {
+		return mixedInventory;
+	}
+
+	// This prevents exposing the craftable items to non-standardized inventory manipulators.
+	class CrafterMixedInventory extends MixedInventory implements IDynamicInventory {
+
+
+		public CrafterMixedInventory() {
+			super( "XACT Crafter" );
+			this.addInventory( results );
+			this.addInventory( resources );
+		}
+
+		@Override
+		public void onInventoryChanged() {
+
+		}
+
+		//////////
+		///// IDynamicInventory
+
+		@Override
+		public int getSlotCapacityForItem(ItemStack itemStack, int slot) {
+			if( slot < 4 ) // output slots.
+				return 0;
+			ItemStack stackInSlot = getStackInSlot( slot );
+			return stackInSlot == null ? 64 : 64 - stackInSlot.stackSize;
+		}
+
+		@Override
+		public int getItemAvailabilityInSlot(int slot) {
+			if( slot < 4 ) { // output slots.
+				if( canCraftRecipes[slot] )
+					return recipes[slot].getResult().stackSize;
+				else
+					return 0;
+			} else {
+				ItemStack stackInSlot = getStackInSlot( slot );
+				return stackInSlot == null ? 0 : stackInSlot.stackSize;
+			}
+		}
+
+		@Override
+		public void onItemPlaced(ItemStack itemStack, int slot) { }
+
+		@Override
+		public void onItemTaken(ItemStack itemStack, int slot) {
+			if( slot < 4 ) {
+				handler.doCraft( recipes[slot], XActMod.proxy.getFakePlayer( getWorld(), xCoord, yCoord, zCoord ), itemStack );
+			} else {
+				resources.onInventoryChanged();
+			}
 		}
 	}
 
