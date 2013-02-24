@@ -376,7 +376,8 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		}
 
 		@Override
-		public void onItemPlaced(ItemStack itemStack, int slot) { }
+		public void onItemPlaced(ItemStack itemStack, int slot) {
+		}
 
 		@Override
 		public void onItemTaken(ItemStack itemStack, int slot) {
