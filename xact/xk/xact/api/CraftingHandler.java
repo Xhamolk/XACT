@@ -107,7 +107,7 @@ public abstract class CraftingHandler {
 
 		ArrayList<ItemStack> remainingList = new ArrayList<ItemStack>();
 
-		for( int i = 0; i < craftMatrix.getSizeInventory(); i++ ) {
+		mainLoop: for( int i = 0; i < craftMatrix.getSizeInventory(); i++ ) {
 			ItemStack stackInSlot = craftMatrix.getStackInSlot( i );
 			if( stackInSlot == null )
 				continue;
@@ -125,9 +125,13 @@ public abstract class CraftingHandler {
 				}
 
 				if( containerStack != null ) {
-					if( stackInSlot.getItem().doesContainerItemLeaveCraftingGrid( stackInSlot ) )
-						if( player.inventory.addItemStackToInventory( containerStack ) )
-							continue;
+					if( stackInSlot.getItem().doesContainerItemLeaveCraftingGrid( stackInSlot ) ) {
+						for( IInventory inv : device.getAvailableInventories() ) {
+							containerStack = InventoryUtils.addStackToInventory( containerStack, inv, false );
+							if( containerStack == null )
+								continue mainLoop;
+						}
+					}
 
 					remainingList.add( containerStack );
 				}
