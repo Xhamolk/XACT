@@ -16,9 +16,9 @@ import xk.xact.api.ICraftingDevice;
 import xk.xact.gui.ContainerCrafter;
 import xk.xact.gui.CraftingGui;
 import xk.xact.gui.GuiCrafter;
+import xk.xact.inventory.Inventory;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.Inventory;
 
 import java.util.ArrayList;
 
