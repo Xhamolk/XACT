@@ -26,11 +26,11 @@ public abstract class MixedInventory implements IInventory {
 	}
 
 
-	private boolean isSlotInBounds(int slot) {
+	public final boolean isSlotInBounds(int slot) {
 		return slot >= 0 && slot < totalSize;
 	}
 
-	private InvPointer findInventoryBySlot(int slot) {
+	protected InvPointer findInventoryBySlot(int slot) {
 		if( isSlotInBounds( slot ) ) {
 			int inventoriesCount = inventories.size();
 			int offSet = 0;
@@ -120,9 +120,9 @@ public abstract class MixedInventory implements IInventory {
 	public void closeChest() {
 	}
 
-	private class InvPointer {
-		final int index;
-		final int offset;
+	public class InvPointer {
+		public final int index;
+		public final int offset;
 
 		InvPointer(int index, int offset) {
 			this.index = index;
