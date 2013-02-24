@@ -2,12 +2,12 @@ package xk.xact.network;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import xk.xact.core.ChipCase;
 import xk.xact.core.CraftPad;
 import xk.xact.core.TileMachine;
 import xk.xact.core.TileWorkbench;
-import xk.xact.gui.ContainerVanillaWorkbench;
 import xk.xact.gui.*;
 
 public class CommonProxy implements IGuiHandler {
@@ -17,12 +17,12 @@ public class CommonProxy implements IGuiHandler {
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		// ID:
-			// 0: machines
-			// 1: library
-			// 2: vanilla workbench
-			// 3: craft pad
-			// 4: <none> (client only)
-			// 5: recipe
+		// 0: machines
+		// 1: library
+		// 2: vanilla workbench
+		// 3: craft pad
+		// 4: <none> (client only)
+		// 5: recipe
 
 		if( ID == 0 ) { // Machines
 			TileMachine machine = (TileMachine) world.getBlockTileEntity( x, y, z );
@@ -62,12 +62,12 @@ public class CommonProxy implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		// ID:
-			// 0: machines
-			// 1: library
-			// 2: vanilla workbench
-			// 3: craft pad
-			// 4: plan (client only)
-			// 5: recipe
+		// 0: machines
+		// 1: library
+		// 2: vanilla workbench
+		// 3: craft pad
+		// 4: plan (client only)
+		// 5: recipe
 
 		if( ID == 0 ) { // Machines
 			TileMachine machine = (TileMachine) world.getBlockTileEntity( x, y, z );
@@ -143,5 +143,44 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	public void registerKeyBindings() { }
+
+	private EntityPlayer fakePlayer;
+
+	public EntityPlayer getFakePlayer(World world, int x, int y, int z) {
+		if( fakePlayer == null ) {
+			fakePlayer = createFakePlayer( world );
+		}
+		fakePlayer.worldObj = world;
+		fakePlayer.posX = x;
+		fakePlayer.posY = y;
+		fakePlayer.posZ = z;
+		return fakePlayer;
+	}
+
+	public static boolean isFakePlayer(EntityPlayer player) {
+		return player.username.equals( "[XACT]" );
+	}
+
+	private EntityPlayer createFakePlayer(World world) {
+		EntityPlayer player = new EntityPlayer( world ) {
+
+			@Override
+			public void sendChatToPlayer(String var1) {
+			}
+
+			@Override
+			public boolean canCommandSenderUseCommand(int var1, String var2) {
+				return false;
+			}
+
+			@Override
+			public ChunkCoordinates getPlayerCoordinates() {
+				return null;
+			}
+
+		};
+		player.username = "[XACT]";
+		return player;
+	}
 
 }
