@@ -76,12 +76,7 @@ public class SlotCraft extends Slot {
 		CraftRecipe recipe = getRecipe();
 		if( recipe == null ) return;
 
-		FakeCraftingInventory craftMatrix = handler.generateTemporaryCraftingGridFor( recipe, player, true );
-
-		craftedItem.onCrafting( player.worldObj, player, craftedItem.stackSize );
-		GameRegistry.onItemCrafted( player, craftedItem, craftMatrix );
-
-		handler.consumeIngredients( craftMatrix, player );
+		handler.doCraft( recipe, player, craftedItem );
 	}
 
 	@Override

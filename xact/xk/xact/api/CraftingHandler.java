@@ -1,5 +1,6 @@
 package xk.xact.api;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -10,6 +11,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import xk.xact.inventory.InvSlot;
 import xk.xact.inventory.InvSlotIterator;
 import xk.xact.inventory.InventoryUtils;
+import xk.xact.network.CommonProxy;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.FakeCraftingInventory;
 import xk.xact.util.Utils;
@@ -70,6 +72,15 @@ public abstract class CraftingHandler {
 				return false;
 		}
 		return true;
+	}
+
+	public void doCraft(CraftRecipe recipe, EntityPlayer player, ItemStack craftedItem) {
+		FakeCraftingInventory craftMatrix = generateTemporaryCraftingGridFor( recipe, CommonProxy.isFakePlayer( player ) ? null : player , true );
+
+		craftedItem.onCrafting( player.worldObj, player, craftedItem.stackSize );
+		GameRegistry.onItemCrafted( player, craftedItem, craftMatrix );
+
+		consumeIngredients( craftMatrix, player );
 	}
 
 	/**
