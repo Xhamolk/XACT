@@ -11,7 +11,8 @@ import xk.xact.inventory.InvSlot;
 import xk.xact.inventory.InvSlotIterator;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.recipes.CraftRecipe;
-import xk.xact.util.*;
+import xk.xact.util.FakeCraftingInventory;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 
@@ -108,6 +109,7 @@ public abstract class CraftingHandler {
 				if( containerStack.isItemStackDamageable()
 						&& containerStack.getItemDamage() > containerStack.getMaxDamage() ) {
 					MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, containerStack ) );
+					player.worldObj.playSoundAtEntity( player, "random.break", 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F );
 					containerStack = null;
 				}
 
@@ -218,7 +220,7 @@ public abstract class CraftingHandler {
 			System.err.println( "XACT: generateTemporaryCraftingGridFor: !canCraft" );
 			return null;
 		}
-		boolean creativeMod = player.capabilities.isCreativeMode;
+		boolean creativeMod = player != null && player.capabilities.isCreativeMode;
 		if( creativeMod )
 			return FakeCraftingInventory.emulateContents( recipe.getIngredients() );
 
