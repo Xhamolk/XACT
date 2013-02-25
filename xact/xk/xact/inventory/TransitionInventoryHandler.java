@@ -4,7 +4,7 @@ package xk.xact.inventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.inventory.DefaultInventoryHandler;
+import net.minecraftforge.inventory.*;
 
 import java.util.ArrayList;
 
@@ -14,23 +14,39 @@ public class TransitionInventoryHandler extends DefaultInventoryHandler {
 
 
 	public ArrayList<ItemStack> listItemsInInventory(IInventory inventory, ForgeDirection side) {
-		return super.listItemsInInventory( ((TransitionInventory) inventory).getMixedInventory(), side );
+		if( inventory instanceof TransitionInventory )
+			inventory = ((TransitionInventory) inventory).getHiddenInventory();
+		return super.listItemsInInventory( inventory, side );
 	}
 
 	public ItemStack takeItemFromInventory(IInventory inventory, ItemStack item, ForgeDirection side) {
-		return super.takeItemFromInventory( ((TransitionInventory) inventory).getMixedInventory(), item, side );
+		if( inventory instanceof TransitionInventory )
+			inventory = ((TransitionInventory) inventory).getHiddenInventory();
+		return super.takeItemFromInventory( inventory, item, side );
 	}
 
 	public ItemStack takeItemFromInventory(IInventory inventory, ItemStack item, int quantity, ForgeDirection side) {
-		return super.takeItemFromInventory( ((TransitionInventory) inventory).getMixedInventory(), item, quantity, side );
+		if( inventory instanceof TransitionInventory )
+			inventory = ((TransitionInventory) inventory).getHiddenInventory();
+		return super.takeItemFromInventory( inventory, item, quantity, side );
 	}
 
 	public ItemStack takeItemFromInventorySlot(IInventory inventory, int slotIndex, int quantity) {
-		return super.takeItemFromInventorySlot( ((TransitionInventory) inventory).getMixedInventory(), slotIndex, quantity );
+		if( inventory instanceof TransitionInventory )
+			inventory = ((TransitionInventory) inventory).getHiddenInventory();
+		return super.takeItemFromInventorySlot( inventory, slotIndex, quantity );
 	}
 
 	public int getItemCountInInventory(IInventory inventory, ItemStack itemStack, ForgeDirection side) {
-		return super.getItemCountInInventory( ((TransitionInventory) inventory).getMixedInventory(), itemStack, side );
+		if( inventory instanceof TransitionInventory )
+			inventory = ((TransitionInventory) inventory).getHiddenInventory();
+		return super.getItemCountInInventory( inventory, itemStack, side );
+	}
+
+	public int getItemCountInSlot(IInventory inventory, int slotIndex) {
+		if( inventory instanceof TransitionInventory )
+			inventory = ((TransitionInventory) inventory).getHiddenInventory();
+		return super.getItemCountInSlot( inventory, slotIndex );
 	}
 
 }
