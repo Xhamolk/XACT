@@ -77,7 +77,7 @@ public abstract class CraftingHandler {
 	public void doCraft(CraftRecipe recipe, EntityPlayer player, ItemStack craftedItem) {
 		FakeCraftingInventory craftMatrix = generateTemporaryCraftingGridFor( recipe, CommonProxy.isFakePlayer( player ) ? null : player , true );
 
-		craftedItem.onCrafting( player.worldObj, player, craftedItem.stackSize );
+		craftedItem.onCrafting( device.getWorld(), player, craftedItem.stackSize );
 		GameRegistry.onItemCrafted( player, craftedItem, craftMatrix );
 
 		consumeIngredients( craftMatrix, player );
