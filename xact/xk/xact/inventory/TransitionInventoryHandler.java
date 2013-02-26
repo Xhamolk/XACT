@@ -49,4 +49,10 @@ public class TransitionInventoryHandler extends DefaultInventoryHandler {
 		return super.getItemCountInSlot( inventory, slotIndex );
 	}
 
+	public int getItemCountInSlot(IInventory inventory, int slotIndex, ItemStack itemStack) {
+		if( inventory instanceof TransitionInventory )
+			inventory = ((TransitionInventory) inventory).getHiddenInventory();
+		return super.getItemCountInSlot( inventory, slotIndex, itemStack );
+	}
+
 }

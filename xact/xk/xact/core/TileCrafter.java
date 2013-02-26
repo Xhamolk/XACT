@@ -21,7 +21,6 @@ import xk.xact.gui.ContainerCrafter;
 import xk.xact.gui.CraftingGui;
 import xk.xact.gui.GuiCrafter;
 import xk.xact.inventory.Inventory;
-import xk.xact.inventory.MixedInventory;
 import xk.xact.inventory.TransitionInventory;
 import xk.xact.inventory.TransitionInventoryHandler;
 import xk.xact.recipes.CraftRecipe;
@@ -67,19 +66,10 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public final Inventory resources; // size = 3*9 = 27
 
-	public final MixedInventory mixedInventory;
-
 	public boolean contentsChanged = false;
 
 	public TileCrafter() {
-		this.results = new Inventory( getRecipeCount(), "Results" ) {
-			@Override
-			public ItemStack getStackInSlot(int slot) {
-				if( 0 <= slot && slot < getRecipeCount() )
-					return getRecipeResult( slot );
-				return null;
-			}
-		};
+		this.results = new CrafterOutputInventory( getRecipeCount(), "Results" );
 		this.circuits = new Inventory( 4, "Encoded Recipes" ) {
 			@Override
 			public void onInventoryChanged() {
@@ -102,7 +92,6 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				TileCrafter.this.updateStates();
 			}
 		};
-		this.mixedInventory = new CrafterMixedInventory();
 	}
 
 	@Override // the items to be dropped when the block is destroyed.
@@ -332,23 +321,22 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///// TransitionInventory
 
 	@Override
-	public MixedInventory getMixedInventory() {
-		return mixedInventory;
+	public IInventory getHiddenInventory() {
+		return results;
 	}
 
 	// This prevents exposing the craftable items to non-standardized inventory manipulators.
-	class CrafterMixedInventory extends MixedInventory implements IDynamicInventory {
+	class CrafterOutputInventory extends Inventory implements IDynamicInventory {
 
-
-		public CrafterMixedInventory() {
-			super( "XACT Crafter" );
-			this.addInventory( results );
-			this.addInventory( resources );
+		public CrafterOutputInventory(int size, String name) {
+			super( size, name );
 		}
 
 		@Override
-		public void onInventoryChanged() {
-
+		public ItemStack getStackInSlot(int slot) {
+			if( 0 <= slot && slot < getRecipeCount() )
+				return getRecipeResult( slot );
+			return null;
 		}
 
 		//////////
@@ -356,23 +344,15 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 		@Override
 		public int getSlotCapacityForItem(ItemStack itemStack, int slot) {
-			if( slot < 4 ) // output slots.
-				return 0;
-			ItemStack stackInSlot = getStackInSlot( slot );
-			return stackInSlot == null ? 64 : 64 - stackInSlot.stackSize;
+			return 0;
 		}
 
 		@Override
 		public int getItemAvailabilityInSlot(int slot) {
-			if( slot < 4 ) { // output slots.
-				if( canCraftRecipes[slot] )
-					return recipes[slot].getResult().stackSize;
-				else
-					return 0;
-			} else {
-				ItemStack stackInSlot = getStackInSlot( slot );
-				return stackInSlot == null ? 0 : stackInSlot.stackSize;
-			}
+			if( slot < 4 && !canCraftRecipes[slot] && recipes[slot] != null )
+				return recipes[slot].getResult().stackSize;
+			else
+				return 0;
 		}
 
 		@Override
@@ -381,12 +361,14 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 		@Override
 		public void onItemTaken(ItemStack itemStack, int slot) {
-			if( slot < 4 ) {
-				handler.doCraft( recipes[slot], XActMod.proxy.getFakePlayer( getWorld(), xCoord, yCoord, zCoord ), itemStack );
-			} else {
-				resources.onInventoryChanged();
+			if( slot < 4 && itemStack != null ) {
+				handler.doCraft( recipes[slot], fakePlayer(), itemStack );
 			}
 		}
+	}
+
+	private EntityPlayer fakePlayer() {
+		return XActMod.proxy.getFakePlayer( getWorld(), xCoord, yCoord, zCoord );
 	}
 
 }
