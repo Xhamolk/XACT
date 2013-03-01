@@ -135,7 +135,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	// Gets the recipe's result.
 	public ItemStack getRecipeResult(int slot) {
 		CraftRecipe recipe = this.getRecipe( slot );
-		return recipe == null ? null : recipe.getResult();
+		return recipe == null ? null : recipe.getResult().copy();
 	}
 
 	// updates the stored recipe results.
