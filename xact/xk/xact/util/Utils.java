@@ -94,4 +94,10 @@ public class Utils {
 
 	}
 
+	public static ItemStack copyOf(ItemStack stack) {
+		if( stack == null )
+			return null;
+		return stack.copy();
+	}
+
 }

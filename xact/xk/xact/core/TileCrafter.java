@@ -25,6 +25,7 @@ import xk.xact.inventory.TransitionInventory;
 import xk.xact.inventory.TransitionInventoryHandler;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 
@@ -135,7 +136,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	// Gets the recipe's result.
 	public ItemStack getRecipeResult(int slot) {
 		CraftRecipe recipe = this.getRecipe( slot );
-		return recipe == null ? null : recipe.getResult().copy();
+		return recipe == null ? null : recipe.getResult();
 	}
 
 	// updates the stored recipe results.
@@ -335,7 +336,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		@Override
 		public ItemStack getStackInSlot(int slot) {
 			if( 0 <= slot && slot < getRecipeCount() )
-				return getRecipeResult( slot );
+				return Utils.copyOf( getRecipeResult( slot ) );
 			return null;
 		}
 
