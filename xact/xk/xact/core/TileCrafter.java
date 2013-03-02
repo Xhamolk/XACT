@@ -363,7 +363,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		@Override
 		public void onItemTaken(ItemStack itemStack, int slot) {
 			if( slot < 4 && itemStack != null ) {
-				handler.doCraft( recipes[slot], fakePlayer(), itemStack );
+				getHandler().doCraft( recipes[slot], fakePlayer(), itemStack );
 			}
 		}
 	}
