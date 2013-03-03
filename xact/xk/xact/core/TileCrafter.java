@@ -340,6 +340,11 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			return null;
 		}
 
+		@Override
+		public void onInventoryChanged() {
+			updateStates();
+		}
+
 		//////////
 		///// IDynamicInventory
 

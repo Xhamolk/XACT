@@ -75,7 +75,9 @@ public abstract class CraftingHandler {
 	}
 
 	public void doCraft(CraftRecipe recipe, EntityPlayer player, ItemStack craftedItem) {
-		FakeCraftingInventory craftMatrix = generateTemporaryCraftingGridFor( recipe, CommonProxy.isFakePlayer( player ) ? null : player , true );
+		FakeCraftingInventory craftMatrix = generateTemporaryCraftingGridFor( recipe, player , true );
+		if( craftMatrix == null )
+			return;
 
 		craftedItem.onCrafting( device.getWorld(), player, craftedItem.stackSize );
 		GameRegistry.onItemCrafted( player, craftedItem, craftMatrix );
@@ -117,10 +119,9 @@ public abstract class CraftingHandler {
 			if( stackInSlot.getItem().hasContainerItem() ) {
 				ItemStack containerStack = stackInSlot.getItem().getContainerItemStack( stackInSlot );
 
-				if( containerStack.isItemStackDamageable()
-						&& containerStack.getItemDamage() > containerStack.getMaxDamage() ) {
+				if( containerStack.isItemStackDamageable() && containerStack.getItemDamage() > containerStack.getMaxDamage() ) {
 					MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, containerStack ) );
-					player.worldObj.playSoundAtEntity( player, "random.break", 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F );
+					device.getWorld().playSoundAtEntity( player, "random.break", 0.8F, 0.8F + device.getWorld().rand.nextFloat() * 0.4F );
 					containerStack = null;
 				}
 
@@ -232,10 +233,9 @@ public abstract class CraftingHandler {
 	 */
 	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe, EntityPlayer player, boolean takeItems) {
 		if( !canCraft( recipe, player ) ) {
-			System.err.println( "XACT: generateTemporaryCraftingGridFor: !canCraft" );
 			return null;
 		}
-		boolean creativeMod = player != null && player.capabilities.isCreativeMode;
+		boolean creativeMod = player != null && !CommonProxy.isFakePlayer( player ) && player.capabilities.isCreativeMode;
 		if( creativeMod )
 			return FakeCraftingInventory.emulateContents( recipe.getIngredients() );
 
