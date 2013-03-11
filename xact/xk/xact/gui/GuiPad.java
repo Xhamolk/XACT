@@ -11,6 +11,7 @@ import xk.xact.core.ItemChip;
 import xk.xact.gui.button.CustomButtons;
 import xk.xact.gui.button.GuiButtonCustom;
 import xk.xact.gui.button.ICustomButtonMode;
+import xk.xact.network.ClientProxy;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 
@@ -69,10 +70,10 @@ public class GuiPad extends CraftingGui {
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
 		if( ingredients == null ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
+			GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) -1, null );
 			return;
 		}
-		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 1 );
+		GuiUtils.sendItemsToServer( ClientProxy.getNetClientHandler(), ingredients, 1 );
 	}
 
 	@Override
@@ -153,11 +154,11 @@ public class GuiPad extends CraftingGui {
 
 			if( action == 1 ) { // SAVE
 				ItemStack stack = CraftManager.encodeRecipe( craftPad .getRecipe( 0 ) );
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (button.id + 10), stack );
+				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (button.id + 10), stack );
 				return;
 			}
 			if( action == 3 ) { // CLEAR
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (button.id + 10), new ItemStack( XActMod.itemRecipeBlank ) );
+				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (button.id + 10), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
 	}

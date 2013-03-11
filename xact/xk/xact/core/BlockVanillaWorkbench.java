@@ -8,6 +8,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.util.Utils;
@@ -19,10 +20,10 @@ public class BlockVanillaWorkbench extends BlockContainer {
 
 	private BlockVanillaWorkbench(int blockID) {
 		super( blockID, Material.wood );
-		this.blockIndexInTexture = 59;
 		this.setHardness( 2.5F );
 		this.setStepSound( soundWoodFootstep );
-		this.setBlockName( "workbench" );
+		this.setUnlocalizedName( "workbench" );
+        this.setTextureFile( Block.workbench.getTextureFile() );
 		this.setCreativeTab( CreativeTabs.tabDecorations );
 	}
 
@@ -39,19 +40,8 @@ public class BlockVanillaWorkbench extends BlockContainer {
 	}
 
 	@Override
-	public int getBlockTextureFromSide(int side) {
-		switch( side ) {
-			case 0:
-				return Block.planks.getBlockTextureFromSide( 0 );
-			case 1:
-				return this.blockIndexInTexture - 16;
-			default:
-				if( side == 2 || side == 4 ) {
-					return this.blockIndexInTexture + 1;
-				} else {
-					return this.blockIndexInTexture;
-				}
-		}
+	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
+		return Block.workbench.getBlockTextureFromSide( side );
 	}
 
 	@Override

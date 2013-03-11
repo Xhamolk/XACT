@@ -14,9 +14,8 @@ public class ItemPad extends ItemContainer {
 
 	public ItemPad(int itemID) {
 		super( itemID );
-		this.setItemName( "craftPad" );
+		this.setUnlocalizedName( "craftPad" );
 		this.setMaxStackSize( 1 );
-		this.setTextureFile( XActMod.TEXTURE_ITEMS );
 		this.setCreativeTab( XActMod.xactTab );
 	}
 

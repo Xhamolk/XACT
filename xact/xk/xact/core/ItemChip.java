@@ -3,6 +3,7 @@ package xk.xact.core;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import xk.xact.XActMod;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
@@ -26,8 +27,7 @@ public class ItemChip extends Item {
 	public ItemChip(int itemID, boolean encoded) {
 		super( itemID );
 		this.encoded = encoded;
-		this.setItemName( "recipeChip." + (encoded ? "encoded" : "blank") );
-		this.setTextureFile( XActMod.TEXTURE_ITEMS );
+		this.setUnlocalizedName( "recipeChip." + (encoded ? "encoded" : "blank") );
 		this.setCreativeTab( XActMod.xactTab );
 	}
 
@@ -59,7 +59,7 @@ public class ItemChip extends Item {
 	}
 
 	@Override
-	public int getIconFromDamage(int itemDamage) {
+	public Icon getIconFromDamage(int itemDamage) {
 		return this.encoded ? 1 : 0;
 	}
 

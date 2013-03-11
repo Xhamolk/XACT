@@ -1,11 +1,15 @@
 package xk.xact.core;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.util.Utils;
@@ -33,7 +37,7 @@ public class BlockMachine extends BlockContainer {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living) {
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living, ItemStack itemStack) {
 		EntityPlayer player = (EntityPlayer) living;
 		int frontSide = world.getBlockMetadata( x, y, z );
 		if( frontSide == 0 || frontSide == 1 ) {
@@ -104,18 +108,29 @@ public class BlockMachine extends BlockContainer {
 	}
 
 	@Override
-	public int getBlockTextureFromSideAndMetadata(int side, int metadata) {
+	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
 		switch( side ) {
 			case 0: // bottom
-				return 16 + 3;
+				return TEXTURE_BOTTOM;
 			case 1: // top
-				return 16;
+				return TEXTURE_TOP;
 			default:
 				if( side == metadata ) // front
-					return 16 + 1;
+					return TEXTURE_FRONT;
 				else // any other side.
-					return 16 + 2;
+					return TEXTURE_SIDE;
 		}
 	}
+
+    @SideOnly(Side.CLIENT)
+    private static Icon TEXTURE_TOP, TEXTURE_BOTTOM, TEXTURE_FRONT, TEXTURE_SIDE;
+
+    @SideOnly(Side.CLIENT)
+    public void func_94332_a(IconRegister iconRegister) { // todo: get the right icons.
+        TEXTURE_TOP = iconRegister.func_94245_a("workbench_top");
+        TEXTURE_BOTTOM = iconRegister.func_94245_a("workbench_bottom");
+        TEXTURE_FRONT = iconRegister.func_94245_a("workbench_front");
+        TEXTURE_SIDE = iconRegister.func_94245_a("workbench_side");
+    }
 
 }

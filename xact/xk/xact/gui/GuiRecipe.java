@@ -7,6 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.inventory.InventoryUtils;
+import xk.xact.network.ClientProxy;
 
 // GUI used to set the recipe of a node.
 public class GuiRecipe extends CraftingGui {
@@ -110,10 +111,10 @@ public class GuiRecipe extends CraftingGui {
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
 		if( ingredients == null ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
+			GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) -1, null );
 			return;
 		}
-		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 1);
+		GuiUtils.sendItemsToServer( ClientProxy.getNetClientHandler(), ingredients, 1);
 	}
 
 }

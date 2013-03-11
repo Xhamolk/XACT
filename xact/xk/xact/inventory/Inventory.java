@@ -147,7 +147,12 @@ public class Inventory implements IInventory, IInventoryNBT {
 		return name;
 	}
 
-	@Override
+    @Override
+    public boolean func_94042_c() {
+        return false;  // I don't know what this does.
+    }
+
+    @Override
 	public int getInventoryStackLimit() {
 		return maxStackSize;
 	}
@@ -175,8 +180,13 @@ public class Inventory implements IInventory, IInventoryNBT {
 	public void closeChest() {
 	}
 
+    @Override
+    public boolean func_94041_b(int slot, ItemStack itemstack) {
+        return true;  // Whether if an item can be placed at the slot
+    }
 
-	///////////////
+
+    ///////////////
 	///// NBT
 
 	public void readFromNBT(NBTTagCompound compound) {

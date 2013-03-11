@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.input.Keyboard;
@@ -44,4 +45,8 @@ public class ClientProxy extends CommonProxy {
 					false
 		} ) );
 	}
+
+    public static NetClientHandler getNetClientHandler() {
+        return Minecraft.getMinecraft().getNetHandler();
+    }
 }

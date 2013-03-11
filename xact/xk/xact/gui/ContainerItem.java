@@ -82,7 +82,7 @@ public abstract class ContainerItem extends Container {
 	 */
 	protected void onPickupPrevented(EntityPlayer player, ItemStack itemStack, Slot slot) {
 		if( !(player instanceof EntityPlayerMP) ) { // send the chat message client-side.
-			String itemName = itemStack.getItem().getItemDisplayName( itemStack );
+			String itemName = itemStack.getDisplayName();
 			player.sendChatToPlayer( "Cannot move <" + itemName + "> while it's in use." );
 		}
 	}

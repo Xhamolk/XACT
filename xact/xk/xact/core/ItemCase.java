@@ -4,6 +4,7 @@ package xk.xact.core;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.gui.ContainerCase;
@@ -15,9 +16,8 @@ public class ItemCase extends ItemContainer {
 
 	public ItemCase(int itemID) {
 		super( itemID );
-		this.setItemName( "chipCase" );
+		this.setUnlocalizedName( "chipCase" );
 		this.setMaxStackSize( 1 );
-		this.setTextureFile( XActMod.TEXTURE_ITEMS );
 		this.setCreativeTab( XActMod.xactTab );
 	}
 
@@ -47,7 +47,7 @@ public class ItemCase extends ItemContainer {
 	}
 
 	@Override
-	public int getIconFromDamage(int itemDamage) {
+	public Icon getIconFromDamage(int itemDamage) {
 		return 16;
 	}
 
