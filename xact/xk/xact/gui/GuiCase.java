@@ -22,9 +22,8 @@ public class GuiCase extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
-		int texture = this.mc.renderEngine.getTexture( "/gfx/xact/gui/chip_case.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( texture );
+		this.mc.renderEngine.func_98187_b( "/gfx/xact/gui/chip_case.png" ); // bind texture
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );

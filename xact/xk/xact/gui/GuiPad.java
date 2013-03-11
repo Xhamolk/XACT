@@ -31,18 +31,17 @@ public class GuiPad extends CraftingGui {
 	@SuppressWarnings("unchecked")
 	public void initGui() {
 		super.initGui();
-		super.controlList.clear();
+		super.buttonList.clear();
 		this.button = CustomButtons.createdDeviceButton( this.guiLeft + 97, this.guiTop + 63 );
 		button.id = 0;
-		controlList.add( button );
+		buttonList.add( button );
 		invalidated = true;
 	}
 
 	@Override
 	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int texture = this.mc.renderEngine .getTexture( "/gfx/xact/gui/pad_1.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( texture );
+		this.mc.renderEngine.func_98187_b( "/gfx/xact/gui/pad_1.png" ); // bind texture
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize,

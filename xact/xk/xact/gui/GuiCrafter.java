@@ -37,7 +37,7 @@ public class GuiCrafter extends CraftingGui {
 			 *  42, 21.     120, 21
 			 *  42, 65.     120, 65
 		 */
-		controlList.clear();
+		buttonList.clear();
 
 		for( int i = 0; i < 4; i++ ) {
 			int x = (i % 2 == 0 ? 42 : 120) + this.guiLeft;
@@ -45,7 +45,7 @@ public class GuiCrafter extends CraftingGui {
 
 			GuiButtonCustom button = CustomButtons.createdDeviceButton( x, y );
 			button.id = i;
-			controlList.add( buttons[i] = button );
+			buttonList.add( buttons[i] = button );
 		}
 		invalidated = true;
 	}
@@ -90,10 +90,8 @@ public class GuiCrafter extends CraftingGui {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY) {
-		int texture = this.mc.renderEngine
-				.getTexture( "/gfx/xact/gui/crafter_4.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( texture );
+		this.mc.renderEngine.func_98187_b( "/gfx/xact/gui/crafter_4.png" ); // bind texture
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );

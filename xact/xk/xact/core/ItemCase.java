@@ -1,6 +1,9 @@
 package xk.xact.core;
 
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -13,6 +16,9 @@ import java.util.List;
 
 
 public class ItemCase extends ItemContainer {
+
+	@SideOnly(Side.CLIENT)
+	private Icon inUseIcon;
 
 	public ItemCase(int itemID) {
 		super( itemID );
@@ -41,14 +47,23 @@ public class ItemCase extends ItemContainer {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		itemStack.setItemDamage( 1 );
-		if( !world.isRemote )
+		if( ! world.isRemote )
 			player.openGui( XActMod.instance, 1, world, 0, 0, 0 );
 		return itemStack;
 	}
 
 	@Override
 	public Icon getIconFromDamage(int itemDamage) {
-		return 16;
+		if( itemDamage == 1 )
+			return inUseIcon;
+		return iconIndex;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT) // Item Texture
+	public void func_94581_a(IconRegister iconRegister) {
+		this.iconIndex = iconRegister.func_94245_a( "xact:case-off" );
+		this.inUseIcon = iconRegister.func_94245_a( "xact:case-on" );
 	}
 
 }
