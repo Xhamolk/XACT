@@ -43,7 +43,7 @@ public class BlockMachine extends BlockContainer {
 		if( frontSide == 0 || frontSide == 1 ) {
 			frontSide = sideByAngles( player, x, z );
 		}
-		world.setBlockMetadata( x, y, z, frontSide );
+		world.setBlockMetadataWithNotify( x, y, z, frontSide, 3 );
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BlockMachine extends BlockContainer {
 		if( player.isSneaking() ) {
 			return false;
 		}
-		if( !world.isRemote )
+		if( ! world.isRemote )
 			player.openGui( XActMod.instance, 0, world, x, y, z );
 
 		return true;
@@ -122,15 +122,16 @@ public class BlockMachine extends BlockContainer {
 		}
 	}
 
-    @SideOnly(Side.CLIENT)
-    private static Icon TEXTURE_TOP, TEXTURE_BOTTOM, TEXTURE_FRONT, TEXTURE_SIDE;
+	@SideOnly(Side.CLIENT)
+	private static Icon TEXTURE_TOP, TEXTURE_BOTTOM, TEXTURE_FRONT, TEXTURE_SIDE;
 
-    @SideOnly(Side.CLIENT)
-    public void func_94332_a(IconRegister iconRegister) { // todo: get the right icons.
-        TEXTURE_TOP = iconRegister.func_94245_a("workbench_top");
-        TEXTURE_BOTTOM = iconRegister.func_94245_a("workbench_bottom");
-        TEXTURE_FRONT = iconRegister.func_94245_a("workbench_front");
-        TEXTURE_SIDE = iconRegister.func_94245_a("workbench_side");
-    }
+	@SideOnly(Side.CLIENT)
+
+	public void func_94332_a(IconRegister iconRegister) {
+		TEXTURE_TOP = iconRegister.func_94245_a( "xact:machine_top" );
+		TEXTURE_BOTTOM = iconRegister.func_94245_a( "xact:machine_bottom" );
+		TEXTURE_FRONT = iconRegister.func_94245_a( "xact:machine_front" );
+		TEXTURE_SIDE = iconRegister.func_94245_a( "xact:machine_side" );
+	}
 
 }
