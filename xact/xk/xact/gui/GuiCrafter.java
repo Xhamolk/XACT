@@ -6,6 +6,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
 import xk.xact.gui.button.CustomButtons;
@@ -91,7 +92,7 @@ public class GuiCrafter extends CraftingGui {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY) {
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.func_98187_b( "/gfx/xact/gui/crafter_4.png" ); // bind texture
+		this.mc.renderEngine.func_98187_b( Textures.GUI_CRAFTER ); // bind texture
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );

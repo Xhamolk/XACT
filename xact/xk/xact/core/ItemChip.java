@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
@@ -64,9 +65,9 @@ public class ItemChip extends Item {
 	@SideOnly(Side.CLIENT) // Item Texture
 	public void func_94581_a(IconRegister iconRegister) {
 		if( encoded )
-			this.iconIndex = iconRegister.func_94245_a( "xact:chip-encoded" );
+			this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_CHIP_BLANK );
 		else
-			this.iconIndex = iconRegister.func_94245_a( "xact:chip-blank" );
+			this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_CHIP_ENCODED );
 	}
 
 }

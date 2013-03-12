@@ -7,18 +7,15 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.gui.ContainerCase;
 
 import java.util.List;
 
 
 public class ItemCase extends ItemContainer {
-
-	@SideOnly(Side.CLIENT)
-	private Icon inUseIcon;
 
 	public ItemCase(int itemID) {
 		super( itemID );
@@ -53,17 +50,9 @@ public class ItemCase extends ItemContainer {
 	}
 
 	@Override
-	public Icon getIconFromDamage(int itemDamage) {
-		if( itemDamage == 1 )
-			return inUseIcon;
-		return iconIndex;
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT) // Item Texture
 	public void func_94581_a(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.func_94245_a( "xact:case-off" );
-		this.inUseIcon = iconRegister.func_94245_a( "xact:case-on" );
+		this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_CASE );
 	}
 
 }

@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.gui.ContainerPad;
 
 import java.util.List;
@@ -61,8 +62,8 @@ public class ItemPad extends ItemContainer {
 	@Override
 	@SideOnly(Side.CLIENT) // Item Texture
 	public void func_94581_a(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.func_94245_a( "xact:pad-off" );
-		this.inUseIcon = iconRegister.func_94245_a( "xact:pad-on" );
+		this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_PAD_OFF );
+		this.inUseIcon = iconRegister.func_94245_a( Textures.ITEM_PAD_ON );
 	}
 
 }

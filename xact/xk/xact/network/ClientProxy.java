@@ -21,10 +21,6 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	public void registerRenderInformation() {
-		// Textures
-		MinecraftForgeClient.preloadTexture( XActMod.TEXTURE_ITEMS );
-		MinecraftForgeClient.preloadTexture( XActMod.TEXTURE_BLOCKS );
-
 		// Custom IItemRenderer
 		MinecraftForgeClient.registerItemRenderer( XActMod.itemRecipeEncoded.itemID, new ChipRenderer() );
 	}

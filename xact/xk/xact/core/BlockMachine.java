@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;
@@ -128,10 +129,10 @@ public class BlockMachine extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 
 	public void func_94332_a(IconRegister iconRegister) {
-		TEXTURE_TOP = iconRegister.func_94245_a( "xact:machine_top" );
-		TEXTURE_BOTTOM = iconRegister.func_94245_a( "xact:machine_bottom" );
-		TEXTURE_FRONT = iconRegister.func_94245_a( "xact:machine_front" );
-		TEXTURE_SIDE = iconRegister.func_94245_a( "xact:machine_side" );
+		TEXTURE_TOP = iconRegister.func_94245_a( Textures.CRAFTER_TOP );
+		TEXTURE_BOTTOM = iconRegister.func_94245_a( Textures.CRAFTER_BOTTOM );
+		TEXTURE_FRONT = iconRegister.func_94245_a( Textures.CRAFTER_FRONT );
+		TEXTURE_SIDE = iconRegister.func_94245_a( Textures.CRAFTER_SIDE );
 	}
 
 }
