@@ -65,9 +65,9 @@ public class ItemChip extends Item {
 	@SideOnly(Side.CLIENT) // Item Texture
 	public void func_94581_a(IconRegister iconRegister) {
 		if( encoded )
-			this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_CHIP_BLANK );
-		else
 			this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_CHIP_ENCODED );
+		else
+			this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_CHIP_BLANK );
 	}
 
 }

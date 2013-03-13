@@ -7,9 +7,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public final class Textures {
 
 	// GUI Textures
-	public static final String GUI_CRAFTER = "/textures/gui/GuiCrafter.png";
-	public static final String GUI_PAD = "/textures/gui/GuiPad.png";
-	public static final String GUI_CASE = "/textures/gui/GuiCase.png";
+	public static final String GUI_CRAFTER = "/mods/xact/textures/gui/GuiCrafter.png";
+	public static final String GUI_PAD = "/mods/xact/textures/gui/GuiPad.png";
+	public static final String GUI_CASE = "/mods/xact/textures/gui/GuiCase.png";
 
 	// Items
 	public static final String ITEM_CASE = "xact:case";
@@ -26,8 +26,8 @@ public final class Textures {
 	public static final String CRAFTER_SIDE = "xact:crafter_side";
 
 	// Other
-	public static final String MISC_BUTTONS = "/texture/other/buttons_1.png";
+	public static final String MISC_BUTTONS = "/mods/xact/textures/other/buttons_1.png";
 
 	// NEI: Usage Handler
-	public static final String NEI_CHIP_HANDLER = "/texture/gui/ChipHandler.png";
+	public static final String NEI_CHIP_HANDLER = "/mods/xact/textures/gui/ChipHandler.png";
 }

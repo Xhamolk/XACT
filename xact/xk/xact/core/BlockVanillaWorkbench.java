@@ -1,9 +1,12 @@
 package xk.xact.core;
 
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -23,7 +26,6 @@ public class BlockVanillaWorkbench extends BlockContainer {
 		this.setHardness( 2.5F );
 		this.setStepSound( soundWoodFootstep );
 		this.setUnlocalizedName( "workbench" );
-        this.setTextureFile( Block.workbench.getTextureFile() );
 		this.setCreativeTab( CreativeTabs.tabDecorations );
 	}
 
@@ -41,7 +43,14 @@ public class BlockVanillaWorkbench extends BlockContainer {
 
 	@Override
 	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
-		return Block.workbench.getBlockTextureFromSide( side );
+		if( side == 0 )
+			return TEXTURE_BOTTOM;
+		else if( side == 1 )
+			return TEXTURE_TOP;
+		if( side == 2 || side == 4 )
+			return TEXTURE_FRONT;
+		else
+			return TEXTURE_SIDE;
 	}
 
 	@Override
@@ -65,5 +74,25 @@ public class BlockVanillaWorkbench extends BlockContainer {
 		}
 		super.breakBlock( world, x, y, z, par5, par6 );
 	}
+
+	@Override
+	public void func_94332_a(IconRegister iconRegister) {
+		this.TEXTURE_TOP = iconRegister.func_94245_a( "workbench_top" );
+		this.TEXTURE_FRONT = iconRegister.func_94245_a( "workbench_front" );
+		this.TEXTURE_SIDE = iconRegister.func_94245_a( "workbench_side" );
+		this.TEXTURE_BOTTOM = iconRegister.func_94245_a( "wood_spruce" );
+	}
+
+	@SideOnly(Side.CLIENT)
+	private Icon TEXTURE_TOP;
+
+	@SideOnly(Side.CLIENT)
+	private Icon TEXTURE_FRONT;
+
+	@SideOnly(Side.CLIENT)
+	private Icon TEXTURE_SIDE;
+
+	@SideOnly(Side.CLIENT)
+	private Icon TEXTURE_BOTTOM;
 
 }
