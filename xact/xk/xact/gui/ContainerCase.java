@@ -116,4 +116,16 @@ public class ContainerCase extends ContainerItem {
 	public void onContentsStored(ItemStack itemStack) {
 		chipCase.inventoryChanged = false;
 	}
+
+	///////////////
+	///// ContainerXACT
+
+	@Override
+	protected boolean isCraftingGridSlot(int slotID) {
+		return false;
+	}
+
+	@Override
+	protected void clearCraftingGrid() { }
+
 }

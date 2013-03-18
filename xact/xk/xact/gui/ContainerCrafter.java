@@ -13,7 +13,7 @@ import xk.xact.recipes.CraftManager;
 /**
  * The container used for the Crafter's GUI.
  */
-public class ContainerCrafter extends CraftingContainer implements InteractiveCraftingContainer {
+public class ContainerCrafter extends ContainerXACT implements InteractiveCraftingContainer {
 
 	TileCrafter crafter;
 
@@ -354,7 +354,8 @@ public class ContainerCrafter extends CraftingContainer implements InteractiveCr
 		}
 	}
 
-	// Crafting Container
+	///////////////
+	///// ContainerXACT
 
 	@Override
 	protected boolean isCraftingGridSlot(int slotID) {
@@ -363,9 +364,9 @@ public class ContainerCrafter extends CraftingContainer implements InteractiveCr
 
 	@Override
 	protected void clearCraftingGrid() {
-		for( int i = gridFirstSlot; isCraftingGridSlot( i ); i++ ) {
-			Slot gridSlot = getSlot( i );
-			gridSlot.inventory.setInventorySlotContents( gridFirstSlot - i, null );
+		for( int i = 0; i< 9; i++ ) {
+			Slot gridSlot = getSlot( i + gridFirstSlot );
+			gridSlot.inventory.setInventorySlotContents( i, null );
 		}
 		crafter.craftGrid.onInventoryChanged();
 	}

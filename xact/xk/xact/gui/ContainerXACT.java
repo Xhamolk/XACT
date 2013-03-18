@@ -11,7 +11,7 @@ import xk.xact.util.Utils;
 
 import java.util.HashSet;
 
-public abstract class CraftingContainer extends Container {
+public abstract class ContainerXACT extends Container {
 
 	protected int dragState;
 	protected int dragButton;
