@@ -39,6 +39,12 @@ public class Utils {
 		return stack.stackSize + "x " + stack.getItem().getItemDisplayName( stack );
 	}
 
+	public static boolean equalsStacks(ItemStack stack1, ItemStack stack2) {
+		return stack1.itemID == stack2.itemID
+				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())
+				&& ItemStack.areItemStackTagsEqual( stack1, stack2 );
+	}
+
 	/**
 	 * Drops an item on the world as an EntityItem.
 	 *
