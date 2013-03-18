@@ -104,11 +104,6 @@ public class BlockMachine extends BlockContainer {
 	///////////////
 	///// Textures
 	@Override
-	public String getTextureFile() {
-		return XActMod.TEXTURE_BLOCKS;
-	}
-
-	@Override
 	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
 		switch( side ) {
 			case 0: // bottom
