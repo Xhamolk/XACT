@@ -68,10 +68,10 @@ public class GuiCrafter extends CraftingGui {
 					if( !((ItemChip) chip.getItem()).encoded ) {
 						CraftRecipe mainRecipe = crafter.getRecipe( 4 ); // the recipe on the grid
 						if( mainRecipe != null && mainRecipe.isValid() ) {
-							buttons[i] .setMode( ICustomButtonMode.DeviceModes.SAVE );
+							buttons[i].setMode( ICustomButtonMode.DeviceModes.SAVE );
 							continue;
 						}
-						buttons[i] .setMode( ICustomButtonMode.DeviceModes.INACTIVE );
+						buttons[i].setMode( ICustomButtonMode.DeviceModes.INACTIVE );
 						continue;
 					}
 					buttons[i].setMode( ICustomButtonMode.DeviceModes.CLEAR );
@@ -84,7 +84,7 @@ public class GuiCrafter extends CraftingGui {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		int xPos = (this.xSize - fontRenderer .getStringWidth( "X.A.C.T. Crafter" )) / 2;
+		int xPos = (this.xSize - fontRenderer.getStringWidth( "X.A.C.T. Crafter" )) / 2;
 		this.fontRenderer.drawString( "X.A.C.T. Crafter", xPos, 6, 4210752 );
 		this.fontRenderer.drawString( "Player's Inventory", 8, this.ySize - 94, 4210752 );
 	}
@@ -105,15 +105,20 @@ public class GuiCrafter extends CraftingGui {
 
 	}
 
+	boolean success = false;
 	@Override
 	protected void drawSlotInventory(Slot slot) {
+		if( !success ) {
+			System.out.println("Calling drawSlotInventory() on GuiCrafter! Success!" );
+			success = true;
+		}
+
 		// grid's contents.
 		if( 8 <= slot.slotNumber && slot.slotNumber < 18 - 1 ) {
 			int index = slot.slotNumber - 8;
 			int color;
 
-			// only paint the grid's real contents if there is no recipe being
-			// hovered.
+			// only paint the grid's real contents if there is no recipe being hovered.
 			if( hoveredRecipe == -1 ) {
 				super.drawSlotInventory( slot );
 				color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
