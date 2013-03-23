@@ -69,7 +69,7 @@ public class GuiUtils {
 		GL11.glDepthFunc( GL11.GL_GREATER );
 		GL11.glDisable( GL11.GL_LIGHTING );
 		GL11.glDepthMask( false );
-		renderEngine.func_98187_b( "%blur%/misc/glint.png" ); // do I want to change this to something else?
+		renderEngine.bindTexture( "%blur%/misc/glint.png" ); // do I want to change this to something else?
 
 		itemRenderer.zLevel -= 50.0F;
 		GL11.glEnable( GL11.GL_BLEND );

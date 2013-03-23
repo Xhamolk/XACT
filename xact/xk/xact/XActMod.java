@@ -35,10 +35,7 @@ public class XActMod {
 	public static CommonProxy proxy;
 
 
-	// Fields
-	public static final String TEXTURE_BLOCKS = "/gfx/xact/machines.png";
-	public static final String TEXTURE_ITEMS = "/gfx/xact/items.png";
-
+	// IDs
 	public static int machineID;
 	public static int blankChipID;
 	public static int encodedChipID;
@@ -51,7 +48,7 @@ public class XActMod {
 	public static Item itemChipCase;
 	public static Item itemCraftPad;
 
-	// Block
+	// Blocks
 	public static Block blockMachine;
 	public static Block blockWorkbench;
 

@@ -42,7 +42,7 @@ public class GuiPad extends CraftingGui {
 	@Override
 	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.func_98187_b( Textures.GUI_PAD ); // bind texture
+		this.mc.renderEngine.bindTexture( Textures.GUI_PAD );
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize,

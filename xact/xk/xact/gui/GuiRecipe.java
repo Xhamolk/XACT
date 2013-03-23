@@ -6,6 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
+import xk.xact.config.Textures;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.network.ClientProxy;
 
@@ -28,7 +29,7 @@ public class GuiRecipe extends CraftingGui {
 	@Override
 	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.func_98187_b( "/gfx/xact/gui/GuiRecipe.png" ); // bind texture
+		this.mc.renderEngine.bindTexture( Textures.GUI_RECIPE );
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );

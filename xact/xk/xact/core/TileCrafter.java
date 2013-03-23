@@ -259,7 +259,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	}
 
     @Override
-    public boolean func_94042_c() {
+    public boolean isInvNameLocalized() {
         return false;  // Not a clue what this does.
     }
 
@@ -286,7 +286,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	}
 
     @Override
-    public boolean func_94041_b(int slot, ItemStack itemstack) {
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack) {
         return true;  // Whether if an item can be placed at the slot
     }
 

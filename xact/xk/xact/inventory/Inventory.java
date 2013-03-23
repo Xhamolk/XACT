@@ -148,8 +148,8 @@ public class Inventory implements IInventory, IInventoryNBT {
 	}
 
     @Override
-    public boolean func_94042_c() {
-        return false;  // I don't know what this does.
+    public boolean isInvNameLocalized() {
+        return false;
     }
 
     @Override
@@ -181,8 +181,8 @@ public class Inventory implements IInventory, IInventoryNBT {
 	}
 
     @Override
-    public boolean func_94041_b(int slot, ItemStack itemstack) {
-        return true;  // Whether if an item can be placed at the slot
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack) {
+        return true;
     }
 
 

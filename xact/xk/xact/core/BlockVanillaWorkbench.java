@@ -76,11 +76,11 @@ public class BlockVanillaWorkbench extends BlockContainer {
 	}
 
 	@Override
-	public void func_94332_a(IconRegister iconRegister) {
-		this.TEXTURE_TOP = iconRegister.func_94245_a( "workbench_top" );
-		this.TEXTURE_FRONT = iconRegister.func_94245_a( "workbench_front" );
-		this.TEXTURE_SIDE = iconRegister.func_94245_a( "workbench_side" );
-		this.TEXTURE_BOTTOM = iconRegister.func_94245_a( "wood_spruce" );
+	public void registerIcons(IconRegister iconRegister) {
+		this.TEXTURE_TOP = iconRegister.registerIcon( "workbench_top" );
+		this.TEXTURE_FRONT = iconRegister.registerIcon( "workbench_front" );
+		this.TEXTURE_SIDE = iconRegister.registerIcon( "workbench_side" );
+		this.TEXTURE_BOTTOM = iconRegister.registerIcon( "wood_spruce" );
 	}
 
 	@SideOnly(Side.CLIENT)

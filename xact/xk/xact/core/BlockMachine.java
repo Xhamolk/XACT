@@ -122,12 +122,12 @@ public class BlockMachine extends BlockContainer {
 	private static Icon TEXTURE_TOP, TEXTURE_BOTTOM, TEXTURE_FRONT, TEXTURE_SIDE;
 
 	@SideOnly(Side.CLIENT)
-
-	public void func_94332_a(IconRegister iconRegister) {
-		TEXTURE_TOP = iconRegister.func_94245_a( Textures.CRAFTER_TOP );
-		TEXTURE_BOTTOM = iconRegister.func_94245_a( Textures.CRAFTER_BOTTOM );
-		TEXTURE_FRONT = iconRegister.func_94245_a( Textures.CRAFTER_FRONT );
-		TEXTURE_SIDE = iconRegister.func_94245_a( Textures.CRAFTER_SIDE );
+	@Override
+	public void registerIcons(IconRegister iconRegister) {
+		TEXTURE_TOP = iconRegister.registerIcon( Textures.CRAFTER_TOP );
+		TEXTURE_BOTTOM = iconRegister.registerIcon( Textures.CRAFTER_BOTTOM );
+		TEXTURE_FRONT = iconRegister.registerIcon( Textures.CRAFTER_FRONT );
+		TEXTURE_SIDE = iconRegister.registerIcon( Textures.CRAFTER_SIDE );
 	}
 
 }

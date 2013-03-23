@@ -61,9 +61,9 @@ public class ItemPad extends ItemContainer {
 
 	@Override
 	@SideOnly(Side.CLIENT) // Item Texture
-	public void func_94581_a(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.func_94245_a( Textures.ITEM_PAD_OFF );
-		this.inUseIcon = iconRegister.func_94245_a( Textures.ITEM_PAD_ON );
+	public void updateIcons(IconRegister iconRegister) {
+		this.iconIndex = iconRegister.registerIcon( Textures.ITEM_PAD_OFF );
+		this.inUseIcon = iconRegister.registerIcon( Textures.ITEM_PAD_ON );
 	}
 
 }

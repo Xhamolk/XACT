@@ -10,6 +10,7 @@ public final class Textures {
 	public static final String GUI_CRAFTER = "/mods/xact/textures/gui/GuiCrafter.png";
 	public static final String GUI_PAD = "/mods/xact/textures/gui/GuiPad.png";
 	public static final String GUI_CASE = "/mods/xact/textures/gui/GuiCase.png";
+	public static final String GUI_RECIPE = "/mods/xact/textures/gui/GuiRecipe.png";
 
 	// Items
 	public static final String ITEM_CASE = "xact:case";
