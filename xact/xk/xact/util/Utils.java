@@ -39,6 +39,12 @@ public class Utils {
 		return stack.stackSize + "x " + stack.getItem().getItemDisplayName( stack );
 	}
 
+	public static ItemStack copyOf(ItemStack stack) {
+		if( stack == null )
+			return null;
+		return stack.copy();
+	}
+
 	public static boolean equalsStacks(ItemStack stack1, ItemStack stack2) {
 		return stack1.itemID == stack2.itemID
 				&& (!stack1.getHasSubtypes() || stack1.getItemDamage() == stack2.getItemDamage())

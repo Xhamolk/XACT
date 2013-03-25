@@ -19,6 +19,7 @@ import xk.xact.gui.GuiCrafter;
 import xk.xact.inventory.Inventory;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public ItemStack getStackInSlot(int slot) {
 				if( 0 <= slot && slot < getRecipeCount() )
-					return getRecipeResult( slot );
+					return Utils.copyOf( getRecipeResult( slot ) );
 				return null;
 			}
 		};
@@ -122,7 +123,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///////////////
 	///// Current State (requires updates)
 
-	private boolean[] redState = new boolean[getRecipeCount()];
+	private boolean[] craftableRecipes = new boolean[getRecipeCount()];
 
 	private CraftRecipe[] recipes = new CraftRecipe[getRecipeCount()];
 
@@ -130,7 +131,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	// whether if the recipe's state must be red.
 	public boolean isRedState(int i) {
-		return redState[i];
+		return recipes[i] != null && !craftableRecipes[i];
 	}
 
 	// Gets the recipe's result.
@@ -167,8 +168,8 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	public void updateStates() {
 		for( int i = 0; i < getRecipeCount(); i++ ) {
-			// if there are not enough ingredients, color is red.
-			redState[i] = (recipes[i] != null) && !getHandler().canCraft( this.getRecipe( i ), null );
+			// if the recipe can be crafted.
+			craftableRecipes[i] = (recipes[i] != null) && getHandler().canCraft( this.getRecipe( i ), null );
 		}
 		this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[4] );
 	}
