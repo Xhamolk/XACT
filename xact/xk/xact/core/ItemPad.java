@@ -1,22 +1,29 @@
 package xk.xact.core;
 
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.gui.ContainerPad;
 
 import java.util.List;
 
 public class ItemPad extends ItemContainer {
 
+	@SideOnly(Side.CLIENT)
+	private Icon inUseIcon;
+
 	public ItemPad(int itemID) {
 		super( itemID );
-		this.setItemName( "craftPad" );
+		this.setUnlocalizedName( "craftPad" );
 		this.setMaxStackSize( 1 );
-		this.setTextureFile( XActMod.TEXTURE_ITEMS );
 		this.setCreativeTab( XActMod.xactTab );
 	}
 
@@ -46,11 +53,17 @@ public class ItemPad extends ItemContainer {
 	}
 
 	@Override
-	public int getIconFromDamage(int itemDamage) {
+	public Icon getIconFromDamage(int itemDamage) {
 		if( itemDamage == 1 )
-			return 19;
-		return 18;
+			return inUseIcon;
+		return iconIndex;
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT) // Item Texture
+	public void updateIcons(IconRegister iconRegister) {
+		this.iconIndex = iconRegister.registerIcon( Textures.ITEM_PAD_OFF );
+		this.inUseIcon = iconRegister.registerIcon( Textures.ITEM_PAD_ON );
+	}
 
 }

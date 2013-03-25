@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
+import xk.xact.config.Textures;
 
 
 public class ButtonItem extends GuiButtonCustom {
@@ -34,7 +35,7 @@ public class ButtonItem extends GuiButtonCustom {
 
 	@Override
 	protected void drawBackgroundLayer(Minecraft mc, int mouseX, int mouseY) {
-		GL11.glBindTexture( GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture( "/gfx/xact/gui/buttons_1.png" ) );
+		GL11.glBindTexture( GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture( Textures.MISC_BUTTONS ) );
 		int textureX = isSpecial ? 0 : 26;
 		if( field_82253_i )
 			textureX += 48;

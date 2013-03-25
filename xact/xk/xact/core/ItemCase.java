@@ -1,11 +1,15 @@
 package xk.xact.core;
 
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.gui.ContainerCase;
 
 import java.util.List;
@@ -15,9 +19,8 @@ public class ItemCase extends ItemContainer {
 
 	public ItemCase(int itemID) {
 		super( itemID );
-		this.setItemName( "chipCase" );
+		this.setUnlocalizedName( "chipCase" );
 		this.setMaxStackSize( 1 );
-		this.setTextureFile( XActMod.TEXTURE_ITEMS );
 		this.setCreativeTab( XActMod.xactTab );
 	}
 
@@ -41,14 +44,15 @@ public class ItemCase extends ItemContainer {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		itemStack.setItemDamage( 1 );
-		if( !world.isRemote )
+		if( ! world.isRemote )
 			player.openGui( XActMod.instance, 1, world, 0, 0, 0 );
 		return itemStack;
 	}
 
 	@Override
-	public int getIconFromDamage(int itemDamage) {
-		return 16;
+	@SideOnly(Side.CLIENT) // Item Texture
+	public void updateIcons(IconRegister iconRegister) {
+		this.iconIndex = iconRegister.registerIcon( Textures.ITEM_CASE );
 	}
 
 }

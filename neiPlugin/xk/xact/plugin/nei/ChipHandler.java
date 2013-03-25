@@ -5,6 +5,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
+import xk.xact.config.Textures;
 import xk.xact.gui.GuiCrafter;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
@@ -71,11 +72,11 @@ public class ChipHandler extends TemplateRecipeHandler {
 
 	@Override
 	public String getRecipeName() {
-		return "Recipe Chip";
+		return "Encoded Recipe Chip";
 	}
 
 	@Override
 	public String getGuiTexture() {
-		return "/gfx/xact/gui/encoder.png";
+		return Textures.NEI_CHIP_HANDLER;
 	}
 }

@@ -6,11 +6,13 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.core.ItemChip;
 import xk.xact.core.TileCrafter;
 import xk.xact.gui.button.CustomButtons;
 import xk.xact.gui.button.GuiButtonCustom;
 import xk.xact.gui.button.ICustomButtonMode;
+import xk.xact.network.ClientProxy;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
@@ -36,7 +38,7 @@ public class GuiCrafter extends CraftingGui {
 			 *  42, 21.     120, 21
 			 *  42, 65.     120, 65
 		 */
-		controlList.clear();
+		buttonList.clear();
 
 		for( int i = 0; i < 4; i++ ) {
 			int x = (i % 2 == 0 ? 42 : 120) + this.guiLeft;
@@ -44,7 +46,7 @@ public class GuiCrafter extends CraftingGui {
 
 			GuiButtonCustom button = CustomButtons.createdDeviceButton( x, y );
 			button.id = i;
-			controlList.add( buttons[i] = button );
+			buttonList.add( buttons[i] = button );
 		}
 		invalidated = true;
 	}
@@ -66,10 +68,10 @@ public class GuiCrafter extends CraftingGui {
 					if( !((ItemChip) chip.getItem()).encoded ) {
 						CraftRecipe mainRecipe = crafter.getRecipe( 4 ); // the recipe on the grid
 						if( mainRecipe != null && mainRecipe.isValid() ) {
-							buttons[i] .setMode( ICustomButtonMode.DeviceModes.SAVE );
+							buttons[i].setMode( ICustomButtonMode.DeviceModes.SAVE );
 							continue;
 						}
-						buttons[i] .setMode( ICustomButtonMode.DeviceModes.INACTIVE );
+						buttons[i].setMode( ICustomButtonMode.DeviceModes.INACTIVE );
 						continue;
 					}
 					buttons[i].setMode( ICustomButtonMode.DeviceModes.CLEAR );
@@ -82,17 +84,15 @@ public class GuiCrafter extends CraftingGui {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		int xPos = (this.xSize - fontRenderer .getStringWidth( "X.A.C.T. Crafter" )) / 2;
+		int xPos = (this.xSize - fontRenderer.getStringWidth( "X.A.C.T. Crafter" )) / 2;
 		this.fontRenderer.drawString( "X.A.C.T. Crafter", xPos, 6, 4210752 );
 		this.fontRenderer.drawString( "Player's Inventory", 8, this.ySize - 94, 4210752 );
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY) {
-		int texture = this.mc.renderEngine
-				.getTexture( "/gfx/xact/gui/crafter_4.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( texture );
+		this.mc.renderEngine.bindTexture( Textures.GUI_CRAFTER );
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );
@@ -105,15 +105,20 @@ public class GuiCrafter extends CraftingGui {
 
 	}
 
+	boolean success = false;
 	@Override
 	protected void drawSlotInventory(Slot slot) {
+		if( !success ) {
+			System.out.println("Calling drawSlotInventory() on GuiCrafter! Success!" );
+			success = true;
+		}
+
 		// grid's contents.
 		if( 8 <= slot.slotNumber && slot.slotNumber < 18 - 1 ) {
 			int index = slot.slotNumber - 8;
 			int color;
 
-			// only paint the grid's real contents if there is no recipe being
-			// hovered.
+			// only paint the grid's real contents if there is no recipe being hovered.
 			if( hoveredRecipe == -1 ) {
 				super.drawSlotInventory( slot );
 				color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
@@ -207,10 +212,10 @@ public class GuiCrafter extends CraftingGui {
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
 		if( ingredients == null ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
+			GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) -1, null );
 			return;
 		}
-		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 8 );
+		GuiUtils.sendItemsToServer( ClientProxy.getNetClientHandler(), ingredients, 8 );
 	}
 
 	///////////////
@@ -227,11 +232,11 @@ public class GuiCrafter extends CraftingGui {
 
 			if( action == 1 ) { // SAVE
 				ItemStack stack = CraftManager.encodeRecipe( crafter.getRecipe( 4 ) );
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (4 + button.id), stack );
+				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (4 + button.id), stack );
 				return;
 			}
 			if( action == 3 ) { // CLEAR
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (4 + button.id), new ItemStack( XActMod.itemRecipeBlank ) );
+				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (4 + button.id), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
 	}
