@@ -6,6 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
+import xk.xact.config.Textures;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
@@ -22,9 +23,8 @@ public class GuiCase extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
-		int texture = this.mc.renderEngine.getTexture( "/gfx/xact/gui/chip_case.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( texture );
+		this.mc.renderEngine.bindTexture( Textures.GUI_CASE );
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );

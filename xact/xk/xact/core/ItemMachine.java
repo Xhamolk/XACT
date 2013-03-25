@@ -17,7 +17,7 @@ public class ItemMachine extends ItemBlock {
 	}
 
 	@Override
-	public String getItemNameIS(ItemStack itemStack) {
+	public String getUnlocalizedName(ItemStack itemStack) {
 		return "tile.xact.machine.crafter";
 	}
 

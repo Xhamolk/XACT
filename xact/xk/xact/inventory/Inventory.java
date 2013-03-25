@@ -147,7 +147,12 @@ public class Inventory implements IInventory, IInventoryNBT {
 		return name;
 	}
 
-	@Override
+    @Override
+    public boolean isInvNameLocalized() {
+        return false;
+    }
+
+    @Override
 	public int getInventoryStackLimit() {
 		return maxStackSize;
 	}
@@ -175,8 +180,13 @@ public class Inventory implements IInventory, IInventoryNBT {
 	public void closeChest() {
 	}
 
+    @Override
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack) {
+        return true;
+    }
 
-	///////////////
+
+    ///////////////
 	///// NBT
 
 	public void readFromNBT(NBTTagCompound compound) {

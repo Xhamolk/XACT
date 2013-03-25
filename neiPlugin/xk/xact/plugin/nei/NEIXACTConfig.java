@@ -35,6 +35,6 @@ public class NEIXACTConfig implements IConfigureNEI {
 
 	@Override
 	public String getVersion() {
-		return "v1.2";
+		return "v1.3";
 	}
 }

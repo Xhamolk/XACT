@@ -6,11 +6,13 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.core.CraftPad;
 import xk.xact.core.ItemChip;
 import xk.xact.gui.button.CustomButtons;
 import xk.xact.gui.button.GuiButtonCustom;
 import xk.xact.gui.button.ICustomButtonMode;
+import xk.xact.network.ClientProxy;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 
@@ -30,18 +32,17 @@ public class GuiPad extends CraftingGui {
 	@SuppressWarnings("unchecked")
 	public void initGui() {
 		super.initGui();
-		super.controlList.clear();
+		super.buttonList.clear();
 		this.button = CustomButtons.createdDeviceButton( this.guiLeft + 97, this.guiTop + 63 );
 		button.id = 0;
-		controlList.add( button );
+		buttonList.add( button );
 		invalidated = true;
 	}
 
 	@Override
 	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int texture = this.mc.renderEngine .getTexture( "/gfx/xact/gui/pad_1.png" );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( texture );
+		this.mc.renderEngine.bindTexture( Textures.GUI_PAD );
 		int cornerX = (this.width - this.xSize) / 2;
 		int cornerY = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize,
@@ -69,10 +70,10 @@ public class GuiPad extends CraftingGui {
 	@Override
 	public void sendGridIngredients(ItemStack[] ingredients) {
 		if( ingredients == null ) {
-			GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) -1, null );
+			GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) -1, null );
 			return;
 		}
-		GuiUtils.sendItemsToServer( this.mc.getSendQueue(), ingredients, 1 );
+		GuiUtils.sendItemsToServer( ClientProxy.getNetClientHandler(), ingredients, 1 );
 	}
 
 	@Override
@@ -153,11 +154,11 @@ public class GuiPad extends CraftingGui {
 
 			if( action == 1 ) { // SAVE
 				ItemStack stack = CraftManager.encodeRecipe( craftPad .getRecipe( 0 ) );
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (button.id + 10), stack );
+				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (button.id + 10), stack );
 				return;
 			}
 			if( action == 3 ) { // CLEAR
-				GuiUtils.sendItemToServer( this.mc.getSendQueue(), (byte) (button.id + 10), new ItemStack( XActMod.itemRecipeBlank ) );
+				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (button.id + 10), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
 	}

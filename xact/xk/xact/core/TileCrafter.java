@@ -258,7 +258,12 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		return resources.getInvName();
 	}
 
-	@Override
+    @Override
+    public boolean isInvNameLocalized() {
+        return false;  // Not a clue what this does.
+    }
+
+    @Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
@@ -280,7 +285,12 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public void closeChest() {
 	}
 
-	///////////////
+    @Override
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack) {
+        return true;  // Whether if an item can be placed at the slot
+    }
+
+    ///////////////
 	///// NBT
 
 	@Override

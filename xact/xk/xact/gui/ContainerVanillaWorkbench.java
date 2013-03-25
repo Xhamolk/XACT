@@ -100,5 +100,10 @@ public class ContainerVanillaWorkbench extends Container {
 		return true;
 	}
 
+	// Whether if the slot can accept dragged items.
+	@Override
+	public boolean func_94531_b(Slot slot) {
+		return slot.inventory != workbench.outputInv;
+	}
 
 }

@@ -1,13 +1,18 @@
 package xk.xact.core;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;
@@ -33,13 +38,13 @@ public class BlockMachine extends BlockContainer {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living) {
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living, ItemStack itemStack) {
 		EntityPlayer player = (EntityPlayer) living;
 		int frontSide = world.getBlockMetadata( x, y, z );
 		if( frontSide == 0 || frontSide == 1 ) {
 			frontSide = sideByAngles( player, x, z );
 		}
-		world.setBlockMetadata( x, y, z, frontSide );
+		world.setBlockMetadataWithNotify( x, y, z, frontSide, 3 );
 	}
 
 	@Override
@@ -48,7 +53,7 @@ public class BlockMachine extends BlockContainer {
 		if( player.isSneaking() ) {
 			return false;
 		}
-		if( !world.isRemote )
+		if( ! world.isRemote )
 			player.openGui( XActMod.instance, 0, world, x, y, z );
 
 		return true;
@@ -99,23 +104,30 @@ public class BlockMachine extends BlockContainer {
 	///////////////
 	///// Textures
 	@Override
-	public String getTextureFile() {
-		return XActMod.TEXTURE_BLOCKS;
-	}
-
-	@Override
-	public int getBlockTextureFromSideAndMetadata(int side, int metadata) {
+	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
 		switch( side ) {
 			case 0: // bottom
-				return 16 + 3;
+				return TEXTURE_BOTTOM;
 			case 1: // top
-				return 16;
+				return TEXTURE_TOP;
 			default:
 				if( side == metadata ) // front
-					return 16 + 1;
+					return TEXTURE_FRONT;
 				else // any other side.
-					return 16 + 2;
+					return TEXTURE_SIDE;
 		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private static Icon TEXTURE_TOP, TEXTURE_BOTTOM, TEXTURE_FRONT, TEXTURE_SIDE;
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerIcons(IconRegister iconRegister) {
+		TEXTURE_TOP = iconRegister.registerIcon( Textures.CRAFTER_TOP );
+		TEXTURE_BOTTOM = iconRegister.registerIcon( Textures.CRAFTER_BOTTOM );
+		TEXTURE_FRONT = iconRegister.registerIcon( Textures.CRAFTER_FRONT );
+		TEXTURE_SIDE = iconRegister.registerIcon( Textures.CRAFTER_SIDE );
 	}
 
 }

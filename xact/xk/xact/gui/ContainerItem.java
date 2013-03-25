@@ -3,7 +3,6 @@ package xk.xact.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * This class provides the methods required by ItemContainer.
  */
-public abstract class ContainerItem extends Container {
+public abstract class ContainerItem extends ContainerXACT {
 
 	protected final EntityPlayer player;
 
@@ -82,44 +81,17 @@ public abstract class ContainerItem extends Container {
 	 */
 	protected void onPickupPrevented(EntityPlayer player, ItemStack itemStack, Slot slot) {
 		if( !(player instanceof EntityPlayerMP) ) { // send the chat message client-side.
-			String itemName = itemStack.getItem().getItemDisplayName( itemStack );
+			String itemName = itemStack.getDisplayName();
 			player.sendChatToPlayer( "Cannot move <" + itemName + "> while it's in use." );
 		}
 	}
 
-	/**
-	 * Basically is the same method as <code>slotClick()</code>.
-	 * This is just a call to <code>super.slotClick()</code>, but you can override with no problem.
-	 * <p/>
-	 * If you mod overrides <code>slotClick()</code>, make sure to override this instead.
-	 *
-	 * @param slotID        the ID for the Slot clicked. Matches with Slot.slotNumber
-	 * @param buttonPressed the button pressed. For mouse clicks: 0 is left click, 1 is right click.
-	 * @param flag          usually, 0 is the regular behaviour, 1 is shift-clicking, 2 is keyboard input.
-	 * @param player        the EntityPlayer accessing
-	 * @see Container#slotClick(int, int, int, net.minecraft.entity.player.EntityPlayer)
-	 * @see Slot#slotNumber
-	 */
-	protected ItemStack handleSlotClick(int slotID, int buttonPressed, int flag, EntityPlayer player) {
-		return super.slotClick( slotID, buttonPressed, flag, player );
-	}
-
-	// If you mod overrides this, override handleSlotClick instead.
 	@Override
 	public final ItemStack slotClick(int slotID, int buttonPressed, int flag, EntityPlayer player) {
-		Slot slot = 0 <= slotID && slotID < inventorySlots.size() ? (Slot) inventorySlots.get( slotID ) : null;
+		if( !checkSlot( slotID, buttonPressed, flag, player ) )
+			return null;
 
-		// Prevent moving the "held item", for security reasons.
-		if( slot != null && slotContainsHeldItem( slot, player ) ) {
-			onPickupPrevented( player, slot.getStack(), slot );
-			return slot.getStack();
-		}
-		if( flag == 2 && buttonPressed == player.inventory.currentItem ) {
-			onPickupPrevented( player, player.inventory.getCurrentItem(), getSlotWithHeldItem( player ) );
-			return slot != null && slot.getHasStack() ? slot.getStack() : null;
-		}
-
-		return handleSlotClick( slotID, buttonPressed, flag, player );
+		return super.slotClick( slotID, buttonPressed, flag, player );
 	}
 
 	@SuppressWarnings("unchecked")
@@ -129,6 +101,23 @@ public abstract class ContainerItem extends Container {
 				return slot;
 		}
 		return null;
+	}
+
+	protected boolean checkSlot(int slotID, int buttonPressed, int flag, EntityPlayer player) {
+		if( slotID >= 0 && slotID < inventorySlots.size() ) {
+			Slot slot = getSlot( slotID );
+			if( flag == 0 || flag == 1 || flag == 4 ) {
+				if( slot != null && slotContainsHeldItem( slot, player ) ) {
+					onPickupPrevented( player, slot.getStack(), slot );
+					return false;
+				}
+			}
+			if( flag == 2 && buttonPressed == player.inventory.currentItem ) {
+				onPickupPrevented( player, player.inventory.getCurrentItem(), getSlotWithHeldItem( player ) );
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

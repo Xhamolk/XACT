@@ -1,9 +1,13 @@
 package xk.xact.core;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xk.xact.XActMod;
+import xk.xact.config.Textures;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
@@ -26,8 +30,7 @@ public class ItemChip extends Item {
 	public ItemChip(int itemID, boolean encoded) {
 		super( itemID );
 		this.encoded = encoded;
-		this.setItemName( "recipeChip." + (encoded ? "encoded" : "blank") );
-		this.setTextureFile( XActMod.TEXTURE_ITEMS );
+		this.setUnlocalizedName( "recipeChip." + ( encoded ? "encoded" : "blank" ) );
 		this.setCreativeTab( XActMod.xactTab );
 	}
 
@@ -59,8 +62,12 @@ public class ItemChip extends Item {
 	}
 
 	@Override
-	public int getIconFromDamage(int itemDamage) {
-		return this.encoded ? 1 : 0;
+	@SideOnly(Side.CLIENT) // Item Texture
+	public void updateIcons(IconRegister iconRegister) {
+		if( encoded )
+			this.iconIndex = iconRegister.registerIcon( Textures.ITEM_CHIP_ENCODED );
+		else
+			this.iconIndex = iconRegister.registerIcon( Textures.ITEM_CHIP_BLANK );
 	}
 
 }
