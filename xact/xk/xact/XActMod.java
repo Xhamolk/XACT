@@ -26,6 +26,7 @@ import xk.xact.core.tileentities.TileWorkbench;
 import xk.xact.gui.CreativeTabXACT;
 import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
+import xk.xact.recipes.RecipeUtils;
 
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
@@ -166,45 +167,18 @@ public class XActMod {
 		) );
 
 		// Craft Pad
-		ingredients = ingredients(
+		ingredients = RecipeUtils.ingredients(
 				Item.ingotIron, Item.ingotIron, null,
 				Item.ingotIron, Block.workbench, chip,
 				null, null, null
 		);
 		GameRegistry.addRecipe( new ShapedRecipes( 3, 2, ingredients, new ItemStack( itemCraftPad ) ) );
 
-		// Crafter
-		ingredients = ingredients(
-				itemRecipeBlank, Block.glass, itemRecipeBlank,
-				itemRecipeBlank, Block.workbench, itemRecipeBlank,
-				Item.ingotIron, Block.chest, Item.ingotIron
-		);
-		GameRegistry.addRecipe( new ShapedRecipes( 3, 3, ingredients, new ItemStack( blockMachine, 1, 0 ) ) );
-	}
-
-	private ItemStack[] ingredients(Object... objects) {
-		ItemStack[] retValue = new ItemStack[objects.length];
-		int index = -1;
-		for( Object o : objects ) {
-			index++;
-			if( index >= 9 )
-				break;
-			if( o == null ) {
-				retValue[index] = null;
-				continue;
-			}
-			if( o instanceof Item ) {
-				retValue[index] = new ItemStack( (Item) o );
-				continue;
-			}
-			if( o instanceof Block ) {
-				retValue[index] = new ItemStack( (Block) o );
-			}
-			if( o instanceof ItemStack )
-				retValue[index] = (ItemStack) o;
+		// Machines
+		for( Machines machine : Machines.values() ) {
+			GameRegistry.addRecipe( machine.getMachineRecipe() );
 		}
 
-		return retValue;
 	}
 
 }
