@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,12 +13,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
-import xk.xact.util.Textures;
+import xk.xact.core.Machines;
 import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.core.tileentities.TileMachine;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Xhamolk_
@@ -32,30 +34,21 @@ public class BlockMachine extends BlockContainer {
 		this.setCreativeTab( XActMod.xactTab );
 	}
 
-
-	// update block when it's placed on the world.
-	@Override
-	public int onBlockPlaced(World world, int x, int y, int z, int side, float xOff, float yOff, float zOff, int metadata) { //updateBlockMetadata
-		return side;
-	}
-
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living, ItemStack itemStack) {
 		EntityPlayer player = (EntityPlayer) living;
-		int frontSide = world.getBlockMetadata( x, y, z );
-		if( frontSide == 0 || frontSide == 1 ) {
-			frontSide = sideByAngles( player, x, z );
-		}
-		world.setBlockMetadataWithNotify( x, y, z, frontSide, 3 );
+		int side = sideByAngles( player, x, z );
+		int frontSide = side / 2 - 1;
+		int metadata = ((itemStack.getItemDamage() & 0x7) << 1) | (frontSide & 1);
+		world.setBlockMetadataWithNotify( x, y, z, metadata, 3 );
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xOff, float yOff, float zOff) {
-
 		if( player.isSneaking() ) {
 			return false;
 		}
-		if( ! world.isRemote )
+		if( !world.isRemote )
 			player.openGui( XActMod.instance, 0, world, x, y, z );
 
 		return true;
@@ -78,13 +71,21 @@ public class BlockMachine extends BlockContainer {
 	@Override
 	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		list.add( new ItemStack( this, 1, 0 ) );
+		list.add( new ItemStack( this, 1, Machines.getMachineFromMetadata( metadata ) ) );
 		return list;
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		return new TileCrafter();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void getSubBlocks(int blockID, CreativeTabs creativeTab, List list) {
+		for( int i = 0; i < Machines.values().length; i++ ) {
+			list.add( new ItemStack( blockID, 1, i ) );
+		}
 	}
 
 
@@ -105,31 +106,34 @@ public class BlockMachine extends BlockContainer {
 
 	///////////////
 	///// Textures
+	@SideOnly(Side.CLIENT)
+	private static Icon[][] textures;
+
 	@Override
 	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
-		switch( side ) {
-			case 0: // bottom
-				return TEXTURE_BOTTOM;
-			case 1: // top
-				return TEXTURE_TOP;
-			default:
-				if( side == metadata ) // front
-					return TEXTURE_FRONT;
-				else // any other side.
-					return TEXTURE_SIDE;
+		int machine = Machines.getMachineFromMetadata( metadata );
+		if( side >= 2 ) {
+			side = isFrontSide( side, metadata ) ? 2 : 3;
 		}
+		return textures[machine][side];
 	}
 
-	@SideOnly(Side.CLIENT)
-	private static Icon TEXTURE_TOP, TEXTURE_BOTTOM, TEXTURE_FRONT, TEXTURE_SIDE;
+	private boolean isFrontSide(int side, int metadata) {
+		return side / 2 - 1 == (metadata & 1);
+	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IconRegister iconRegister) {
-		TEXTURE_TOP = iconRegister.registerIcon( Textures.CRAFTER_TOP );
-		TEXTURE_BOTTOM = iconRegister.registerIcon( Textures.CRAFTER_BOTTOM );
-		TEXTURE_FRONT = iconRegister.registerIcon( Textures.CRAFTER_FRONT );
-		TEXTURE_SIDE = iconRegister.registerIcon( Textures.CRAFTER_SIDE );
+		textures = new Icon[Machines.values().length][4];
+
+		// For each machine: bottom, top, front side, other side.
+		for( int machine = 0; machine < Machines.values().length; machine++ ) {
+			String[] textureFiles = Machines.getTextureFiles( machine );
+			for( int side = 0; side < 4; side++ ) {
+				textures[machine][side] = iconRegister.registerIcon( textureFiles[side] );
+			}
+		}
 	}
 
 }

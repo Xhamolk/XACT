@@ -14,24 +14,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import xk.xact.core.Machines;
 import xk.xact.core.blocks.BlockMachine;
 import xk.xact.core.blocks.BlockVanillaWorkbench;
-import xk.xact.gui.CreativeTabXACT;
 import xk.xact.core.items.ItemCase;
 import xk.xact.core.items.ItemChip;
 import xk.xact.core.items.ItemMachine;
 import xk.xact.core.items.ItemPad;
-import xk.xact.network.CommonProxy;
-import xk.xact.network.PacketHandler;
 import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.core.tileentities.TileWorkbench;
+import xk.xact.gui.CreativeTabXACT;
+import xk.xact.network.CommonProxy;
+import xk.xact.network.PacketHandler;
 
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
 @Mod(modid = "xact", name = "XACT Mod", version = "beta-0.3.0")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
-		channels = {"xact_channel"}, packetHandler = PacketHandler.class)
+		channels = { "xact_channel" }, packetHandler = PacketHandler.class)
 public class XActMod {
 
 
@@ -121,7 +122,9 @@ public class XActMod {
 		LanguageRegistry.addName( itemCraftPad, "Craft Pad" );
 
 		// machine's names
-		LanguageRegistry.addName( new ItemStack( blockMachine, 1, 0 ), "XACT Crafter" );
+		for( Machines machine : Machines.values() ) {
+			LanguageRegistry.addName( new ItemStack( blockMachine, 1, machine.ordinal() ), machine.getLocalizedName() );
+		}
 
 		// tab's name
 		LanguageRegistry.instance().addStringLocalization( "itemGroup.xact", "XACT" );
@@ -146,7 +149,7 @@ public class XActMod {
 
 		// Recipe Chip
 		GameRegistry.addRecipe( new ItemStack( itemRecipeBlank, 16 ),
-				new String[] {"ii", "ir", "gg"},
+				new String[] { "ii", "ir", "gg" },
 				'i', Item.ingotIron,
 				'r', Item.redstone,
 				'g', Item.goldNugget
@@ -155,7 +158,7 @@ public class XActMod {
 		// Chip Case
 		ItemStack chip = new ItemStack( itemRecipeBlank );
 		GameRegistry.addRecipe( new ShapedOreRecipe( itemChipCase,
-				new String[] {"cgc", "c c", "wCw"},
+				new String[] { "cgc", "c c", "wCw" },
 				'c', chip,
 				'g', Block.thinGlass,
 				'w', "plankWood",
