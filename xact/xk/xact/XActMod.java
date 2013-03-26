@@ -14,10 +14,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import xk.xact.core.*;
+import xk.xact.core.blocks.BlockMachine;
+import xk.xact.core.blocks.BlockVanillaWorkbench;
 import xk.xact.gui.CreativeTabXACT;
+import xk.xact.core.items.ItemCase;
+import xk.xact.core.items.ItemChip;
+import xk.xact.core.items.ItemMachine;
+import xk.xact.core.items.ItemPad;
 import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
+import xk.xact.core.tileentities.TileCrafter;
+import xk.xact.core.tileentities.TileWorkbench;
 
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.

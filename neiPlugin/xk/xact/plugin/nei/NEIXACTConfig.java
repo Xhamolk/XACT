@@ -4,10 +4,10 @@ package xk.xact.plugin.nei;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.recipe.DefaultOverlayHandler;
-import xk.xact.gui.GuiCrafter;
-import xk.xact.gui.GuiPad;
-import xk.xact.gui.GuiRecipe;
-import xk.xact.gui.GuiVanillaWorkbench;
+import xk.xact.client.gui.GuiCrafter;
+import xk.xact.client.gui.GuiPad;
+import xk.xact.client.gui.GuiRecipe;
+import xk.xact.client.gui.GuiVanillaWorkbench;
 
 public class NEIXACTConfig implements IConfigureNEI {
 

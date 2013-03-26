@@ -36,7 +36,7 @@ public abstract class ContainerItem extends ContainerXACT {
 	 *
 	 * @return true if the inventory's contents have changed.
 	 * @see net.minecraft.inventory.IInventory#onInventoryChanged()
-	 * @see xk.xact.core.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
+	 * @see xk.xact.core.items.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
 	 */
 	public abstract boolean hasInventoryChanged();
 
@@ -45,7 +45,7 @@ public abstract class ContainerItem extends ContainerXACT {
 	 * It's called by ItemContainer.onUpdate() when <code>inventoryChanged</code> is true.
 	 *
 	 * @param itemStack the ItemStack that holds the inventory for this ContainerItem
-	 * @see xk.xact.core.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
+	 * @see xk.xact.core.items.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
 	 */
 	public abstract void saveContentsToNBT(ItemStack itemStack);
 
@@ -55,7 +55,7 @@ public abstract class ContainerItem extends ContainerXACT {
 	 * Suggestion: you might want to make <code>hasInventoryChanged()</code> return false.
 	 *
 	 * @param itemStack the item to which the contents where saved to.
-	 * @see xk.xact.core.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
+	 * @see xk.xact.core.items.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
 	 */
 	public abstract void onContentsStored(ItemStack itemStack);
 

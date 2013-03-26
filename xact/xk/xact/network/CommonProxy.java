@@ -4,10 +4,13 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import xk.xact.client.gui.GuiCase;
+import xk.xact.client.gui.GuiPad;
+import xk.xact.client.gui.GuiVanillaWorkbench;
 import xk.xact.core.ChipCase;
 import xk.xact.core.CraftPad;
-import xk.xact.core.TileMachine;
-import xk.xact.core.TileWorkbench;
+import xk.xact.core.tileentities.TileMachine;
+import xk.xact.core.tileentities.TileWorkbench;
 import xk.xact.gui.*;
 
 public class CommonProxy implements IGuiHandler {

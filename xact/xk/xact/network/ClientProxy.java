@@ -10,8 +10,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.input.Keyboard;
 import xk.xact.XActMod;
-import xk.xact.config.KeyBindingHandler;
-import xk.xact.gui.client.ChipRenderer;
+import xk.xact.client.KeyBindingHandler;
+import xk.xact.client.ChipRenderer;
 
 public class ClientProxy extends CommonProxy {
 

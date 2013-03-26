@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
-import xk.xact.core.TileWorkbench;
+import xk.xact.core.tileentities.TileWorkbench;
 
 public class ContainerVanillaWorkbench extends Container {
 

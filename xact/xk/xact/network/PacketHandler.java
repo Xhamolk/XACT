@@ -12,7 +12,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
-import xk.xact.gui.GuiRecipe;
+import xk.xact.client.gui.GuiRecipe;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;

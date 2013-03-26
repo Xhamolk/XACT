@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import xk.xact.core.ChipCase;
-import xk.xact.core.ItemChip;
+import xk.xact.core.items.ItemChip;
 
 public class ContainerCase extends ContainerItem {
 

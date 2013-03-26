@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingContainer;
-import xk.xact.core.ItemChip;
-import xk.xact.core.TileCrafter;
+import xk.xact.core.items.ItemChip;
+import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.recipes.CraftManager;
 
 
@@ -15,7 +15,7 @@ import xk.xact.recipes.CraftManager;
  */
 public class ContainerCrafter extends ContainerXACT implements InteractiveCraftingContainer {
 
-	TileCrafter crafter;
+	public TileCrafter crafter;
 
 	private EntityPlayer player;
 

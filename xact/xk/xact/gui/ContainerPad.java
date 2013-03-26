@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.CraftPad;
-import xk.xact.core.ItemChip;
+import xk.xact.core.items.ItemChip;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
@@ -17,7 +17,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 	public CraftPad craftPad;
 
-	EntityPlayer player;
+	public EntityPlayer player;
 
 	public boolean contentsChanged = false;
 
