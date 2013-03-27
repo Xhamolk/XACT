@@ -107,14 +107,8 @@ public class GuiCrafter extends CraftingGui {
 
 	}
 
-	boolean success = false;
 	@Override
 	protected void drawSlotInventory(Slot slot) {
-		if( !success ) {
-			System.out.println("Calling drawSlotInventory() on GuiCrafter! Success!" );
-			success = true;
-		}
-
 		// grid's contents.
 		if( 8 <= slot.slotNumber && slot.slotNumber < 18 - 1 ) {
 			int index = slot.slotNumber - 8;
