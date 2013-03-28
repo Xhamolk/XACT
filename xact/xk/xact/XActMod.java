@@ -17,10 +17,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import xk.xact.core.Machines;
 import xk.xact.core.blocks.BlockMachine;
 import xk.xact.core.blocks.BlockVanillaWorkbench;
-import xk.xact.core.items.ItemCase;
-import xk.xact.core.items.ItemChip;
-import xk.xact.core.items.ItemMachine;
-import xk.xact.core.items.ItemPad;
+import xk.xact.core.items.*;
 import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.core.tileentities.TileWorkbench;
 import xk.xact.gui.CreativeTabXACT;
@@ -50,12 +47,16 @@ public class XActMod {
 	public static int encodedChipID;
 	public static int caseID;
 	public static int padID;
+	public static int blankBlueprintID;
+	public static int blueprintID;
 
 	// Items
 	public static Item itemRecipeBlank;
 	public static Item itemRecipeEncoded;
 	public static Item itemChipCase;
 	public static Item itemCraftPad;
+	public static Item itemBlueprintBlank;
+	public static Item itemBlueprint;
 
 	// Blocks
 	public static Block blockMachine;
@@ -79,6 +80,8 @@ public class XActMod {
 		encodedChipID = config.getItem( "encodedChip", 9101 ).getInt();
 		caseID = config.getItem( "chipCase", 9102 ).getInt();
 		padID = config.getItem( "craftPad", 9103 ).getInt();
+		blankBlueprintID = config.getItem( "blankBlueprint", 9104 ).getInt();
+		blueprintID = config.getItem( "blueprint", 9105 ).getInt();
 
 		REPLACE_WORKBENCH = config.get( "Miscellaneous", "addWorkbenchTileEntity", true,
 				"If true, XACT will make the vanilla workbench able to keep it's contents on the grid after the GUI is closed. \n" +
@@ -99,6 +102,8 @@ public class XActMod {
 		itemRecipeEncoded = new ItemChip( encodedChipID, true );
 		itemChipCase = new ItemCase( caseID );
 		itemCraftPad = new ItemPad( padID );
+		itemBlueprintBlank = new ItemBlankBlueprint( blankBlueprintID );
+		itemBlueprint = new ItemBlueprint( blueprintID );
 
 		// Init Blocks
 		blockMachine = new BlockMachine( machineID );
@@ -121,6 +126,8 @@ public class XActMod {
 		LanguageRegistry.addName( itemRecipeEncoded, "\u00a72" + "Recipe Chip" );
 		LanguageRegistry.addName( itemChipCase, "Chip Case" );
 		LanguageRegistry.addName( itemCraftPad, "Craft Pad" );
+		LanguageRegistry.addName( itemBlueprintBlank, "Blank Blueprint" );
+		LanguageRegistry.addName( itemBlueprint, "\u00a76" + "Blueprint" );
 
 		// machine's names
 		for( Machines machine : Machines.values() ) {
@@ -147,6 +154,8 @@ public class XActMod {
 
 	private void addRecipes() {
 		ItemStack[] ingredients;
+
+		// todo: add blueprint recipe.
 
 		// Recipe Chip
 		GameRegistry.addRecipe( new ItemStack( itemRecipeBlank, 16 ),
