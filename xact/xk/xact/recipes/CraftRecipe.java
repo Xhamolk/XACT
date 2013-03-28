@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.util.FakeCraftingInventory;
-import xk.xact.util.StackList;
+import xk.xact.util.ItemsList;
 import xk.xact.util.Utils;
 
 /**
@@ -70,7 +70,7 @@ public class CraftRecipe {
 		if( simpleIngredients != null )
 			return simpleIngredients;
 
-		StackList list = new StackList();
+		ItemsList list = new ItemsList();
 		for( ItemStack current : getIngredients() ) {
 			try {
 				if( current != null ) {
