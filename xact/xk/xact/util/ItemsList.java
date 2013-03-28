@@ -6,10 +6,9 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ItemsList implements Iterable<ItemsReference> {
+import static xk.xact.util.ItemsReference.wrap;
 
-
-	private ArrayList<ItemsReference> list = new ArrayList<ItemsReference>();
+public class ItemsList extends ArrayList<ItemsReference> {
 
 	public void addStack(ItemStack stack) {
 		if( stack != null )
@@ -23,39 +22,42 @@ public class ItemsList implements Iterable<ItemsReference> {
 		}
 	}
 
+	public boolean contains(ItemStack itemStack) {
+		return contains( wrap( itemStack ) );
+	}
+
 	public ItemsReference getOrCreateReference(ItemStack stack) {
 		ItemsReference reference = ItemsReference.wrap( stack );
-		int index = list.indexOf( reference );
+		int index = indexOf( reference );
 		if( index == -1 ) {
-			list.add( reference );
+			add( reference );
 		} else {
-			reference = list.get( index );
+			reference = get( index );
 		}
 		return reference;
 	}
 
 	public ItemStack[] toArray() {
-		int size = list.size();
+		int size = size();
 		ItemStack[] retValue = new ItemStack[size];
 		for( int i = 0; i < size; i++ ) {
-			retValue[i] = list.get(i).toItemStack();
+			retValue[i] = get( i ).toItemStack();
 		}
 		return retValue;
 	}
 
-	@Override
-	public Iterator<ItemsReference> iterator() {
-		return new Iterator<ItemsReference>() {
+	public Iterator<ItemStack> itemsIterator() {
+		return new Iterator<ItemStack>() {
 			private int iteratorIndex = 0;
 
 			@Override
 			public boolean hasNext() {
-				return iteratorIndex < list.size();
+				return iteratorIndex < size();
 			}
 
 			@Override
-			public ItemsReference next() {
-				return list.get( iteratorIndex++ );
+			public ItemStack next() {
+				return get( iteratorIndex++ ).toItemStack();
 			}
 
 			@Override

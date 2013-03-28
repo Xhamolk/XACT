@@ -5,11 +5,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import xk.xact.recipes.CraftRecipe;
-import xk.xact.inventory.InventoryUtils;
+import xk.xact.util.ItemsList;
+import xk.xact.util.ItemsMap;
+import xk.xact.util.ItemsReference;
 import xk.xact.util.Utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -17,10 +17,10 @@ import java.util.Iterator;
 public class IngredientsList implements Iterable<ItemStack> {
 
 	// Contains all the ingredients for the project.
-	private ArrayList<ItemStack> ingredients = new ArrayList<ItemStack>();
+	private ItemsList ingredients = new ItemsList();
 
 	// Contains the ingredients with recipes.
-	private HashMap<ItemStack, CraftRecipe> recipes = new HashMap<ItemStack, CraftRecipe>();
+	private ItemsMap<CraftRecipe> recipes = new ItemsMap<CraftRecipe>();
 
 	private CraftingProject project;
 
@@ -33,46 +33,25 @@ public class IngredientsList implements Iterable<ItemStack> {
 		if( ingredient != null && !containsIngredient( ingredient ) ) {
 			ItemStack copy = ingredient.copy();
 			copy.stackSize = 1;
-			ingredients.add( copy );
+			ingredients.addStack( ingredient, 1 );
 		}
 	}
 
 	public boolean containsIngredient(ItemStack item) {
-		if( item == null )
-			return false;
-		for( ItemStack current : ingredients ) {
-			if( InventoryUtils.similarStacks( current, item, false ) ) {
-				return true;
-			}
-		}
-		return false;
+		return ingredients.contains(item);
 	}
 
 	public boolean hasRecipe(ItemStack item) {
-		for( ItemStack current : recipes.keySet() ) {
-			if( InventoryUtils.similarStacks( current, item, false ) )
-				return true;
-		}
-		return false;
+		return recipes.containsKey( item );
 	}
 
 	public CraftRecipe getRecipe(ItemStack item) {
-		for( ItemStack current : recipes.keySet() ) {
-			if( InventoryUtils.similarStacks( current, item, false ) )
-				return recipes.get( current );
-		}
-		return null;
+		return recipes.get( item );
 	}
 
 	public void setRecipe(ItemStack item, CraftRecipe recipe) {
 		// is it a valid recipe?
 
-		for( ItemStack c : recipes.keySet() ) {
-			if( InventoryUtils.similarStacks( c, item, false ) ) {
-				recipes.put( c, recipe );
-				return;
-			}
-		}
 		recipes.put( item, recipe );
 	}
 
@@ -111,7 +90,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 	@Override
 	public Iterator<ItemStack> iterator() {
-		return ingredients.iterator();
+		return ingredients.itemsIterator();
 	}
 
 	///////////////
@@ -131,9 +110,9 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 		// Write the recipes
 		NBTTagList list2 = new NBTTagList();
-		for( ItemStack key : recipes.keySet() ) {
+		for( ItemsReference key : recipes.keySet() ) {
 			NBTTagCompound tag = new NBTTagCompound();
-			Utils.writeItemStackToNBT( nbt, key, "key" );
+			Utils.writeItemStackToNBT( nbt, key.toItemStack(), "key" );
 			recipes.get( key ).writeToNBT( tag );
 			list2.appendTag( tag );
 		}
@@ -153,7 +132,7 @@ public class IngredientsList implements Iterable<ItemStack> {
 			NBTTagCompound tag = (NBTTagCompound) list1.tagAt( i );
 			ItemStack item = Utils.readStackFromNBT( (NBTTagCompound) tag.getTag( "ingredient" ) );
 			if( item != null )
-				ingredients.add( item );
+				ingredients.addStack( item );
 		}
 
 		// Read the recipes.
