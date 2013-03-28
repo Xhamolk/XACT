@@ -36,6 +36,8 @@ public class GuiUtils {
 	public static final int COLOR_BLUE = 220;
 	public static final int COLOR_GRAY = (grayTone << 16) | (grayTone << 8) | grayTone;
 
+	public static final RenderItem itemRender = new RenderItem();
+
 	public static void paintSlotOverlay(Slot slot, int size, int color) {
 		if( slot == null )
 			return;
