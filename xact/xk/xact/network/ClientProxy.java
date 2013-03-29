@@ -6,11 +6,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.NetClientHandler;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import org.lwjgl.input.Keyboard;
 import xk.xact.XActMod;
 import xk.xact.client.BlueprintRenderer;
 import xk.xact.client.KeyBindingHandler;
@@ -28,6 +26,7 @@ import xk.xact.gui.ContainerVanillaWorkbench;
 
 public class ClientProxy extends CommonProxy {
 
+
 	@SideOnly(Side.CLIENT)
 	public static GuiScreen getCurrentScreen() {
 		return Minecraft.getMinecraft().currentScreen;
@@ -42,20 +41,7 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerKeyBindings() {
-		KeyBindingRegistry.registerKeyBinding( new KeyBindingHandler(
-				new KeyBinding[] {
-					new KeyBinding( "xact.clear", Keyboard.KEY_DOWN ),
-					new KeyBinding( "xact.load", Keyboard.KEY_UP ),
-					new KeyBinding( "xact.prev", Keyboard.KEY_LEFT ),
-					new KeyBinding( "xact.next", Keyboard.KEY_RIGHT ),
-					new KeyBinding( "xact.delete", Keyboard.KEY_DELETE )
-				}, new boolean[] {
-					false,
-					false,
-					false,
-					false,
-					false
-		} ) );
+		KeyBindingRegistry.registerKeyBinding( new KeyBindingHandler() );
 	}
 
 	@Override
@@ -141,7 +127,7 @@ public class ClientProxy extends CommonProxy {
 		return null;
 	}
 
-    public static NetClientHandler getNetClientHandler() {
-        return Minecraft.getMinecraft().getNetHandler();
-    }
+	public static NetClientHandler getNetClientHandler() {
+		return Minecraft.getMinecraft().getNetHandler();
+	}
 }
