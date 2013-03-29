@@ -31,8 +31,6 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 	public void addIngredient(ItemStack ingredient) {
 		if( ingredient != null && !containsIngredient( ingredient ) ) {
-			ItemStack copy = ingredient.copy();
-			copy.stackSize = 1;
 			ingredients.addStack( ingredient, 1 );
 		}
 	}
@@ -51,7 +49,8 @@ public class IngredientsList implements Iterable<ItemStack> {
 
 	public void setRecipe(ItemStack item, CraftRecipe recipe) {
 		// is it a valid recipe?
-
+		if( recipe == null || !recipe.isValid() )
+			return;
 		recipes.put( item, recipe );
 	}
 
