@@ -13,6 +13,7 @@ import xk.xact.inventory.InvSlotIterator;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.network.CommonProxy;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.FakeCraftingInventory;
 import xk.xact.util.Utils;
 
@@ -109,7 +110,8 @@ public abstract class CraftingHandler {
 
 		ArrayList<ItemStack> remainingList = new ArrayList<ItemStack>();
 
-		mainLoop: for( int i = 0; i < craftMatrix.getSizeInventory(); i++ ) {
+		mainLoop:
+		for( int i = 0; i < craftMatrix.getSizeInventory(); i++ ) {
 			ItemStack stackInSlot = craftMatrix.getStackInSlot( i );
 			if( stackInSlot == null )
 				continue;
@@ -212,12 +214,15 @@ public abstract class CraftingHandler {
 	public int getCountFor(CraftRecipe recipe, ItemStack stack, boolean countAll) {
 		int found = 0;
 		IInventory[] inventories = getAvailableInventories();
+		int ingredientIndex = RecipeUtils.getIngredientIndex( recipe, stack );
+		if( ingredientIndex == -1 )
+			return 0; // not an ingredient! do something!
 		for( IInventory inv : inventories ) {
 			for( InvSlot slot : InvSlotIterator.createNewFor( inv ) ) {
 				if( !countAll && found >= stack.stackSize )
-					break; // prevent counting on more if found enough already.
+					return found; // prevent counting on more if found enough already.
 
-				if( slot != null && !slot.isEmpty() && slotContainsIngredient( slot, recipe, stack ) )
+				if( slot != null && !slot.isEmpty() && slotContainsIngredient( slot, recipe, ingredientIndex ) )
 					found += slot.stack.stackSize;
 			}
 		}
@@ -319,7 +324,7 @@ public abstract class CraftingHandler {
 		}
 
 		ItemStack[] ingredients = recipe.getIngredients();
-		ItemStack[] missingIngredients = getMissingIngredients( recipe ).clone();
+		ItemStack[] missingIngredients = getMissingIngredients( recipe );
 
 		for( ItemStack currentMissed : missingIngredients ) {
 			if( currentMissed == null )
@@ -327,7 +332,8 @@ public abstract class CraftingHandler {
 
 			int remaining = currentMissed.stackSize;
 			for( int i = 0; remaining > 0 && i < ingredients.length; i++ ) {
-				if( ingredients[i] != null && ingredients[i].isItemEqual( currentMissed ) ) {
+				if( ingredients[i] != null && ingredients[i].isItemEqual( currentMissed )
+						&& ItemStack.areItemStackTagsEqual( ingredients[i], currentMissed ) ) {
 					remaining--;
 					missingArray[i] = true;
 				}
@@ -358,7 +364,7 @@ public abstract class CraftingHandler {
 					if( slot == null )
 						continue;
 
-					if( slotContainsIngredient( slot, recipe, ingredient ) ) {
+					if( slotContainsIngredient( slot, recipe, i ) ) {
 						ItemStack stackInSlot = inv.getStackInSlot( slot.slotIndex );
 
 						if( stackInSlot.stackSize > required ) {
@@ -391,9 +397,11 @@ public abstract class CraftingHandler {
 		return contents;
 	}
 
-	protected boolean slotContainsIngredient(InvSlot slot, CraftRecipe recipe, ItemStack ingredient) {
+	protected boolean slotContainsIngredient(InvSlot slot, CraftRecipe recipe, int ingredientIndex) {
 		if( slot == null || slot.isEmpty() )
 			return false;
+
+		ItemStack ingredient = recipe.getIngredients()[ingredientIndex];
 
 		// the direct comparison.
 		if( slot.containsItemsFrom( ingredient ) )
@@ -418,7 +426,7 @@ public abstract class CraftingHandler {
 		}
 
 		// regular test: if replacing the item on that spot still matches with the recipe.
-		return recipe.matchesIngredient( ingredient, slot.stack, device.getWorld() );
+		return recipe.matchesIngredient( ingredientIndex, slot.stack, device.getWorld() );
 	}
 
 }

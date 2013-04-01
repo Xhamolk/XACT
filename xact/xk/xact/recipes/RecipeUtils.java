@@ -12,13 +12,9 @@ import xk.xact.util.FakeCraftingInventory;
 public class RecipeUtils {
 
 
-	public static boolean matchesIngredient(CraftRecipe recipe, ItemStack ingredient, ItemStack otherStack, World world) {
+	public static boolean matchesIngredient(CraftRecipe recipe, int ingredientIndex, ItemStack otherStack, World world) {
 		try {
 			IRecipe iRecipe = recipe.getRecipePointer().getIRecipe();
-
-			int ingredientIndex = getIngredientIndex( recipe, ingredient );
-			if( ingredientIndex == -1 )
-				return false;
 
 			FakeCraftingInventory craftingGrid = FakeCraftingInventory.emulateContents( recipe.getIngredients() );
 			craftingGrid.setInventorySlotContents( ingredientIndex, otherStack );
@@ -29,7 +25,7 @@ public class RecipeUtils {
 			ItemStack nominalResult = recipe.getResult();
 			ItemStack realResult = iRecipe.getCraftingResult( craftingGrid );
 
-			return InventoryUtils.similarStacks( nominalResult, realResult, false );
+			return InventoryUtils.similarStacks( nominalResult, realResult, nominalResult.hasTagCompound() );
 		} catch( NullPointerException npe ) {
 			return false;
 		}
@@ -39,7 +35,8 @@ public class RecipeUtils {
 		ItemStack[] ingredients = recipe.getIngredients();
 		int size = ingredients.length;
 		for( int i = 0; i < size; i++ ) {
-			if( ingredients[i] != null && ingredients[i].isItemEqual( ingredient ) )
+			if( ingredients[i] != null && ingredients[i].isItemEqual( ingredient )
+					&& ItemStack.areItemStackTagsEqual(ingredients[i], ingredient) )
 				return i;
 		}
 		return -1;

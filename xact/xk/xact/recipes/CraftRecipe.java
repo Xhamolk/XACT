@@ -118,8 +118,8 @@ public class CraftRecipe {
 	}
 
 
-	public boolean matchesIngredient(ItemStack ingredient, ItemStack otherStack, World world) {
-		return RecipeUtils.matchesIngredient( this, ingredient, otherStack, world );
+	public boolean matchesIngredient(int ingredientIndex, ItemStack otherStack, World world) {
+		return RecipeUtils.matchesIngredient( this, ingredientIndex, otherStack, world );
 	}
 
 	public boolean validate(World world) {
