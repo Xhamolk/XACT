@@ -29,6 +29,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		this.player = player;
 		buildContainer();
 		super.isInUse = true;
+		this.onContentsChanged();
 	}
 
 	private void buildContainer() {
@@ -546,6 +547,11 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 			gridSlot.inventory.setInventorySlotContents( i, null );
 		}
 		this.craftPad.gridInv.onInventoryChanged();
+	}
+
+	public void onContentsChanged() {
+		SlotCraft slot = (SlotCraft) getSlot( 0 );
+		slot.updateSlot();
 	}
 
 }

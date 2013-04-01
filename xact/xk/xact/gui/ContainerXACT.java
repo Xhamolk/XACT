@@ -165,155 +165,126 @@ public abstract class ContainerXACT extends Container {
 
 	@Override
 	public ItemStack slotClick(int slotID, int buttonPressed, int flag, EntityPlayer player) {
+		try {
+			int specialCase = determineSpecialCase( slotID, flag, buttonPressed );
+			if( specialCase == 0 )
+				return super.slotClick( slotID, buttonPressed, flag, player );
 
-		int specialCase = determineSpecialCase( slotID, flag, buttonPressed );
-		if( specialCase == 0 )
-			return super.slotClick( slotID, buttonPressed, flag, player );
+			Slot slot = slotID < 0 ? null : getSlot( slotID );
 
-		Slot slot = slotID < 0 ? null : getSlot( slotID );
+			ItemStack stackInSlot;
+			ItemStack playerStack;
 
-		ItemStack stackInSlot;
-		ItemStack playerStack;
+			InventoryPlayer inventoryPlayer = player.inventory;
 
-		InventoryPlayer inventoryPlayer = player.inventory;
-
-		switch( specialCase ) {
-			case 1: // clicking on the crafting grid slots:
-				if( flag == 1 ) { // clear on shift-clicking.
-					slot.putStack( null );
-					return null;
-				}
-
-				playerStack = inventoryPlayer.getItemStack();
-
-				if( buttonPressed == 0 || playerStack == null ) {
-					slot.putStack( null );
-
-				} else if( buttonPressed == 1 ) {
-					ItemStack copy = playerStack.copy();
-					copy.stackSize = 1;
-					slot.putStack( copy );
-				}
-				return null;
-
-			case 2: // interacting with the hotkeys:
-				ItemStack invStack = inventoryPlayer.getStackInSlot( buttonPressed );
-				if( invStack != null ) {
-					ItemStack copy = invStack.copy();
-					copy.stackSize = 1;
-					slot.putStack( copy );
-				}
-				return invStack;
-
-			case 4: // pressing the DROP key.
-				stackInSlot = slot.getStack();
-				slot.putStack( null );
-				return stackInSlot;
-
-			case 5: // placing the dragged stuff.
-				handleDragging( slotID, buttonPressed, player.inventory );
-
-				this.detectAndSendChanges();
-				break;
-
-			case 6: // double click (clears the crafting grid).
-				clearCraftingGrid();
-				this.detectAndSendChanges();
-				return null;
-
-			case 10: // redirect the right click into a left click.
-				return super.slotClick( slotID, 0, flag, player );
-
-			case 11: // regular clicking on an output slot.
-
-				stackInSlot = slot.getStack();
-				playerStack = inventoryPlayer.getItemStack();
-
-				if( stackInSlot == null ) { // Placing player's stack on empty slot.
-					if( playerStack != null && slot.isItemValid( playerStack ) ) {
-						int amount = buttonPressed == 0 ? playerStack.stackSize : 1;
-
-						if( amount > slot.getSlotStackLimit() ) {
-							amount = slot.getSlotStackLimit();
-						}
-
-						slot.putStack( playerStack.splitStack( amount ) );
-
-						if( playerStack.stackSize == 0 ) {
-							inventoryPlayer.setItemStack( null );
-						}
+			switch( specialCase ) {
+				case 1: // clicking on the crafting grid slots:
+					if( flag == 1 ) { // clear on shift-clicking.
+						slot.putStack( null );
+						return null;
 					}
 
-				} else if( slot.canTakeStack( player ) ) {  // interact with the slot.
+					playerStack = inventoryPlayer.getItemStack();
 
-					if( playerStack == null ) { // Full extraction from slot.
-						ItemStack itemStack = ((SlotCraft) slot).getCraftedStack();
-						inventoryPlayer.setItemStack( itemStack );
-						slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
+					if( buttonPressed == 0 || playerStack == null ) {
+						slot.putStack( null );
 
-					} else if( slot.isItemValid( playerStack ) ) { // Merge to slot (same as super)
+					} else if( buttonPressed == 1 ) {
+						ItemStack copy = playerStack.copy();
+						copy.stackSize = 1;
+						slot.putStack( copy );
+					}
+					return null;
 
-						if( Utils.equalsStacks( stackInSlot, playerStack ) ) { // split player's into slot.
-							int amount = buttonPressed == 0 ? playerStack.stackSize : 1;
+				case 2: // interacting with the hotkeys:
+					ItemStack invStack = inventoryPlayer.getStackInSlot( buttonPressed );
+					if( invStack != null ) {
+						ItemStack copy = invStack.copy();
+						copy.stackSize = 1;
+						slot.putStack( copy );
+					}
+					return invStack;
 
-							int max = Math.min( slot.getSlotStackLimit() - stackInSlot.stackSize, playerStack.getMaxStackSize() - stackInSlot.stackSize );
-							if( amount > max )
-								amount = max;
+				case 4: // pressing the DROP key.
+					stackInSlot = slot.getStack();
+					slot.putStack( null );
+					return stackInSlot;
 
-							playerStack.splitStack( amount );
-							stackInSlot.stackSize += amount;
+				case 5: // placing the dragged stuff.
+					handleDragging( slotID, buttonPressed, player.inventory );
 
-							if( playerStack.stackSize == 0 ) {
-								inventoryPlayer.setItemStack( null );
-							}
+					this.detectAndSendChanges();
+					break;
 
-						} else if( playerStack.stackSize <= slot.getSlotStackLimit() ) { // swap stacks.
-							slot.putStack( playerStack );
-							inventoryPlayer.setItemStack( stackInSlot );
-						}
+				case 6: // double click (clears the crafting grid).
+					clearCraftingGrid();
+					this.detectAndSendChanges();
+					return null;
 
-					} else if( Utils.equalsStacks( stackInSlot, playerStack ) && playerStack.getMaxStackSize() > 1 ) { // extract some
+				case 10: // redirect the right click into a left click.
+					return super.slotClick( slotID, 0, flag, player );
+
+				case 11: // regular clicking on an output slot.
+
+					stackInSlot = slot.getStack();
+					boolean canTakeStack = slot.canTakeStack( player );
+					if( stackInSlot != null && canTakeStack ){
 						stackInSlot = ((SlotCraft) slot).getCraftedStack();
-						int amount = stackInSlot.stackSize;
+					}
+					playerStack = inventoryPlayer.getItemStack();
 
-						if( amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize() ) {
-							playerStack.stackSize += amount;
+					if( stackInSlot != null && canTakeStack ) {
+						if( playerStack == null ) { // Full extraction from slot.
+							inventoryPlayer.setItemStack( stackInSlot );
 							slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
+
+						} else if( Utils.equalsStacks( stackInSlot, playerStack ) && playerStack.getMaxStackSize() > 1 ) { // extract some
+							int amount = stackInSlot.stackSize;
+
+							if( amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize() ) {
+								playerStack.stackSize += amount;
+								slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
+							}
 						}
 					}
-				}
-				slot.onSlotChanged();
-				return stackInSlot;
+					slot.onSlotChanged();
+					return stackInSlot;
 
-			case 12: // interacting with the hotkeys
-				stackInSlot = ((SlotCraft) slot).getCraftedStack();
-				if( !slot.canTakeStack( player ) || stackInSlot == null )
+				case 12: // interacting with the hotkeys
+					if( !slot.canTakeStack( player ) )
+						return null;
+					stackInSlot = ((SlotCraft) slot).getCraftedStack();
+
+					if( stackInSlot == null )
 					return null;
 
-				playerStack = inventoryPlayer.getStackInSlot( buttonPressed );
-				if( playerStack == null ) {
-					inventoryPlayer.setInventorySlotContents( buttonPressed, stackInSlot );
-					slot.onPickupFromSlot( player, stackInSlot );
-				} else {
-					int indx = inventoryPlayer.getFirstEmptyStack();
-					if( indx > -1 ) {
+					playerStack = inventoryPlayer.getStackInSlot( buttonPressed );
+					if( playerStack == null ) {
 						inventoryPlayer.setInventorySlotContents( buttonPressed, stackInSlot );
-						inventoryPlayer.addItemStackToInventory( playerStack );
 						slot.onPickupFromSlot( player, stackInSlot );
+					} else {
+						int indx = inventoryPlayer.getFirstEmptyStack();
+						if( indx > -1 ) {
+							inventoryPlayer.setInventorySlotContents( buttonPressed, stackInSlot );
+							inventoryPlayer.addItemStackToInventory( playerStack );
+							slot.onPickupFromSlot( player, stackInSlot );
+						}
 					}
-				}
-				return stackInSlot;
+					return stackInSlot;
 
-			case 14: // dropping from an output slot.
-				if( slot.getHasStack() && slot.canTakeStack( player ) ) {
-					ItemStack itemStack = ((SlotCraft) slot).getCraftedStack();
-					slot.onPickupFromSlot( player, itemStack );
-					player.dropPlayerItem( ((SlotCraft) slot).getCraftedStack() );
-					return itemStack;
-				}
-				return null;
+				case 14: // dropping from an output slot.
+					if( slot.getHasStack() && slot.canTakeStack( player ) ) {
+						ItemStack itemStack = ((SlotCraft) slot).getCraftedStack();
+						slot.onPickupFromSlot( player, itemStack );
+						player.dropPlayerItem( ((SlotCraft) slot).getCraftedStack() );
+						return itemStack;
+					}
+					return null;
+			}
+			return null;
+		} finally {
+			onContentsChanged();
 		}
-		return null;
 	}
 
 	@Override
@@ -322,5 +293,7 @@ public abstract class ContainerXACT extends Container {
 		dragState = 0;
 		draggedSlots.clear();
 	}
+
+	protected void onContentsChanged() { }
 
 }

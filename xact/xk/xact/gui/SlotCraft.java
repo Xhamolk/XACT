@@ -9,6 +9,7 @@ import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.FakeCraftingInventory;
+import xk.xact.util.Utils;
 
 /**
  * The slot used to display the recipe's output on TileCrafter.
@@ -22,6 +23,9 @@ public class SlotCraft extends Slot {
 	private ICraftingDevice device;
 	private EntityPlayer player;
 
+	private CraftRecipe recipe;
+	private boolean canCraft;
+
 	public SlotCraft(ICraftingDevice device, IInventory displayInventory, EntityPlayer player, int index, int x, int y) {
 		super( displayInventory, index, x, y );
 		this.player = player;
@@ -34,8 +38,12 @@ public class SlotCraft extends Slot {
 		return false;
 	}
 
+	@Override
+	public ItemStack getStack() {
+		return Utils.copyOf( super.getStack() );
+	}
+
 	public ItemStack getCraftedStack() {
-		CraftRecipe recipe = getRecipe();
 		if( recipe == null )
 			return null;
 
@@ -58,12 +66,8 @@ public class SlotCraft extends Slot {
 
 	@Override
 	public boolean canTakeStack(EntityPlayer player) {
-		CraftRecipe recipe = getRecipe();
-		if( recipe != null ) {
-			if( handler.canCraft( recipe, player ) )
-				return true;
-		}
-		return false;
+		return canCraft;
+//		return handler.canCraft( recipe, player );
 	}
 
 
@@ -72,26 +76,29 @@ public class SlotCraft extends Slot {
 		if( player.capabilities.isCreativeMode || craftedItem == null )
 			return;
 
-		CraftRecipe recipe = getRecipe();
 		if( recipe == null ) return;
-
 		handler.doCraft( recipe, player, craftedItem );
 	}
 
 	@Override
 	public void onSlotChanged() {
-		CraftRecipe recipe = getRecipe();
-		ItemStack item = recipe == null ? null : recipe.getResult();
-		this.inventory.setInventorySlotContents( getSlotIndex(), item );
 		super.onSlotChanged();
+		updateSlot();
 	}
 
 	private CraftRecipe getRecipe() {
 		try {
 			return device.getRecipe( getSlotIndex() );
-		} catch ( Exception e ) {
+		} catch( Exception e ) {
 			return null;
 		}
+	}
+
+	public void updateSlot() {
+		recipe = getRecipe();
+		canCraft = recipe != null && handler.canCraft( recipe, player );
+		ItemStack item = recipe == null ? null : recipe.getResult();
+		this.inventory.setInventorySlotContents( getSlotIndex(), item );
 	}
 
 }

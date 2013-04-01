@@ -19,7 +19,6 @@ import xk.xact.client.gui.GuiCrafter;
 import xk.xact.inventory.Inventory;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 
@@ -64,14 +63,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public boolean contentsChanged = false;
 
 	public TileCrafter() {
-		this.results = new Inventory( getRecipeCount(), "Results" ) {
-			@Override
-			public ItemStack getStackInSlot(int slot) {
-				if( 0 <= slot && slot < getRecipeCount() )
-					return Utils.copyOf( getRecipeResult( slot ) );
-				return null;
-			}
-		};
+		this.results = new Inventory( getRecipeCount(), "Results" );
 		this.circuits = new Inventory( 4, "Encoded Recipes" ) {
 			@Override
 			public void onInventoryChanged() {
@@ -92,6 +84,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateStates();
+				contentsChanged = true;
 			}
 		};
 	}
@@ -198,14 +191,14 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		if( index < 0 || index > getRecipeCount() )
 			return null;
 
-		if( recipes[index] == null ) {
-			if( index == 4 ) {
-				recipes[index] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
-			} else {
-				ItemStack stack = this.circuits.getStackInSlot( index );
-				if( stack != null )
-					recipes[index] = RecipeUtils.getRecipe( stack, this.worldObj );
-			}
+		if( index == 4 ) {
+			recipes[index] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
+		} else {
+			ItemStack stack = this.circuits.getStackInSlot( index );
+			if( stack != null )
+				recipes[index] = RecipeUtils.getRecipe( stack, this.worldObj );
+			else
+				recipes[index] = null;
 		}
 		return recipes[index];
 	}

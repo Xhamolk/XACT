@@ -25,6 +25,7 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		this.crafter = crafter;
 		this.player = player;
 		buildContainer();
+		onContentsChanged();
 	}
 
 	private void buildContainer() {
@@ -86,6 +87,7 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 			addSlotToContainer( new Slot( player.inventory, i, 18 * i + 8, 232 ) );
 		}
 
+		this.onCraftMatrixChanged( crafter.craftGrid );
 	}
 
 	@Override
@@ -103,6 +105,8 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		ItemStack stack = stackInSlot.copy();
 
 		if( slot instanceof SlotCraft ) {
+			if( !slot.canTakeStack( player ) )
+				return null;
 			// add to the resources buffer.
 			stackInSlot = ((SlotCraft) slot).getCraftedStack();
 			ItemStack copy = stackInSlot == null ? null : stackInSlot.copy();
@@ -340,6 +344,16 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		this.slotClick( slotID, mouseClick, 1, player );
 	}
 
+	@Override
+	public void onContentsChanged() {
+		SlotCraft slot;
+		int recipeCount = crafter.getRecipeCount();
+		for( int i = 0; i < recipeCount; i++ ) {
+			slot = (SlotCraft) (i < recipeCount - 1 ? getSlot( i ) : getSlot( 17 ));
+			slot.updateSlot();
+		}
+	}
+
 	// InteractiveCraftingContainer
 	@Override
 	public void setStack(int slotID, ItemStack stack) {
@@ -364,7 +378,7 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 
 	@Override
 	protected void clearCraftingGrid() {
-		for( int i = 0; i< 9; i++ ) {
+		for( int i = 0; i < 9; i++ ) {
 			Slot gridSlot = getSlot( i + gridFirstSlot );
 			gridSlot.inventory.setInventorySlotContents( i, null );
 		}
