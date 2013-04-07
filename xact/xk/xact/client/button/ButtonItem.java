@@ -36,9 +36,9 @@ public class ButtonItem extends GuiButtonCustom {
 	@Override
 	protected void drawBackgroundLayer(Minecraft mc, int mouseX, int mouseY) {
 		GL11.glBindTexture( GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture( Textures.MISC_BUTTONS ) );
-		int textureX = isSpecial ? 0 : 26;
+		int textureX = isSpecial ? 0 : 52;
 		if( field_82253_i )
-			textureX += 48;
+			textureX += 22;
 
 		// Draw button.
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
