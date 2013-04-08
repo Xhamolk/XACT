@@ -24,6 +24,7 @@ public class PacketHandler implements IPacketHandler {
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player packetSender) {
 
+		// 0x01: Opening GUIs.
 		// 0x02: Sending multiple ItemStacks
 		// 0x03: Importing recipe from NEI: Gui sending an ItemStack to Container.
 
@@ -32,6 +33,17 @@ public class PacketHandler implements IPacketHandler {
 			try {
 				DataInputStream packetData = new DataInputStream( new ByteArrayInputStream( packet.data ) );
 				action = packetData.readByte();
+
+				if( action == 0x01 ) {
+					EntityPlayer player = (EntityPlayer) packetSender;
+					byte guiID = packetData.readByte();
+					int x = packetData.readInt();
+					int y = packetData.readInt();
+					int z = packetData.readInt();
+
+					player.openGui( XActMod.instance, guiID, player.worldObj, x, y, z );
+					return;
+				}
 
 				if( action == 0x02 ) {
 					InteractiveCraftingContainer container = (InteractiveCraftingContainer) ((EntityPlayer) packetSender).openContainer;
