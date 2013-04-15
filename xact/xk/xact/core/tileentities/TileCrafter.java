@@ -109,6 +109,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		return new ContainerCrafter( this, player );
 	}
 
+	@SideOnly(Side.CLIENT)
 	public GuiContainer getGuiContainerFor(EntityPlayer player) {
 		return new GuiCrafter( this, player );
 	}
