@@ -3,6 +3,7 @@ package xk.xact.plugin.nei;
 
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
+import codechicken.nei.recipe.IRecipeHandler;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingGui;
@@ -13,7 +14,8 @@ public class XactOverlayHandler implements IOverlayHandler {
 
 
 	@Override
-	public void overlayRecipe(GuiContainer firstGui, List<PositionedStack> ingredients, boolean shift) {
+	public void overlayRecipe(GuiContainer firstGui, IRecipeHandler recipe, int recipeIndex, boolean shift) {
+		List<PositionedStack> ingredients = recipe.getIngredientStacks( recipeIndex );
 
 		if( firstGui instanceof InteractiveCraftingGui ) {
 
