@@ -35,8 +35,8 @@ public class ItemBlueprint extends ItemMap { // its a "map" for simplicity reaso
 
 	@Override
 	@SideOnly(Side.CLIENT) // Item's Texture
-	public void updateIcons(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.registerIcon( Textures.ITEM_BLUEPRINT );
+	public void registerIcons(IconRegister iconRegister) {
+		this.itemIcon = iconRegister.registerIcon( Textures.ITEM_BLUEPRINT );
 	}
 
 	@Override

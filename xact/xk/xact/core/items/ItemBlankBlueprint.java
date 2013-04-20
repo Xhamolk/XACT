@@ -25,8 +25,8 @@ public class ItemBlankBlueprint extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT) // Item's Texture
-	public void updateIcons(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.registerIcon( Textures.ITEM_BLUEPRINT_BLANK );
+	public void registerIcons(IconRegister iconRegister) {
+		this.itemIcon = iconRegister.registerIcon( Textures.ITEM_BLUEPRINT_BLANK );
 	}
 
 	@Override

@@ -56,13 +56,13 @@ public class ItemPad extends ItemContainer {
 	public Icon getIconFromDamage(int itemDamage) {
 		if( itemDamage == 1 )
 			return inUseIcon;
-		return iconIndex;
+		return itemIcon;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT) // Item Texture
-	public void updateIcons(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.registerIcon( Textures.ITEM_PAD_OFF );
+	public void registerIcons(IconRegister iconRegister) {
+		this.itemIcon = iconRegister.registerIcon( Textures.ITEM_PAD_OFF );
 		this.inUseIcon = iconRegister.registerIcon( Textures.ITEM_PAD_ON );
 	}
 

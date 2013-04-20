@@ -110,7 +110,7 @@ public class BlockMachine extends BlockContainer {
 	private static Icon[][] textures;
 
 	@Override
-	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
+	public Icon getIcon(int side, int metadata) {
 		int machine = Machines.getMachineFromMetadata( metadata );
 		if( side >= 2 ) {
 			side = isFrontSide( side, metadata ) ? 2 : 3;

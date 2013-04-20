@@ -51,8 +51,8 @@ public class ItemCase extends ItemContainer {
 
 	@Override
 	@SideOnly(Side.CLIENT) // Item Texture
-	public void updateIcons(IconRegister iconRegister) {
-		this.iconIndex = iconRegister.registerIcon( Textures.ITEM_CASE );
+	public void registerIcons(IconRegister iconRegister) {
+		this.itemIcon = iconRegister.registerIcon( Textures.ITEM_CASE );
 	}
 
 }

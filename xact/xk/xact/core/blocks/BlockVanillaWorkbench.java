@@ -43,7 +43,7 @@ public class BlockVanillaWorkbench extends BlockContainer {
 	}
 
 	@Override
-	public Icon getBlockTextureFromSideAndMetadata(int side, int metadata) {
+	public Icon getIcon(int side, int metadata) {
 		if( side == 0 )
 			return TEXTURE_BOTTOM;
 		else if( side == 1 )
