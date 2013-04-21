@@ -28,7 +28,7 @@ import xk.xact.recipes.RecipeUtils;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.3.0")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.3.1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = { "xact_channel" }, packetHandler = PacketHandler.class)
 public class XActMod {
