@@ -25,13 +25,12 @@ import xk.xact.core.tileentities.TileWorkbench;
 import xk.xact.gui.CreativeTabXACT;
 import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
-import xk.xact.plugin.mps.PluginForMPS;
 import xk.xact.recipes.RecipeUtils;
 
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.3.1")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.3.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = { "xact_channel" }, packetHandler = PacketHandler.class)
 public class XActMod {
