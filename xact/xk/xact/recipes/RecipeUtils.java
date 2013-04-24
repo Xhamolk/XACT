@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import xk.xact.compatibility.CompatibilityManager;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.util.FakeCraftingInventory;
 
@@ -25,7 +26,8 @@ public class RecipeUtils {
 			ItemStack nominalResult = recipe.getResult();
 			ItemStack realResult = iRecipe.getCraftingResult( craftingGrid );
 
-			return InventoryUtils.similarStacks( nominalResult, realResult, nominalResult.hasTagCompound() );
+			return checkSpecialCase( recipe, otherStack, ingredientIndex, world ) ||
+				InventoryUtils.similarStacks( nominalResult, realResult, nominalResult.hasTagCompound() );
 		} catch( NullPointerException npe ) {
 			return false;
 		}
@@ -82,4 +84,12 @@ public class RecipeUtils {
 		return retValue;
 	}
 
+
+	private static boolean checkSpecialCase(CraftRecipe recipe, ItemStack itemStack, int ingredientIndex, World world) {
+		for(SpecialCasedRecipe specialCase : CompatibilityManager.getSpecialCasedRecipes() ) {
+			if( specialCase.isSpecialCased( recipe, itemStack, ingredientIndex ) )
+				return specialCase.isMatchingIngredient( recipe, itemStack, ingredientIndex, world );
+		}
+		return false;
+	}
 }
