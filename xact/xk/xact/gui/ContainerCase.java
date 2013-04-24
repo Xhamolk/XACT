@@ -128,4 +128,9 @@ public class ContainerCase extends ContainerItem {
 	@Override
 	protected void clearCraftingGrid() { }
 
+	@Override
+	protected boolean isUpdateRequired() {
+		return false;
+	}
+
 }

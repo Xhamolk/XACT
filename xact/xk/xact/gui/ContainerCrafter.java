@@ -2,6 +2,7 @@ package xk.xact.gui;
 
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingContainer;
@@ -59,7 +60,7 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		for( int i = 0; i < 3; i++ ) {
 			for( int e = 0; e < 3; e++ ) {
 				int x = 18 * e + 62, y = 18 * i + 17, index = e + i * 3;
-				addSlotToContainer( new Slot( crafter.craftGrid, index, x, y ) );
+				addSlotToContainer( newSlot( crafter.craftGrid, index, x, y ) );
 			}
 		}
 
@@ -71,7 +72,7 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		for( int i = 0; i < 3; i++ ) {
 			for( int e = 0; e < 9; e++ ) {
 				int x = 18 * e + 8, y = 18 * i + 107;
-				addSlotToContainer( new Slot( crafter.resources, e + i * 9, x, y ) );
+				addSlotToContainer( newSlot( crafter.resources, e + i * 9, x, y ) );
 			}
 		}
 
@@ -79,12 +80,12 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		for( int i = 0; i < 3; i++ ) {
 			for( int e = 0; e < 9; e++ ) {
 				int x = 18 * e + 8, y = 18 * i + 174;
-				addSlotToContainer( new Slot( player.inventory, e + i * 9 + 9, x, y ) );
+				addSlotToContainer( newSlot( player.inventory, e + i * 9 + 9, x, y ) );
 			}
 		}
 		// player's hot bar (8,232) 1x9 (18x18)
 		for( int i = 0; i < 9; i++ ) {
-			addSlotToContainer( new Slot( player.inventory, i, 18 * i + 8, 232 ) );
+			addSlotToContainer( newSlot( player.inventory, i, 18 * i + 8, 232 ) );
 		}
 
 		this.onCraftMatrixChanged( crafter.craftGrid );
@@ -354,6 +355,15 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		}
 	}
 
+	public Slot newSlot(IInventory inventory, int index, int x, int y) {
+		return new SlotNormal(inventory, index, x, y) {
+			@Override
+			public void onChange() {
+				crafter.contentsChanged = true;
+			}
+		};
+	}
+
 	// InteractiveCraftingContainer
 	@Override
 	public void setStack(int slotID, ItemStack stack) {
@@ -385,4 +395,8 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		crafter.craftGrid.onInventoryChanged();
 	}
 
+	@Override
+	protected boolean isUpdateRequired() {
+		return crafter.contentsChanged;
+	}
 }

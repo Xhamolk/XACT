@@ -21,6 +21,8 @@ public abstract class ContainerXACT extends Container {
 
 	protected abstract void clearCraftingGrid();
 
+	protected abstract boolean isUpdateRequired();
+
 	protected boolean isGhostSlot(Slot slot) {
 		return isCraftingGridSlot( slot.slotNumber );
 	}
@@ -169,6 +171,9 @@ public abstract class ContainerXACT extends Container {
 			int specialCase = determineSpecialCase( slotID, flag, buttonPressed );
 			if( specialCase == 0 )
 				return super.slotClick( slotID, buttonPressed, flag, player );
+
+			if( isUpdateRequired() )
+				onContentsChanged();
 
 			Slot slot = slotID < 0 ? null : getSlot( slotID );
 

@@ -2,6 +2,7 @@ package xk.xact.gui;
 
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -86,13 +87,13 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		// main player inv
 		for( int i = 0; i < 3; i++ ) {
 			for( int e = 0; e < 9; e++ ) {
-				this.addSlotToContainer( new Slot( player.inventory, (i + 1) * 9 + e, e * 18 + 8, i * 18 + 98 ) );
+				this.addSlotToContainer( newSlot( player.inventory, (i + 1) * 9 + e, e * 18 + 8, i * 18 + 98 ) );
 			}
 		}
 
 		// hot-bar
 		for( int i = 0; i < 9; ++i ) {
-			this.addSlotToContainer( new Slot( player.inventory, i, i * 18 + 8, 156 ) );
+			this.addSlotToContainer( newSlot( player.inventory, i, i * 18 + 8, 156 ) );
 		}
 	}
 
@@ -129,6 +130,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		ItemStack outputStack = recipe == null ? null : recipe.getResult();
 		craftPad.outputInv.setInventorySlotContents( 0, outputStack );
 
+		onContentsChanged();
 		this.notifyOfChange();
 	}
 
@@ -140,6 +142,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	public void setStack(int slotID, ItemStack stack) {
 		if( slotID == -1 ) { // Clear the grid
 			clearCraftingGrid();
+			onContentsChanged();
 			return;
 		}
 
@@ -147,6 +150,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		if( slot != null ) {
 			slot.putStack( stack );
 		}
+		onContentsChanged();
 		this.notifyOfChange();
 	}
 
@@ -512,6 +516,15 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		return !isCraftingGridSlot( slot.slotNumber ) && slot.inventory != craftPad.outputInv;
 	}
 
+	public Slot newSlot(IInventory inventory, int index, int x, int y) {
+		return new SlotNormal(inventory, index, x, y) {
+			@Override
+			public void onChange() {
+				contentsChanged = true;
+			}
+		};
+	}
+
 	///////////////
 	///// ContainerItem
 
@@ -549,9 +562,15 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		this.craftPad.gridInv.onInventoryChanged();
 	}
 
+	@Override
 	public void onContentsChanged() {
 		SlotCraft slot = (SlotCraft) getSlot( 0 );
 		slot.updateSlot();
+	}
+
+	@Override
+	protected boolean isUpdateRequired() {
+		return this.contentsChanged;
 	}
 
 }
