@@ -17,8 +17,7 @@ public class RecipeUtils {
 		try {
 			IRecipe iRecipe = recipe.getRecipePointer().getIRecipe();
 
-			FakeCraftingInventory craftingGrid = FakeCraftingInventory.emulateContents( recipe.getIngredients() );
-			craftingGrid.setInventorySlotContents( ingredientIndex, otherStack );
+			FakeCraftingInventory craftingGrid = simulateGrid( recipe, ingredientIndex, otherStack );
 
 			if( !iRecipe.matches( craftingGrid, world ) )
 				return false;
@@ -26,8 +25,7 @@ public class RecipeUtils {
 			ItemStack nominalResult = recipe.getResult();
 			ItemStack realResult = iRecipe.getCraftingResult( craftingGrid );
 
-			return checkSpecialCase( recipe, otherStack, ingredientIndex, world ) ||
-				InventoryUtils.similarStacks( nominalResult, realResult, nominalResult.hasTagCompound() );
+			return InventoryUtils.similarStacks( nominalResult, realResult, nominalResult.hasTagCompound() );
 		} catch( NullPointerException npe ) {
 			return false;
 		}
@@ -85,11 +83,17 @@ public class RecipeUtils {
 	}
 
 
-	private static boolean checkSpecialCase(CraftRecipe recipe, ItemStack itemStack, int ingredientIndex, World world) {
+	public static SpecialCasedRecipe checkSpecialCase(CraftRecipe recipe, ItemStack itemStack, int ingredientIndex, World world) {
 		for(SpecialCasedRecipe specialCase : CompatibilityManager.getSpecialCasedRecipes() ) {
 			if( specialCase.isSpecialCased( recipe, itemStack, ingredientIndex ) )
-				return specialCase.isMatchingIngredient( recipe, itemStack, ingredientIndex, world );
+				return specialCase;
 		}
-		return false;
+		return null;
+	}
+
+	public static FakeCraftingInventory simulateGrid(CraftRecipe recipe, int ingredientIndex, ItemStack otherItem) {
+		FakeCraftingInventory craftingGrid = FakeCraftingInventory.emulateContents( recipe.getIngredients() );
+		craftingGrid.setInventorySlotContents( ingredientIndex, otherItem );
+		return craftingGrid;
 	}
 }

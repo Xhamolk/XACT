@@ -119,6 +119,9 @@ public class CraftRecipe {
 
 
 	public boolean matchesIngredient(int ingredientIndex, ItemStack otherStack, World world) {
+		SpecialCasedRecipe specialCase = RecipeUtils.checkSpecialCase( this, otherStack, ingredientIndex, world );
+		if( specialCase != null )
+			return specialCase.isMatchingIngredient( this, otherStack, ingredientIndex, world );
 		return RecipeUtils.matchesIngredient( this, ingredientIndex, otherStack, world );
 	}
 
