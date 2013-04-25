@@ -4,6 +4,7 @@ package xk.xact.plugin;
 import xk.xact.api.SpecialCasedRecipe;
 import xk.xact.api.plugin.XACTPlugin;
 import xk.xact.util.ReflectionUtils;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +18,17 @@ public class PluginManager {
 	}
 
 	public static void initializePlugins() {
-		// Load ModularPowerSuits plug-in.
+		// Register ModularPowerSuits plug-in.
 		Class mpsPlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.mps.PluginForMPS" );
 		if( mpsPlugin != null ) {
 			Object instance = ReflectionUtils.newInstanceOf( mpsPlugin );
 			if( instance != null ) {
-				XACTPlugin.class.cast( instance ).initialize();
+				addPlugin( XACTPlugin.class.cast( instance ) );
 			}
 		}
 
 		// Load all other plugins.
+		Utils.log( "Initializing plugins for XACT." );
 		for( XACTPlugin plugin : plugins ) {
 			plugin.initialize();
 		}
