@@ -6,7 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-import xk.xact.compatibility.CompatibilityManager;
+import xk.xact.api.SpecialCasedRecipe;
+import xk.xact.plugin.PluginManager;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.util.FakeCraftingInventory;
 
@@ -84,7 +85,7 @@ public class RecipeUtils {
 
 
 	public static SpecialCasedRecipe checkSpecialCase(CraftRecipe recipe, ItemStack itemStack, int ingredientIndex, World world) {
-		for(SpecialCasedRecipe specialCase : CompatibilityManager.getSpecialCasedRecipes() ) {
+		for(SpecialCasedRecipe specialCase : PluginManager.getSpecialCasedRecipes() ) {
 			if( specialCase.isSpecialCased( recipe, itemStack, ingredientIndex ) )
 				return specialCase;
 		}

@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.api.SpecialCasedRecipe;
 import xk.xact.util.FakeCraftingInventory;
 import xk.xact.util.ItemsList;
 import xk.xact.util.Utils;

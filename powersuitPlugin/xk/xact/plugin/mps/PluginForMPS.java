@@ -5,15 +5,17 @@ import cpw.mods.fml.common.Loader;
 import net.machinemuse.api.IModularItem;
 import net.machinemuse.api.ModuleManager;
 import net.minecraft.item.Item;
+import xk.xact.api.plugin.XACTPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PluginForMPS {
+public class PluginForMPS implements XACTPlugin {
 
-	public static void loadPlugin() {
+	@Override
+	public void initialize() {
 		if( Loader.isModLoaded( "mmmPowersuits" ) ) {
-			System.out.println("Initializing XACT's plug-in for ModularPowerSuits.");
+			System.out.println( "Initializing XACT's plug-in for ModularPowerSuits." );
 			init();
 		}
 	}

@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import xk.xact.compatibility.CompatibilityManager;
+import xk.xact.plugin.PluginManager;
 import xk.xact.core.Machines;
 import xk.xact.core.blocks.BlockMachine;
 import xk.xact.core.blocks.BlockVanillaWorkbench;
@@ -156,8 +156,8 @@ public class XActMod {
 
 	@Mod.PostInit
 	public void postInit(FMLPostInitializationEvent event) {
-		CompatibilityManager.checkEverything();
-		CompatibilityManager.initializePlugins();
+		PluginManager.checkEverything();
+		PluginManager.initializePlugins();
 	}
 
 	private void addRecipes() {

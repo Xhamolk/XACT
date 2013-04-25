@@ -1,8 +1,9 @@
-package xk.xact.recipes;
+package xk.xact.api;
 
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import xk.xact.recipes.CraftRecipe;
 
 public interface SpecialCasedRecipe {
 
