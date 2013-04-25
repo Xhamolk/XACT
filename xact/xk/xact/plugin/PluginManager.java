@@ -28,7 +28,7 @@ public class PluginManager {
 		}
 
 		// Load all other plugins.
-		Utils.log( "Initializing plugins for XACT." );
+		Utils.log( "Loading plug-ins..." );
 		for( XACTPlugin plugin : plugins ) {
 			plugin.initialize();
 		}
