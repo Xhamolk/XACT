@@ -1,8 +1,8 @@
 package xk.xact.plugin;
 
 
-import xk.xact.api.plugin.XACTPlugin;
 import xk.xact.api.SpecialCasedRecipe;
+import xk.xact.api.plugin.XACTPlugin;
 import xk.xact.util.ReflectionUtils;
 
 import java.util.ArrayList;

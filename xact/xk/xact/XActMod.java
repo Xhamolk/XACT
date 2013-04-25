@@ -1,5 +1,7 @@
 package xk.xact;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -27,6 +29,8 @@ import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
 import xk.xact.recipes.RecipeUtils;
 
+import java.util.logging.Logger;
+
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
@@ -42,6 +46,7 @@ public class XActMod {
 	@SidedProxy(clientSide = "xk.xact.network.ClientProxy", serverSide = "xk.xact.network.CommonProxy")
 	public static CommonProxy proxy;
 
+	public static Logger logger;
 
 	// IDs
 	public static int machineID;
@@ -96,6 +101,10 @@ public class XActMod {
 	@Mod.Init
 	@SuppressWarnings("unused")
 	public void initializeAll(FMLInitializationEvent ignoredEvent) {
+
+		// Initialize the logger.
+		logger = Logger.getLogger( "XACT-"+ FMLCommonHandler.instance().getEffectiveSide() );
+		logger.setParent( FMLLog.getLogger() );
 
 		xactTab = new CreativeTabXACT();
 

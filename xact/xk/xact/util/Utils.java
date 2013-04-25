@@ -20,7 +20,16 @@ public class Utils {
 
 	public static void debug(String message) {
 		if( XActMod.DEBUG_MODE )
-			System.out.println( message );
+			XActMod.logger.fine( message );
+
+	}
+
+	public static void log(String string) {
+		XActMod.logger.info( string );
+	}
+
+	public static void logError(String string) {
+		XActMod.logger.warning( string );
 	}
 
 	/**

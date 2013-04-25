@@ -13,6 +13,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import xk.xact.XActMod;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.client.gui.GuiRecipe;
+import xk.xact.util.Utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -93,7 +94,7 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
-				System.out.println( "XACT package unhandled: " + action );
+				Utils.logError( "XACT package unhandled: " + action );
 			} catch ( IOException e ) {
 				FMLCommonHandler.instance().raiseException( e, "XACT Packet Handler: " + action, true );
 			}

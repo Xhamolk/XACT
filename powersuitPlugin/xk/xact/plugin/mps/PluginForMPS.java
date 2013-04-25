@@ -6,6 +6,7 @@ import net.machinemuse.api.IModularItem;
 import net.machinemuse.api.ModuleManager;
 import net.minecraft.item.Item;
 import xk.xact.api.plugin.XACTPlugin;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,10 @@ public class PluginForMPS implements XACTPlugin {
 	@Override
 	public void initialize() {
 		if( Loader.isModLoaded( "mmmPowersuits" ) ) {
-			System.out.println( "Initializing XACT's plug-in for ModularPowerSuits." );
+			Utils.log( "Initializing plug-in for ModularPowerSuits." );
 			init();
+		} else {
+			Utils.log( "ModularPowerSuits not detected. Plug-in not initialized." );
 		}
 	}
 

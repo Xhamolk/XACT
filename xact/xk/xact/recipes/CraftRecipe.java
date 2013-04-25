@@ -79,7 +79,7 @@ public class CraftRecipe {
 				}
 			} catch ( Exception e ) {
 				e.printStackTrace();
-				System.out.println( "|>>>>>>>>>  getSimplifiedIngredients() " );
+				Utils.logError( "|>>>>>>>>>  getSimplifiedIngredients() " );
 			}
 		}
 
