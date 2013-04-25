@@ -24,6 +24,8 @@ public interface ICraftingDevice { // todo: javadoc.
 
 	public abstract CraftRecipe getRecipe(int index);
 
+	public abstract boolean canCraft(int index);
+
 	public abstract CraftingHandler getHandler();
 
 	public abstract World getWorld();

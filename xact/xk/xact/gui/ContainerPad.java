@@ -563,12 +563,6 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	}
 
 	@Override
-	public void onContentsChanged() {
-		SlotCraft slot = (SlotCraft) getSlot( 0 );
-		slot.updateSlot();
-	}
-
-	@Override
 	protected boolean isUpdateRequired() {
 		return this.contentsChanged;
 	}

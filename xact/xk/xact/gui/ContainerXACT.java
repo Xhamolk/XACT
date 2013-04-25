@@ -227,29 +227,26 @@ public abstract class ContainerXACT extends Container {
 					return null;
 
 				case 10: // redirect the right click into a left click.
-					return super.slotClick( slotID, 0, flag, player );
+					return slotClick( slotID, 0, flag, player );
 
 				case 11: // regular clicking on an output slot.
 
-					stackInSlot = slot.getStack();
-					boolean canTakeStack = slot.canTakeStack( player );
-					if( stackInSlot != null && canTakeStack ){
-						stackInSlot = ((SlotCraft) slot).getCraftedStack();
-					}
+					if( !slot.getHasStack() || !slot.canTakeStack( player ) )
+						return null;
+
+					stackInSlot = ((SlotCraft) slot).getCraftedStack();
 					playerStack = inventoryPlayer.getItemStack();
 
-					if( stackInSlot != null && canTakeStack ) {
-						if( playerStack == null ) { // Full extraction from slot.
-							inventoryPlayer.setItemStack( stackInSlot );
+					if( playerStack == null ) { // Full extraction from slot.
+						inventoryPlayer.setItemStack( stackInSlot );
+						slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
+					} else {
+						int sum = stackInSlot.stackSize + playerStack.stackSize;
+
+						// Merge into player's hand.
+						if( Utils.equalsStacks( stackInSlot, playerStack ) && sum <= stackInSlot.getMaxStackSize() ) {
+							playerStack.stackSize = sum;
 							slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
-
-						} else if( Utils.equalsStacks( stackInSlot, playerStack ) && playerStack.getMaxStackSize() > 1 ) { // extract some
-							int amount = stackInSlot.stackSize;
-
-							if( amount > 0 && amount + playerStack.stackSize <= playerStack.getMaxStackSize() ) {
-								playerStack.stackSize += amount;
-								slot.onPickupFromSlot( player, inventoryPlayer.getItemStack() );
-							}
 						}
 					}
 					slot.onSlotChanged();

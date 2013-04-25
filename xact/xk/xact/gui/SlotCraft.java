@@ -23,9 +23,6 @@ public class SlotCraft extends Slot {
 	private ICraftingDevice device;
 	private EntityPlayer player;
 
-	private CraftRecipe recipe;
-	private boolean canCraft;
-
 	public SlotCraft(ICraftingDevice device, IInventory displayInventory, EntityPlayer player, int index, int x, int y) {
 		super( displayInventory, index, x, y );
 		this.player = player;
@@ -44,13 +41,13 @@ public class SlotCraft extends Slot {
 	}
 
 	public ItemStack getCraftedStack() {
+		CraftRecipe recipe = getRecipe();
 		if( recipe == null )
 			return null;
 
 		FakeCraftingInventory grid = handler.generateTemporaryCraftingGridFor( recipe, player, false );
 		ItemStack craftedItem = handler.getRecipeResult( recipe, grid );
-
-		return craftedItem == null ? null : craftedItem.copy();
+		return Utils.copyOf( craftedItem );
 	}
 
 	@Override
@@ -66,8 +63,9 @@ public class SlotCraft extends Slot {
 
 	@Override
 	public boolean canTakeStack(EntityPlayer player) {
-		return canCraft;
-//		return handler.canCraft( recipe, player );
+		if( player != null && player.capabilities.isCreativeMode )
+			return getHasStack();
+		return device.canCraft( getSlotIndex() );
 	}
 
 
@@ -76,29 +74,17 @@ public class SlotCraft extends Slot {
 		if( player.capabilities.isCreativeMode || craftedItem == null )
 			return;
 
+		CraftRecipe recipe = getRecipe();
 		if( recipe == null ) return;
 		handler.doCraft( recipe, player, craftedItem );
 	}
 
-	@Override
-	public void onSlotChanged() {
-		super.onSlotChanged();
-		updateSlot();
-	}
-
-	private CraftRecipe getRecipe() {
+	public CraftRecipe getRecipe() {
 		try {
 			return device.getRecipe( getSlotIndex() );
 		} catch( Exception e ) {
 			return null;
 		}
-	}
-
-	public void updateSlot() {
-		recipe = getRecipe();
-		canCraft = recipe != null && handler.canCraft( recipe, player );
-		ItemStack item = recipe == null ? null : recipe.getResult();
-		this.inventory.setInventorySlotContents( getSlotIndex(), item );
 	}
 
 }

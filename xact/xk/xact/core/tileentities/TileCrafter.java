@@ -188,19 +188,16 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	}
 
 	@Override
+	public boolean canCraft(int index) {
+		if( index < 0 || index > getRecipeCount() )
+			return false;
+		return craftableRecipes[index];
+	}
+	@Override
 	public CraftRecipe getRecipe(int index) {
 		if( index < 0 || index > getRecipeCount() )
 			return null;
 
-		if( index == 4 ) {
-			recipes[index] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
-		} else {
-			ItemStack stack = this.circuits.getStackInSlot( index );
-			if( stack != null )
-				recipes[index] = RecipeUtils.getRecipe( stack, this.worldObj );
-			else
-				recipes[index] = null;
-		}
 		return recipes[index];
 	}
 

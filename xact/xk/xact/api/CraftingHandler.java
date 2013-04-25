@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -99,8 +100,13 @@ public abstract class CraftingHandler {
 
 		ItemStack craftedItem = recipe.getResult();
 
-		if( craftMatrix != null )
-			craftedItem = recipe.getRecipePointer().getOutputFrom( craftMatrix );
+		if( craftMatrix != null ) {
+			ItemStack stack = recipe.getRecipePointer().getOutputFrom( craftMatrix );
+			if( stack == null )
+				stack = CraftingManager.getInstance().findMatchingRecipe( craftMatrix, device.getWorld() );
+			if( stack != null )
+				craftedItem = stack;
+		}
 
 		return craftedItem;
 	}

@@ -25,6 +25,7 @@ import xk.xact.inventory.Inventory;
 public class CraftPad implements ICraftingDevice {
 
 	private CraftRecipe lastRecipe = null;
+	private boolean canCraftRecipe = false;
 
 	private CraftingHandler handler;
 	private EntityPlayer player;
@@ -38,12 +39,20 @@ public class CraftPad implements ICraftingDevice {
 
 	public CraftPad(ItemStack stack, EntityPlayer player) {
 		this.player = player;
-		this.outputInv = new Inventory( 1, "outputInv" );
+		this.outputInv = new Inventory( 1, "outputInv" ) {
+			@Override
+			public void onInventoryChanged() {
+				super.onInventoryChanged();
+				updateState();
+			}
+		};
 		this.gridInv = new Inventory( 9, "gridInv" ) {
 			@Override
 			public void onInventoryChanged() {
 				super.onInventoryChanged();
 				inventoryChanged = true;
+				updateRecipe();
+				updateState();
 			}
 		};
 		this.chipInv = new Inventory( 1, "chipInv" ) {
@@ -51,6 +60,8 @@ public class CraftPad implements ICraftingDevice {
 			public void onInventoryChanged() {
 				super.onInventoryChanged();
 				inventoryChanged = true;
+				updateRecipe();
+				updateState();
 			}
 		};
 
@@ -61,9 +72,25 @@ public class CraftPad implements ICraftingDevice {
 		this.readFromNBT( stack.getTagCompound() );
 	}
 
+	////////////
+	/// Current State
+
 	@SideOnly(Side.CLIENT)
 	public boolean[] getMissingIngredients() {
 		return getHandler().getMissingIngredientsArray( lastRecipe );
+	}
+
+	private void updateRecipe() {
+		lastRecipe = RecipeUtils.getRecipe( gridInv.getContents(), player.worldObj );
+		if( getWorld().isRemote )
+			notifyClient();
+
+		ItemStack output = lastRecipe == null ? null : lastRecipe.getResult();
+		outputInv.setInventorySlotContents( 0, output );
+	}
+
+	private void updateState() {
+		canCraftRecipe = handler.canCraft( lastRecipe, null );
 	}
 
 	////////////
@@ -80,10 +107,12 @@ public class CraftPad implements ICraftingDevice {
 	}
 
 	@Override
+	public boolean canCraft(int index) {
+		return canCraftRecipe;
+	}
+
+	@Override
 	public CraftRecipe getRecipe(int index) {
-		lastRecipe = RecipeUtils.getRecipe( gridInv.getContents(), player.worldObj );
-		if( getWorld().isRemote )
-			notifyClient();
 		return lastRecipe;
 	}
 

@@ -26,7 +26,8 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		this.crafter = crafter;
 		this.player = player;
 		buildContainer();
-		onContentsChanged();
+		crafter.updateRecipes();
+		crafter.updateStates();
 	}
 
 	private void buildContainer() {
@@ -343,16 +344,6 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 				return;
 		}
 		this.slotClick( slotID, mouseClick, 1, player );
-	}
-
-	@Override
-	public void onContentsChanged() {
-		SlotCraft slot;
-		int recipeCount = crafter.getRecipeCount();
-		for( int i = 0; i < recipeCount; i++ ) {
-			slot = (SlotCraft) (i < recipeCount - 1 ? getSlot( i ) : getSlot( 17 ));
-			slot.updateSlot();
-		}
 	}
 
 	public Slot newSlot(IInventory inventory, int index, int x, int y) {
