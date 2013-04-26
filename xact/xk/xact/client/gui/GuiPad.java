@@ -6,17 +6,16 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
-import xk.xact.gui.ContainerPad;
 import xk.xact.client.GuiUtils;
-import xk.xact.util.Textures;
-import xk.xact.core.CraftPad;
-import xk.xact.core.items.ItemChip;
 import xk.xact.client.button.CustomButtons;
 import xk.xact.client.button.GuiButtonCustom;
 import xk.xact.client.button.ICustomButtonMode;
+import xk.xact.core.CraftPad;
+import xk.xact.core.items.ItemChip;
 import xk.xact.network.ClientProxy;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
+import xk.xact.util.Textures;
 
 public class GuiPad extends CraftingGui {
 
@@ -38,7 +37,6 @@ public class GuiPad extends CraftingGui {
 		this.button = CustomButtons.createdDeviceButton( this.guiLeft + 97, this.guiTop + 63 );
 		button.id = 0;
 		buttonList.add( button );
-		invalidated = true;
 	}
 
 	@Override
@@ -81,38 +79,30 @@ public class GuiPad extends CraftingGui {
 	@Override
 	public void updateScreen() {
 		super.updateScreen();
-		ContainerPad pad = (ContainerPad) this.mc.thePlayer.openContainer;
-		if( pad.player.inventory.inventoryChanged || craftPad.inventoryChanged ) {
-			pad.craftPad.getRecipe( 0 ); // update the recipe.
-			this.missingIngredients = pad.craftPad.getMissingIngredients();
-			pad.player.inventory.inventoryChanged = false;
-			craftPad.inventoryChanged = false;
-		}
 
-		if( pad.contentsChanged || invalidated ) {
+		if( craftPad.recentlyUpdated ) {
+			// Update the missing ingredients
+			missingIngredients = craftPad.getMissingIngredients();
 
-			for( int i = 0; i < 4; i++ ) {
-				ItemStack chip = craftPad.chipInv.getStackInSlot( 0 );
-				if( chip == null ) {
-					button.setMode( ICustomButtonMode.DeviceModes.INACTIVE );
-					continue;
-				}
+			// Update the buttons for the chips
+			ItemStack chip = craftPad.chipInv.getStackInSlot( 0 );
+			if( chip == null ) {
+				button.setMode( ICustomButtonMode.DeviceModes.INACTIVE );
 
-				if( chip.getItem() instanceof ItemChip ) {
-					if( !((ItemChip) chip.getItem()).encoded ) {
-						CraftRecipe mainRecipe = craftPad.getRecipe( 0 ); // the recipe on the grid
-						if( mainRecipe != null && mainRecipe.isValid() ) {
-							button.setMode( ICustomButtonMode.DeviceModes.SAVE );
-							continue;
-						}
+			} else if( chip.getItem() instanceof ItemChip ) {
+				if( !((ItemChip) chip.getItem()).encoded ) {
+					CraftRecipe mainRecipe = craftPad.getRecipe( 0 ); // the recipe on the grid
+					if( mainRecipe != null && mainRecipe.isValid() ) {
+						button.setMode( ICustomButtonMode.DeviceModes.SAVE );
+
+					} else {
 						button.setMode( ICustomButtonMode.DeviceModes.INACTIVE );
-						continue;
 					}
+				} else {
 					button.setMode( ICustomButtonMode.DeviceModes.CLEAR );
 				}
 			}
-			invalidated = false;
-			pad.contentsChanged = false;
+			craftPad.recentlyUpdated = false;
 		}
 
 	}
@@ -147,15 +137,13 @@ public class GuiPad extends CraftingGui {
 
 	private GuiButtonCustom button;
 
-	private boolean invalidated = true;
-
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		if( button instanceof GuiButtonCustom ) {
 			int action = ((GuiButtonCustom) button).getAction();
 
 			if( action == 1 ) { // SAVE
-				ItemStack stack = CraftManager.encodeRecipe( craftPad .getRecipe( 0 ) );
+				ItemStack stack = CraftManager.encodeRecipe( craftPad.getRecipe( 0 ) );
 				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (button.id + 10), stack );
 				return;
 			}

@@ -1,7 +1,5 @@
 package xk.xact.core;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +23,6 @@ import xk.xact.inventory.Inventory;
 public class CraftPad implements ICraftingDevice {
 
 	private CraftRecipe lastRecipe = null;
-	private boolean canCraftRecipe = false;
 
 	private CraftingHandler handler;
 	private EntityPlayer player;
@@ -34,7 +31,12 @@ public class CraftPad implements ICraftingDevice {
 	public final Inventory gridInv;
 	public final Inventory outputInv;
 
+	// If true, the CraftPad's inventory has changed and it must be saved to NBT.
 	public boolean inventoryChanged = false;
+
+	// Used by GuiPad to update it's internal state.
+	// Should only be accessed client-side for rendering purposes.
+	public boolean recentlyUpdated = true;
 
 
 	public CraftPad(ItemStack stack, EntityPlayer player) {
@@ -75,12 +77,11 @@ public class CraftPad implements ICraftingDevice {
 	////////////
 	/// Current State
 
-	@SideOnly(Side.CLIENT)
 	public boolean[] getMissingIngredients() {
 		return getHandler().getMissingIngredientsArray( lastRecipe );
 	}
 
-	private void updateRecipe() {
+	public void updateRecipe() {
 		lastRecipe = RecipeUtils.getRecipe( gridInv.getContents(), player.worldObj );
 		if( getWorld().isRemote )
 			notifyClient();
@@ -89,8 +90,8 @@ public class CraftPad implements ICraftingDevice {
 		outputInv.setInventorySlotContents( 0, output );
 	}
 
-	private void updateState() {
-		canCraftRecipe = handler.canCraft( lastRecipe, null );
+	public void updateState() {
+		recentlyUpdated = true;
 	}
 
 	////////////
@@ -108,7 +109,7 @@ public class CraftPad implements ICraftingDevice {
 
 	@Override
 	public boolean canCraft(int index) {
-		return canCraftRecipe;
+		return handler.canCraft( lastRecipe, null );
 	}
 
 	@Override
