@@ -298,4 +298,14 @@ public abstract class ContainerXACT extends Container {
 
 	protected void onContentsChanged() { }
 
+	/**
+	 * Called from the GuiTickHandler on every PLAYER tick (both sides).
+	 * This might be used to update the internal state.
+	 *
+	 * Of course, this is only called when this container is open.
+	 *
+	 * @param player the EntityPlayer ticking.
+	 */
+	public void onTickUpdate(EntityPlayer player) { }
+
 }
