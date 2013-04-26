@@ -13,6 +13,7 @@ public abstract class SlotNormal extends Slot {
 	@Override
 	public void onSlotChanged() {
 		super.onSlotChanged();
+		onChange();
 	}
 
 	public abstract void onChange();
