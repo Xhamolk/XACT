@@ -1,6 +1,8 @@
 package xk.xact.network;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -12,9 +14,17 @@ import xk.xact.gui.*;
 
 public class CommonProxy implements IGuiHandler {
 
+	/**
+	 * Register client-side rendering stuff.
+	 */
 	public void registerRenderInformation() { }
 
-	public void registerKeyBindings() { }
+	/**
+	 * Register side-sensitive handlers, like TickHandlers, Key Bindings, etc.
+	 */
+	public void registerHandlers() {
+		TickRegistry.registerTickHandler( GuiTickHandler.instance(), Side.SERVER );
+	}
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {

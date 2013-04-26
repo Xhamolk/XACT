@@ -123,7 +123,7 @@ public class XActMod {
 
 		// Register side-sensitive Stuff
 		proxy.registerRenderInformation();
-		proxy.registerKeyBindings();
+		proxy.registerHandlers();
 
 		// Register Blocks
 		GameRegistry.registerBlock( blockMachine, ItemMachine.class, "XACT Mod" );

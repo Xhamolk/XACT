@@ -1,6 +1,7 @@
 package xk.xact.network;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -40,8 +41,12 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void registerKeyBindings() {
+	public void registerHandlers() {
+		// Register KeyBindingHandler
 		KeyBindingRegistry.registerKeyBinding( new KeyBindingHandler() );
+
+		// Register TickHandler
+		TickRegistry.registerTickHandler( GuiTickHandler.instance(), Side.CLIENT );
 	}
 
 	@Override
