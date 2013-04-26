@@ -42,6 +42,8 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerHandlers() {
+		super.registerHandlers();
+
 		// Register KeyBindingHandler
 		KeyBindingRegistry.registerKeyBinding( new KeyBindingHandler() );
 
