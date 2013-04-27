@@ -1,6 +1,7 @@
 package xk.xact.util;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,6 +10,7 @@ import net.minecraft.world.World;
 import xk.xact.XActMod;
 
 import java.util.Random;
+import java.util.logging.Level;
 
 public class Utils {
 
@@ -30,6 +32,12 @@ public class Utils {
 
 	public static void logError(String string) {
 		XActMod.logger.warning( string );
+	}
+
+	public static void logException(String string, Exception exception, boolean stopGame) {
+		XActMod.logger.log( Level.SEVERE, string, exception );
+		if( stopGame )
+			FMLCommonHandler.instance().getSidedDelegate().haltGame( string, exception );
 	}
 
 	/**

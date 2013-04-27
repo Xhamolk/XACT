@@ -1,6 +1,5 @@
 package xk.xact.network;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import net.minecraft.client.gui.GuiScreen;
@@ -94,9 +93,9 @@ public class PacketHandler implements IPacketHandler {
 					return;
 				}
 
-				Utils.logError( "XACT package unhandled: " + action );
+				Utils.logError( "Packet Unhandled: " + action );
 			} catch ( IOException e ) {
-				FMLCommonHandler.instance().raiseException( e, "XACT Packet Handler: " + action, true );
+				Utils.logException( "Packet Handler: "+ action, e, true );
 			}
 		}
 

@@ -2,7 +2,6 @@ package xk.xact.client;
 
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -131,7 +130,7 @@ public class GuiUtils {
 			Packet250CustomPayload packet = new CustomPacket( (byte) 0x03 ).add( slotID, item ).toPacket();
 			sendQueue.addToSendQueue( packet );
 		} catch ( IOException ioe ) {
-			FMLCommonHandler.instance().raiseException( ioe, "XACT-ICG: custom packet", true );
+			Utils.logException( "ICG-Custom Packet: Sending item to server. (0x03)", ioe, false );
 		}
 	}
 
@@ -152,7 +151,7 @@ public class GuiUtils {
 			}
 			sendQueue.addToSendQueue( customPacket.toPacket() );
 		} catch ( IOException ioe ) {
-			FMLCommonHandler.instance().raiseException( ioe, "XACT-ICG: custom packet", true );
+			Utils.logException( "ICG-Custom Packet: Sending items to server. (0x02)", ioe, false );
 		}
 	}
 
