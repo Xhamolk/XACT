@@ -279,16 +279,6 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 		return true;
 	}
 
-	@Override
-	protected void retrySlotClick(int slotID, int button, boolean shift, EntityPlayer player) {
-		/*
-		Only the output slot responds to shift clicking.
-		Also, will only retry if shift-left clicking.
-		 */
-		if( slotID == 0 ) // the output slot
-			if( button == 0 ) // left click + shift button.
-				slotClick( slotID, button, 1, player ); // retry
-	}
 
 	@Override
 	public void onCraftGuiClosed(EntityPlayer player) {

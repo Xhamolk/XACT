@@ -289,6 +289,33 @@ public abstract class ContainerXACT extends Container {
 		}
 	}
 
+	private int counter = 0;
+	private int counterMax = 128;
+	private ItemStack lastItemStack = null;
+
+	@Override
+	protected void retrySlotClick(int slotID, int mouseClick, boolean flag, EntityPlayer player) {
+		Slot slot = (Slot) this.inventorySlots.get( slotID );
+		if( slot instanceof SlotCraft ) {
+			if( mouseClick == 1 )
+				return;
+		}
+
+		// Have to limit the amount of crafts that can be done in a single shit-click,
+		// to prevent StackOverflowException.
+
+		ItemStack stackInSlot = getSlot( slotID ).getStack();
+		if( lastItemStack == null || !lastItemStack.isItemEqual( stackInSlot ) ) {
+			counter = 0;
+			lastItemStack = stackInSlot;
+		}
+		if( ++counter < counterMax -1 ) {
+			this.slotClick( slotID, mouseClick, 1, player );
+		} else {
+			counter = 0;
+		}
+	}
+
 	@Override
 	protected void func_94533_d() {
 		super.func_94533_d();

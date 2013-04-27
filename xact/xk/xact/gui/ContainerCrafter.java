@@ -185,7 +185,7 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 			}
 
 			if( stackInSlot.itemID == itemStack.itemID
-					&& (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == stackInSlot.getItemDamage())
+					&& itemStack.getItemDamage() == stackInSlot.getItemDamage()
 					&& ItemStack.areItemStackTagsEqual( itemStack, stackInSlot ) ) {
 
 				missingSpace -= Math.min( stackInSlot.getMaxStackSize(), tempSlot.getSlotStackLimit() ) - stackInSlot.stackSize;
@@ -335,15 +335,6 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		return retValue;
 	}
 
-	@Override
-	protected void retrySlotClick(int slotID, int mouseClick, boolean flag, EntityPlayer player) {
-		Slot slot = (Slot) this.inventorySlots.get( slotID );
-		if( slot instanceof SlotCraft ) {
-			if( mouseClick == 1 )
-				return;
-		}
-		this.slotClick( slotID, mouseClick, 1, player );
-	}
 
 	// InteractiveCraftingContainer
 	@Override
