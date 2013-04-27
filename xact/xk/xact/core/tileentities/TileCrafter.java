@@ -60,7 +60,9 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public final Inventory resources; // size = 3*9 = 27
 
-	public boolean contentsChanged = false;
+	// Used by GuiCrafter to update it's internal state.
+	// Should only be accessed client-side for rendering purposes.
+	public boolean recentlyUpdated = false;
 
 	public TileCrafter() {
 		this.results = new Inventory( getRecipeCount(), "Results" );
@@ -69,7 +71,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
 				TileCrafter.this.updateStates();
-				contentsChanged = true;
+				recentlyUpdated = true;
 			}
 		};
 		this.craftGrid = new Inventory( 9, "CraftingGrid" ) {
@@ -77,14 +79,14 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
 				TileCrafter.this.updateStates();
-				contentsChanged = true;
+				recentlyUpdated = true;
 			}
 		};
 		this.resources = new Inventory( 3 * 9, "Resources" ) {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateStates();
-				contentsChanged = true;
+				recentlyUpdated = true;
 			}
 		};
 	}

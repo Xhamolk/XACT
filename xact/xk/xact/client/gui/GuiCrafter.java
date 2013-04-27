@@ -57,7 +57,7 @@ public class GuiCrafter extends CraftingGui {
 	public void updateScreen() {
 		super.updateScreen();
 
-		if( invalidated || crafter.contentsChanged ) {
+		if( invalidated || crafter.recentlyUpdated ) {
 
 			for( int i = 0; i < 4; i++ ) {
 				ItemStack chip = crafter.circuits.getStackInSlot( i );
@@ -80,7 +80,7 @@ public class GuiCrafter extends CraftingGui {
 				}
 			}
 			invalidated = false;
-			crafter.contentsChanged = false;
+			crafter.recentlyUpdated = false;
 		}
 	}
 
