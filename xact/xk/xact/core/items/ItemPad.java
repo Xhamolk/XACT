@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
@@ -15,7 +16,7 @@ import xk.xact.gui.ContainerPad;
 
 import java.util.List;
 
-public class ItemPad extends ItemContainer {
+public class ItemPad extends Item {
 
 	@SideOnly(Side.CLIENT)
 	private Icon inUseIcon;
@@ -25,11 +26,6 @@ public class ItemPad extends ItemContainer {
 		this.setUnlocalizedName( "craftPad" );
 		this.setMaxStackSize( 1 );
 		this.setCreativeTab( XActMod.xactTab );
-	}
-
-	@Override
-	public boolean containerMatchesItem(Container openContainer) {
-		return openContainer instanceof ContainerPad;
 	}
 
 	@SuppressWarnings("unchecked")

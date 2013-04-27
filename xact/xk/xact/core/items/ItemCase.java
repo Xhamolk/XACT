@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
@@ -15,18 +16,13 @@ import xk.xact.gui.ContainerCase;
 import java.util.List;
 
 
-public class ItemCase extends ItemContainer {
+public class ItemCase extends Item {
 
 	public ItemCase(int itemID) {
 		super( itemID );
 		this.setUnlocalizedName( "chipCase" );
 		this.setMaxStackSize( 1 );
 		this.setCreativeTab( XActMod.xactTab );
-	}
-
-	@Override
-	public boolean containerMatchesItem(Container openContainer) {
-		return openContainer instanceof ContainerCase;
 	}
 
 	@SuppressWarnings("unchecked")

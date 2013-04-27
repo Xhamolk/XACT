@@ -91,6 +91,8 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 	@Override
 	public void onTickUpdate(EntityPlayer player) {
+		super.onTickUpdate( player );
+
 		// Make sure the internal state is always updated.
 		if( player.inventory.inventoryChanged ) {
 			craftPad.updateState();

@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 /**
- * This class provides the methods required by ItemContainer.
+ * Extended by Containers for items.
  */
 public abstract class ContainerItem extends ContainerXACT {
 
@@ -29,33 +29,33 @@ public abstract class ContainerItem extends ContainerXACT {
 
 	/**
 	 * Whether the internal content's have changed.
-	 * Checked by ItemContainer.onUpdate() before saving the contents to the item's NBT.
+	 * Checked by <code>ContainerItem.onTickUpdate()</code> before saving the contents to the item's NBT.
 	 * <p/>
-	 * Note: if <code>isInUse</code> is false, this will be ignored by ItemContainer.onUpdate()
+	 * Note: if <code>isInUse</code> is false, this will be ignored by <code>ContainerItem.onTickUpdate()</code>
 	 * Suggestion: make this return true after IInventory.onInventoryChanged() is invoked.
 	 *
 	 * @return true if the inventory's contents have changed.
 	 * @see net.minecraft.inventory.IInventory#onInventoryChanged()
-	 * @see xk.xact.core.items.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
+	 * @see xk.xact.gui.ContainerItem#onTickUpdate(net.minecraft.entity.player.EntityPlayer)
 	 */
 	public abstract boolean hasInventoryChanged();
 
 	/**
 	 * Saves the inventory's contents to the specified item's NBT.
-	 * It's called by ItemContainer.onUpdate() when <code>inventoryChanged</code> is true.
+	 * It's called by ContainerItem.onTickUpdate() when <code>hasInventoryChanged()</code> is true.
 	 *
 	 * @param itemStack the ItemStack that holds the inventory for this ContainerItem
-	 * @see xk.xact.core.items.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
+	 * @see xk.xact.gui.ContainerItem#onTickUpdate(net.minecraft.entity.player.EntityPlayer)
 	 */
 	public abstract void saveContentsToNBT(ItemStack itemStack);
 
 	/**
 	 * Called after saving the contents to the item's NBT.
 	 * <p/>
-	 * Suggestion: you might want to make <code>hasInventoryChanged()</code> return false.
+	 * Suggestion: you might now want to make <code>hasInventoryChanged()</code> return false.
 	 *
 	 * @param itemStack the item to which the contents where saved to.
-	 * @see xk.xact.core.items.ItemContainer#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
+	 * @see xk.xact.gui.ContainerItem#onTickUpdate(net.minecraft.entity.player.EntityPlayer)
 	 */
 	public abstract void onContentsStored(ItemStack itemStack);
 
@@ -83,6 +83,16 @@ public abstract class ContainerItem extends ContainerXACT {
 		if( !(player instanceof EntityPlayerMP) ) { // send the chat message client-side.
 			String itemName = itemStack.getDisplayName();
 			player.sendChatToPlayer( "Cannot move <" + itemName + "> while it's in use." );
+		}
+	}
+
+	@Override
+	public void onTickUpdate(EntityPlayer player) {
+		// Save contents to NBT.
+		if( isInUse && hasInventoryChanged() ) {
+			ItemStack itemStack = player.inventory.getStackInSlot( player.inventory.currentItem );
+			saveContentsToNBT( itemStack );
+			onContentsStored( itemStack );
 		}
 	}
 
