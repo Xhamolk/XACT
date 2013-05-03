@@ -2,7 +2,10 @@ package xk.xact.inventory;
 
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 
 public class InventoryUtils {
 
@@ -131,6 +134,32 @@ public class InventoryUtils {
 			contents[i] = inventory.getStackInSlot( i );
 
 		return contents;
+	}
+
+	public static IInventory getInventoryFrom(TileEntity tileEntity) {
+		IInventory inventory = null;
+		if( tileEntity instanceof TileEntityChest ) {
+			TileEntityChest chest = (TileEntityChest) tileEntity, chest2 = null;
+
+			if( chest.adjacentChestXNeg != null ) {
+				chest2 = chest.adjacentChestXNeg;
+			} else if( chest.adjacentChestXPos != null ) {
+				chest2 = chest.adjacentChestXPos;
+			} else if( chest.adjacentChestZNeg != null ) {
+				chest2 = chest.adjacentChestZNeg;
+			} else if( chest.adjacentChestZPosition != null ) {
+				chest2 = chest.adjacentChestZPosition;
+			}
+
+			if( chest2 != null ) {
+				inventory = new InventoryLargeChest( "", chest, chest2 );
+			} else {
+				inventory = chest;
+			}
+		} else if( tileEntity instanceof IInventory ) {
+			inventory = (IInventory) tileEntity;
+		}
+		return inventory;
 	}
 
 }

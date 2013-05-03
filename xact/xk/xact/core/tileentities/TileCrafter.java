@@ -13,14 +13,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
-import xk.xact.gui.ContainerCrafter;
 import xk.xact.client.gui.CraftingGui;
 import xk.xact.client.gui.GuiCrafter;
+import xk.xact.gui.ContainerCrafter;
 import xk.xact.inventory.Inventory;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Xhamolk_
@@ -181,7 +183,9 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 * @return an array of all the available IInventories.
 	 */
 	public IInventory[] getAvailableInventories() {
-		return new Inventory[] {resources}; // todo: add adjacent chests.
+		List<IInventory> list = Utils.getAdjacentInventories( worldObj, xCoord, yCoord, zCoord );
+		list.add( 0, resources );
+		return list.toArray( new IInventory[0] );
 	}
 
 	@Override
@@ -195,6 +199,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			return false;
 		return craftableRecipes[index];
 	}
+
 	@Override
 	public CraftRecipe getRecipe(int index) {
 		if( index < 0 || index > getRecipeCount() )
@@ -252,12 +257,12 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		return resources.getInvName();
 	}
 
-    @Override
-    public boolean isInvNameLocalized() {
-        return false;  // Not a clue what this does.
-    }
+	@Override
+	public boolean isInvNameLocalized() {
+		return false;  // Not a clue what this does.
+	}
 
-    @Override
+	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
@@ -279,12 +284,12 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public void closeChest() {
 	}
 
-    @Override
-    public boolean isStackValidForSlot(int slot, ItemStack itemstack) {
-        return true;  // Whether if an item can be placed at the slot
-    }
+	@Override
+	public boolean isStackValidForSlot(int slot, ItemStack itemstack) {
+		return true;  // Whether if an item can be placed at the slot
+	}
 
-    ///////////////
+	///////////////
 	///// NBT
 
 	@Override

@@ -4,11 +4,16 @@ package xk.xact.util;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.inventory.InventoryUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -117,10 +122,34 @@ public class Utils {
 	public static ItemStack readStackFromNBT(NBTTagCompound nbt) {
 		try {
 			return ItemStack.loadItemStackFromNBT( nbt );
-		} catch ( NullPointerException npe ) {
+		} catch( NullPointerException npe ) {
 			return null;
 		}
+	}
 
+	private static final int[] varX = { 0, 0, -1, 1, 0, 0 };
+	private static final int[] varY = { -1, 1, 0, 0, 0, 0 };
+	private static final int[] varZ = { 0, 0, 0, 0, -1, 1 };
+
+	public static List<TileEntity> getAdjacentTileEntities(World world, int x, int y, int z) {
+		List<TileEntity> tileEntities = new ArrayList<TileEntity>();
+		for( int i = 0; i < 6; i++ ) {
+			TileEntity te = world.getBlockTileEntity( x + varX[i], y + varY[i], z + varZ[i] );
+			if( te != null )
+				tileEntities.add( te );
+		}
+		return tileEntities;
+	}
+
+	public static List<IInventory> getAdjacentInventories(World world, int x, int y, int z) {
+		List<IInventory> list = new ArrayList<IInventory>();
+		List<TileEntity> tileEntities = getAdjacentTileEntities( world, x, y, z );
+		for( TileEntity tile : tileEntities ) {
+			IInventory inv = InventoryUtils.getInventoryFrom( tile );
+			if( inv != null )
+				list.add( inv );
+		}
+		return list;
 	}
 
 }
