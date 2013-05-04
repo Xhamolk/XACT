@@ -1,6 +1,7 @@
 package xk.xact.plugin.mps;
 
 
+import net.machinemuse.api.IModularItem;
 import net.machinemuse.api.moduletrigger.IRightClickModule;
 import net.machinemuse.powersuits.common.ModularPowersuits;
 import net.machinemuse.powersuits.powermodule.PowerModuleBase;
@@ -11,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 
+import java.util.Arrays;
+
 public class CraftPadModule extends PowerModuleBase implements IRightClickModule {
 
 	public static final String MODULE_NAME = "XACT CraftPad";
@@ -19,7 +22,7 @@ public class CraftPadModule extends PowerModuleBase implements IRightClickModule
 
 	@SuppressWarnings("unchecked")
 	public CraftPadModule() {
-		super( PluginForMPS.validItems( ModularPowersuits.powerTool ) );
+		super( Arrays.asList( (IModularItem) ModularPowersuits.powerTool ) );
 		addInstallCost( new ItemStack( XActMod.itemCraftPad ) );
 	}
 
