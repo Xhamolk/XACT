@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import xk.xact.plugin.PluginManager;
 import xk.xact.core.Machines;
 import xk.xact.core.blocks.BlockMachine;
 import xk.xact.core.blocks.BlockVanillaWorkbench;
@@ -27,6 +26,7 @@ import xk.xact.core.tileentities.TileWorkbench;
 import xk.xact.gui.CreativeTabXACT;
 import xk.xact.network.CommonProxy;
 import xk.xact.network.PacketHandler;
+import xk.xact.plugin.PluginManager;
 import xk.xact.recipes.RecipeUtils;
 
 import java.util.logging.Logger;
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.3.2")
+@Mod(modid = "xact", name = "XACT Mod", version = "beta-0.3.3")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = { "xact_channel" }, packetHandler = PacketHandler.class)
 public class XActMod {
@@ -82,6 +82,10 @@ public class XActMod {
 		Configuration config = new Configuration( event.getSuggestedConfigurationFile() );
 		config.load();
 
+		// Initialize the logger.
+		logger = Logger.getLogger( "XACT-" + FMLCommonHandler.instance().getEffectiveSide() );
+		logger.setParent( FMLLog.getLogger() );
+
 		machineID = config.getBlock( "machineID", 3919 ).getInt();
 		blankChipID = config.getItem( "blankChip", 9100 ).getInt();
 		encodedChipID = config.getItem( "encodedChip", 9101 ).getInt();
@@ -101,10 +105,6 @@ public class XActMod {
 	@Mod.Init
 	@SuppressWarnings("unused")
 	public void initializeAll(FMLInitializationEvent ignoredEvent) {
-
-		// Initialize the logger.
-		logger = Logger.getLogger( "XACT-"+ FMLCommonHandler.instance().getEffectiveSide() );
-		logger.setParent( FMLLog.getLogger() );
 
 		xactTab = new CreativeTabXACT();
 
@@ -164,6 +164,7 @@ public class XActMod {
 	}
 
 	@Mod.PostInit
+	@SuppressWarnings("unused")
 	public void postInit(FMLPostInitializationEvent event) {
 		PluginManager.checkEverything();
 		PluginManager.initializePlugins();
