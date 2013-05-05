@@ -75,7 +75,8 @@ class SimulatedInventoryCrafting extends InventoryCrafting {
 	}
 
 	private void updateContainer() {
-		container.onCraftMatrixChanged( this );
+		if( container != null )
+			container.onCraftMatrixChanged( this );
 	}
 
 	/**
