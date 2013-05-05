@@ -2,31 +2,32 @@ package xk.xact.gui;
 
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import xk.xact.core.tileentities.TileWorkbench;
+import xk.xact.inventory.InventoryUtils;
 
 public class ContainerVanillaWorkbench extends Container {
 
 	private final TileWorkbench workbench;
 	private final EntityPlayer player;
+	private final InventoryCrafting grid;
 
 	public ContainerVanillaWorkbench(TileWorkbench workbench, EntityPlayer player) {
 		this.workbench = workbench;
 		this.player = player;
+		this.grid = InventoryUtils.simulateCraftingInventory( this, workbench.craftingGrid );
 		buildContainer();
-		this.onCraftMatrixChanged( this.workbench.craftingGrid );
+		this.onCraftMatrixChanged( grid );
 	}
 
 	private void buildContainer() {
-		this.addSlotToContainer( new SlotCrafting( player, workbench.craftingGrid, workbench.outputInv, 0, 124, 35 ) );
+		this.addSlotToContainer( new SlotCrafting( player, grid, workbench.outputInv, 0, 124, 35 ) );
 
 		for( int i = 0; i < 3; i++ ) {
 			for( int e = 0; e < 3; e++ ) {
-				this.addSlotToContainer( new Slot( workbench.craftingGrid, e + i * 3, 30 + e * 18, 17 + i * 18 ) );
+				this.addSlotToContainer( new Slot( grid, e + i * 3, 30 + e * 18, 17 + i * 18 ) );
 			}
 		}
 
@@ -40,12 +41,13 @@ public class ContainerVanillaWorkbench extends Container {
 			this.addSlotToContainer( new Slot( player.inventory, i, 8 + i * 18, 142 ) );
 		}
 
-		this.onCraftMatrixChanged( workbench.craftingGrid );
+		this.onCraftMatrixChanged( grid );
 	}
 
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
-		workbench.updateOutputSlot();
+		ItemStack result = CraftingManager.getInstance().findMatchingRecipe( grid, workbench.worldObj );
+		workbench.outputInv.setInventorySlotContents( 0, result );
 	}
 
 	@Override

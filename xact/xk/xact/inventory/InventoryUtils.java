@@ -1,7 +1,9 @@
 package xk.xact.inventory;
 
 
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -160,6 +162,16 @@ public class InventoryUtils {
 			inventory = (IInventory) tileEntity;
 		}
 		return inventory;
+	}
+
+	/**
+	 * Simulates an InventoryCrafting instance based on an IInventor.
+	 *
+	 * @param container the Container to be updated when the contents change.
+	 * @param inventory the IInventory that backs this InventoryCrafting.
+	 */
+	public static InventoryCrafting simulateCraftingInventory(Container container, IInventory inventory) {
+		return new SimulatedInventoryCrafting( container, inventory );
 	}
 
 }
