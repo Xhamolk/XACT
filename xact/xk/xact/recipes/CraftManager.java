@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.core.items.ItemChip;
-import xk.xact.util.FakeCraftingInventory;
+import xk.xact.inventory.FakeCraftingInventory;
 
 import java.util.ArrayList;
 

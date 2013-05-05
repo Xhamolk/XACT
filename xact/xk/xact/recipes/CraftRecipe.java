@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.api.SpecialCasedRecipe;
-import xk.xact.util.FakeCraftingInventory;
+import xk.xact.inventory.FakeCraftingInventory;
 import xk.xact.util.ItemsList;
 import xk.xact.util.Utils;
 
@@ -77,7 +77,7 @@ public class CraftRecipe {
 				if( current != null ) {
 					list.addStack( current.copy(), 1 );
 				}
-			} catch ( Exception e ) {
+			} catch( Exception e ) {
 				e.printStackTrace();
 				Utils.logError( "|>>>>>>>>>  getSimplifiedIngredients() " );
 			}
@@ -92,7 +92,7 @@ public class CraftRecipe {
 	public boolean isOreRecipe() {
 		try {
 			return getRecipePointer().isOreRecipe();
-		} catch ( NegativeArraySizeException npe ) {
+		} catch( NegativeArraySizeException npe ) {
 			return false;
 		}
 	}

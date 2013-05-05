@@ -7,8 +7,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
+import xk.xact.inventory.FakeCraftingInventory;
 import xk.xact.recipes.CraftRecipe;
-import xk.xact.util.FakeCraftingInventory;
 import xk.xact.util.Utils;
 
 /**

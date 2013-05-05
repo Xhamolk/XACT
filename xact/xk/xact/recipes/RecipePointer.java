@@ -7,7 +7,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import xk.xact.util.FakeCraftingInventory;
+import xk.xact.inventory.FakeCraftingInventory;
 
 public class RecipePointer {
 

@@ -9,13 +9,13 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import xk.xact.inventory.FakeCraftingInventory;
 import xk.xact.inventory.InvSlot;
 import xk.xact.inventory.InvSlotIterator;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.network.CommonProxy;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.FakeCraftingInventory;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;

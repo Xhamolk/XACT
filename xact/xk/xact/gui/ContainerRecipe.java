@@ -6,10 +6,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingContainer;
+import xk.xact.inventory.FakeCraftingInventory;
+import xk.xact.inventory.Inventory;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.FakeCraftingInventory;
-import xk.xact.inventory.Inventory;
 
 import java.util.Arrays;
 
