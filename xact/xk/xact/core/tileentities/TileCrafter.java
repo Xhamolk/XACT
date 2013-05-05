@@ -19,10 +19,8 @@ import xk.xact.gui.ContainerCrafter;
 import xk.xact.inventory.Inventory;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
-import xk.xact.util.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Xhamolk_
@@ -183,9 +181,11 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 * @return an array of all the available IInventories.
 	 */
 	public IInventory[] getAvailableInventories() {
-		List<IInventory> list = Utils.getAdjacentInventories( worldObj, xCoord, yCoord, zCoord );
-		list.add( 0, resources );
-		return list.toArray( new IInventory[0] );
+		// Pulling from adjacent inventories is pending until I find a solution for the client-side issues.
+//		List<IInventory> list = Utils.getAdjacentInventories( worldObj, xCoord, yCoord, zCoord );
+//		list.add( 0, resources );
+//		return list.toArray( new IInventory[0] );
+		return new IInventory[] { resources };
 	}
 
 	@Override
