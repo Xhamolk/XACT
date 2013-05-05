@@ -1,5 +1,7 @@
 package xk.xact.client.gui;
 
+import invtweaks.api.ContainerGUI;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -17,6 +19,11 @@ import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.Textures;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@ContainerGUI
 public class GuiPad extends CraftingGui {
 
 	private CraftPad craftPad;
@@ -132,8 +139,8 @@ public class GuiPad extends CraftingGui {
 
 	}
 
-	// /////////////
-	// /// Buttons
+	///////////////
+	///// Buttons
 
 	private GuiButtonCustom button;
 
@@ -151,6 +158,20 @@ public class GuiPad extends CraftingGui {
 				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (button.id + 10), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
+	}
+
+	// Compatibility with Inventory Tweaks.
+	@ContainerGUI.ContainerSectionCallback
+	@SuppressWarnings({ "unchecked", "unused" })
+	public Map<ContainerSection, List<Slot>> getContainerSections() {
+		Map<ContainerSection, List<Slot>> map = new HashMap<ContainerSection, List<Slot>>();
+		int i = 0;
+		List<Slot> slots = inventorySlots.inventorySlots;
+
+		map.put( ContainerSection.CRAFTING_OUT, slots.subList( i, i += 1 ) ); // output slot
+		map.put( ContainerSection.CRAFTING_IN_PERSISTENT, slots.subList( i, i += 9 ) ); // crafting grid.
+		map.put( ContainerSection.CHEST, slots.subList( i, i += 1 ) ); // chip slot
+		return map;
 	}
 
 }

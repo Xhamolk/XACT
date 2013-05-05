@@ -1,24 +1,32 @@
 package xk.xact.client.gui;
 
+import invtweaks.api.ContainerGUI;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
-import xk.xact.gui.ContainerCrafter;
 import xk.xact.client.GuiUtils;
-import xk.xact.util.Textures;
-import xk.xact.core.items.ItemChip;
-import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.client.button.CustomButtons;
 import xk.xact.client.button.GuiButtonCustom;
 import xk.xact.client.button.ICustomButtonMode;
+import xk.xact.core.items.ItemChip;
+import xk.xact.core.tileentities.TileCrafter;
+import xk.xact.gui.ContainerCrafter;
 import xk.xact.network.ClientProxy;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.Textures;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@ContainerGUI
 public class GuiCrafter extends CraftingGui {
 
 	private TileCrafter crafter;
@@ -235,6 +243,27 @@ public class GuiCrafter extends CraftingGui {
 				GuiUtils.sendItemToServer( ClientProxy.getNetClientHandler(), (byte) (4 + button.id), new ItemStack( XActMod.itemRecipeBlank ) );
 			}
 		}
+	}
+
+	// Compatibility with Inventory Tweaks.
+	@ContainerGUI.ContainerSectionCallback
+	@SuppressWarnings({ "unchecked", "unused" })
+	public Map<ContainerSection, List<Slot>> getContainerSections() {
+		Map<ContainerSection, List<Slot>> map = new HashMap<ContainerSection, List<Slot>>();
+		List<Slot> slots = inventorySlots.inventorySlots;
+
+		map.put( ContainerSection.CRAFTING_OUT, getSlots( 0, 1, 2, 3, 17 ) ); // output slots
+		map.put( ContainerSection.CRAFTING_IN_PERSISTENT, slots.subList( 4, 17 ) ); // crafting grid and chips.
+		map.put( ContainerSection.CHEST, slots.subList( 18, 18 + 27 ) ); // the resources buffer
+		return map;
+	}
+
+	private List<Slot> getSlots(int... indexes) {
+		List<Slot> slots = new ArrayList<Slot>();
+		for( int index : indexes ) {
+			slots.add( inventorySlots.getSlot( index ) );
+		}
+		return slots;
 	}
 
 }
