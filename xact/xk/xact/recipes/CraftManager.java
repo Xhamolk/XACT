@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.core.items.ItemChip;
-import xk.xact.inventory.FakeCraftingInventory;
+import xk.xact.inventory.InventoryUtils;
 
 import java.util.ArrayList;
 
@@ -89,7 +89,7 @@ public class CraftManager {
 		if( ingredients == null || ingredients.length != 9 )
 			return null;
 
-		FakeCraftingInventory craftGrid = FakeCraftingInventory.emulateContents( ingredients );
+		InventoryCrafting craftGrid = InventoryUtils.simulateCraftingInventory( ingredients );
 		if( craftGrid == null )
 			return null;
 

@@ -7,7 +7,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import xk.xact.inventory.FakeCraftingInventory;
+import xk.xact.inventory.InventoryUtils;
 
 public class RecipePointer {
 
@@ -52,7 +52,7 @@ public class RecipePointer {
 		getIRecipe(); // make sure recipe is instantiated.
 
 		ingredients = new ItemStack[9];
-		ItemStack[] tempIngredients = ((FakeCraftingInventory) craftingGrid).getContents();
+		ItemStack[] tempIngredients = InventoryUtils.getContents( craftingGrid );
 
 		for( int i = 0; i < 9; i++ ) {
 			if( tempIngredients[i] != null ) {

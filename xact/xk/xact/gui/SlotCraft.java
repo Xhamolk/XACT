@@ -3,11 +3,11 @@ package xk.xact.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
-import xk.xact.inventory.FakeCraftingInventory;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.Utils;
 
@@ -45,7 +45,7 @@ public class SlotCraft extends Slot {
 		if( recipe == null )
 			return null;
 
-		FakeCraftingInventory grid = handler.generateTemporaryCraftingGridFor( recipe, player, false );
+		InventoryCrafting grid = handler.generateTemporaryCraftingGridFor( recipe, player, false );
 		ItemStack craftedItem = handler.getRecipeResult( recipe, grid );
 		return Utils.copyOf( craftedItem );
 	}

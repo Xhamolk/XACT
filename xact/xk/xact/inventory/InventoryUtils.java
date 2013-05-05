@@ -165,13 +165,25 @@ public class InventoryUtils {
 	}
 
 	/**
-	 * Simulates an InventoryCrafting instance based on an IInventor.
+	 * Simulates an InventoryCrafting instance based on an IInventory.
 	 *
 	 * @param container the Container to be updated when the contents change.
 	 * @param inventory the IInventory that backs this InventoryCrafting.
 	 */
 	public static InventoryCrafting simulateCraftingInventory(Container container, IInventory inventory) {
 		return new SimulatedInventoryCrafting( container, inventory );
+	}
+
+	/**
+	 * Simulates an InventoryCrafting instance based on an array of ItemStack.
+	 *
+	 * @param items the array of items that will be initially on the inventory.
+	 *              The length should be no higher than 9.
+	 */
+	public static InventoryCrafting simulateCraftingInventory(ItemStack[] items) {
+		Inventory inventory = new Inventory( 9, "" );
+		inventory.setContents( items );
+		return simulateCraftingInventory( null, inventory );
 	}
 
 }

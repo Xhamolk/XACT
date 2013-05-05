@@ -2,12 +2,12 @@ package xk.xact.recipes;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xk.xact.api.SpecialCasedRecipe;
-import xk.xact.inventory.FakeCraftingInventory;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.plugin.PluginManager;
 
@@ -18,7 +18,7 @@ public class RecipeUtils {
 		try {
 			IRecipe iRecipe = recipe.getRecipePointer().getIRecipe();
 
-			FakeCraftingInventory craftingGrid = simulateGrid( recipe, ingredientIndex, otherStack );
+			InventoryCrafting craftingGrid = simulateGrid( recipe, ingredientIndex, otherStack );
 
 			if( !iRecipe.matches( craftingGrid, world ) )
 				return false;
@@ -92,8 +92,8 @@ public class RecipeUtils {
 		return null;
 	}
 
-	public static FakeCraftingInventory simulateGrid(CraftRecipe recipe, int ingredientIndex, ItemStack otherItem) {
-		FakeCraftingInventory craftingGrid = FakeCraftingInventory.emulateContents( recipe.getIngredients() );
+	public static InventoryCrafting simulateGrid(CraftRecipe recipe, int ingredientIndex, ItemStack otherItem) {
+		InventoryCrafting craftingGrid = InventoryUtils.simulateCraftingInventory( recipe.getIngredients() );
 		craftingGrid.setInventorySlotContents( ingredientIndex, otherItem );
 		return craftingGrid;
 	}

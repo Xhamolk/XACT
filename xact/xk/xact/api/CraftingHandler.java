@@ -9,7 +9,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import xk.xact.inventory.FakeCraftingInventory;
 import xk.xact.inventory.InvSlot;
 import xk.xact.inventory.InvSlotIterator;
 import xk.xact.inventory.InventoryUtils;
@@ -77,7 +76,7 @@ public abstract class CraftingHandler {
 	}
 
 	public void doCraft(CraftRecipe recipe, EntityPlayer player, ItemStack craftedItem) {
-		FakeCraftingInventory craftMatrix = generateTemporaryCraftingGridFor( recipe, player, true );
+		InventoryCrafting craftMatrix = generateTemporaryCraftingGridFor( recipe, player, true );
 		if( craftMatrix == null )
 			return;
 
@@ -240,19 +239,18 @@ public abstract class CraftingHandler {
 	 * The items that populate the grid will be taken from the available inventories.
 	 *
 	 * @param recipe the recipe from which to take the ingredients.
-	 * @return A FakeCraftingInventory
 	 */
-	public FakeCraftingInventory generateTemporaryCraftingGridFor(CraftRecipe recipe, EntityPlayer player, boolean takeItems) {
+	public InventoryCrafting generateTemporaryCraftingGridFor(CraftRecipe recipe, EntityPlayer player, boolean takeItems) {
 		if( !canCraft( recipe, player ) ) {
 			Utils.debug( "XACT: generateTemporaryCraftingGridFor: !canCraft" );
 			return null;
 		}
 		boolean creativeMod = player != null && !CommonProxy.isFakePlayer( player ) && player.capabilities.isCreativeMode;
 		if( creativeMod )
-			return FakeCraftingInventory.emulateContents( recipe.getIngredients() );
+			return InventoryUtils.simulateCraftingInventory( recipe.getIngredients() );
 
 		ItemStack[] contents = findAndGetRecipeIngredients( recipe, takeItems );
-		return FakeCraftingInventory.emulateContents( contents );
+		return InventoryUtils.simulateCraftingInventory( contents );
 	}
 
 	/**

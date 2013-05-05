@@ -3,11 +3,12 @@ package xk.xact.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingContainer;
-import xk.xact.inventory.FakeCraftingInventory;
 import xk.xact.inventory.Inventory;
+import xk.xact.inventory.InventoryUtils;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
@@ -136,7 +137,7 @@ public class ContainerRecipe extends Container implements InteractiveCraftingCon
 		Slot outputSlot = (Slot) inventorySlots.get( 0 );
 		ItemStack item = null;
 		if( recipe != null ) {
-			FakeCraftingInventory grid = FakeCraftingInventory.emulateContents( gridContents );
+			InventoryCrafting grid = InventoryUtils.simulateCraftingInventory( gridContents );
 			item = recipe.getRecipePointer().getOutputFrom( grid );
 		}
 		outputSlot.putStack( item );

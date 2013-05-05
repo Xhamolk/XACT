@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.api.SpecialCasedRecipe;
-import xk.xact.inventory.FakeCraftingInventory;
+import xk.xact.inventory.InventoryUtils;
 import xk.xact.util.ItemsList;
 import xk.xact.util.Utils;
 
@@ -109,7 +109,7 @@ public class CraftRecipe {
 
 	public RecipePointer getRecipePointer(World world) {
 		if( recipeID == -1 ) {
-			RecipePointer pointer = CraftManager.getRecipeFrom( FakeCraftingInventory.emulateContents( ingredients ), world );
+			RecipePointer pointer = CraftManager.getRecipeFrom( InventoryUtils.simulateCraftingInventory( ingredients ), world );
 			if( pointer == null )
 				return null;
 			this.recipeID = pointer.recipeID;
