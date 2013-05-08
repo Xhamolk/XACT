@@ -14,6 +14,8 @@
     <property name="mcp.dir" value="${forge.dir}/mcp"/>
 
     <!-- API Versions -->
+    <property name="invtweaks.version" value="1.54"/>
+
     <property name="ic2api.version" value="1.115.304-lf"/>
     <property name="ueapi.version" value="1.3.1.56"/>
     <property name="asapi.version" value="0.5.1.3"/>
@@ -31,6 +33,9 @@
               value="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${forge.version}.zip"/>
     <property name="ue.download.dir" value="${download.dir}/ue/minecraft/universalelectricity"/>
 
+    <property name="invtweaks.url"
+              value="http://199.91.152.46/0p5jffno6ctg/5ym8dndqqc1calm/InventoryTweaks-api-${invtweaks.version}.jar"/>
+
 
     <!-- Main Targets -->
     <mkdir dir="${download.dir}"/>
@@ -43,6 +48,8 @@
 
     <condition property="have-apis">
         <and>
+            <available file="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar"/>
+
             <available file="${download.dir}/industrialcraft-2-api_${ic2api.version}.zip"/>
             <available file="${download.dir}/UniversalElectricity_v${ueapi.version}.zip"/>
             <available file="${download.dir}/ICBM_API_v${icbmapi.version}.zip"/>
@@ -61,6 +68,9 @@
     </condition>
 
     <target name="download-apis" unless="${have-apis}">
+        <echo message="Downloading Inventory Tweaks API... "/>
+        <get src="invtweaks.url"
+             dest="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar"/>
 
         <echo message="Downloading IC2 API... "/>
         <get src="http://machinemuse.minecraftforge.net/industrialcraft-2-api_${ic2api.version}.zip"
@@ -119,6 +129,14 @@
     </target>
 
     <target name="extract-apis" depends="download-apis">
+
+        <echo message="Extracting Inventory Tweaks API... "/>
+        <unjar src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar" dest="${download.dir}"/>
+        <delete dir="${download.dir}/META-INF"/>
+        <mkdir dir="${api.src.dir}/invtweaks/api"/>
+        <move file="${download.dir}/invtweaks/api/ContainerGUI.java" todir="${api.src.dir}/invtweaks/api"/>
+        <move file="${download.dir}/invtweaks/api/ContainerSection.java" todir="${api.src.dir}/invtweaks/api"/>
+
         <echo message="Extracting IC2 API... "/>
         <unzip src="${download.dir}/industrialcraft-2-api_${ic2api.version}.zip" dest="${download.dir}"/>
         <mkdir dir="${api.src.dir}/ic2/api/energy/tile"/>
