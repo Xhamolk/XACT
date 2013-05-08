@@ -5,7 +5,20 @@
     <property name="forge.version" value="${mc.version}-${forge.version.mayor}.${forgebuild}"/>
 
     <!-- Directories -->
-    <property name="build.dir" value="MC ${mc.version} #${forgebuild}"/>
+    <property file="build.properties"/>
+    <condition property="custom.root">
+        <and>
+            <isset property="build.baseDir"/>
+            <not>
+                <equals arg1="${build.baseDir}" arg2=""/>
+            </not>
+        </and>
+    </condition>
+
+    <condition property="build.dir" value="${build.baseDir}/MC ${mc.version} #${forgebuild}"
+               else="MC ${mc.version} #${forgebuild}">
+        <istrue value="${custom.root}"/>
+    </condition>
     <property name="forge.dir" value="${build.dir}/forge"/>
     <property name="download.dir" value="${build.dir}/downloads"/>
     <property name="api.src.dir" value="${build.dir}/Mod APIs"/>
