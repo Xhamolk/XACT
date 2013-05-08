@@ -53,7 +53,7 @@
 
     <target name="download-apis" unless="${have-apis}">
         <echo message="Downloading Inventory Tweaks API... "/>
-        <get src="invtweaks.url"
+        <get src="${invtweaks.url}"
              dest="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar"/>
 
         <echo message="Downloading IC2 API... "/>
