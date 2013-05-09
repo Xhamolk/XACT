@@ -95,7 +95,7 @@
 
     </target>
 
-    <target name="compile" unless="do.compile">
+    <target name="compile" if="do.compile">
         <echo message="Compiling..."/>
         <exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
             <arg line="/c recompile.bat"/>
@@ -135,7 +135,7 @@
 
     </target>
 
-    <target name="pack-jar">
+    <target name="pack-jar" depends="get-build-number">
         <!-- Copy resources -->
         <copy todir="${classes.dir}/mods">
             <fileset dir="${dir.xact.rsc}"/>
@@ -149,9 +149,6 @@
 
 
         <!-- Pack Jar -->
-        <condition property="build.number" value="${env.BUILD_NUMBER}" else="000">
-            <isset property="${env.BUILD_NUMBER}"/>
-        </condition>
         <echo message="Packing JAR: ${mod.name} v${mod.version} #${build.number}"/>
         <jar destfile="${dist.dir}/${mod.name} v${mod.version}-${build.number}.jar" basedir="${classes.dir}"/>
 
@@ -249,5 +246,16 @@
         <delete dir="${main.download.dir}/tmp"/>
 
     </target>
+
+    <!-- Build Number -->
+    <target name="get-build-number" depends="version-provided, version-not-provided"/>
+
+    <target name="version-provided" if="env.BUILD_NUMBER">
+        <property name="build.number" value="${env.BUILD_NUMBER}"/>
+    </target>
+    <target name="version-not-provided" unless="env.BUILD_NUMBER">
+        <property name="build.number" value="local"/>
+    </target>
+
 
 </project>
