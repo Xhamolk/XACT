@@ -1,0 +1,229 @@
+<project name="XACT" default="build" basedir="">
+
+    <!-- Versions -->
+    <property file="build.properties"/>
+    <property file="version.properties"/>
+
+    <property name="forge.version" value="${mc.version}-${forge.version.mayor}.${forgebuild}"/>
+
+
+    <!-- Directories -->
+    <condition property="custom.root">
+        <and>
+            <isset property="build.baseDir"/>
+            <not>
+                <equals arg1="${build.baseDir}" arg2=""/>
+            </not>
+        </and>
+    </condition>
+
+    <condition property="build.dir" value="${build.baseDir}/MC ${mc.version} #${forgebuild}"
+               else="MC ${mc.version} #${forgebuild}">
+        <istrue value="${custom.root}"/>
+    </condition>
+
+    <property name="download.dir" value="${build.dir}/downloads"/>
+    <property name="classes.dir" value="${build.dir}/packaging"/>
+    <property name="dist.dir" value="${build.dir}/dist"/>
+
+    <property name="forge.dir" value="${build.dir}/forge"/>
+    <property name="mcp.dir" value="${forge.dir}/mcp"/>
+    <property name="mcpsrc.dir" value="${mcp.dir}/src/minecraft"/>
+
+
+    <condition property="external.build">
+        <istrue value="${copy.xact.srcs}"/>
+    </condition>
+
+    <!-- Main Targets -->
+
+    <target name="reobf and pack" depends="reobfuscate, pack-jar"
+            description="Reobfucate and pack a JAR for releasing. Doesn't install anything, and won't compile sources."/>
+
+    <target name="build" depends="install, copy-sources, compile, reobfuscate, pack-jar"
+            description="Build XACT from scratch."/>
+
+    <target name="install" depends="download-forge" unless="forge-installed">
+        <!-- Clean up dirs -->
+        <delete dir="${forge.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+
+        <!-- Download Everything -->
+        <ant antfile="plugins-setup.xml" target="download-all"/>
+
+        <!-- Extract Forge -->
+        <unzip src="${download.dir}/minecraftforge-src-${forge.version}.zip" dest="${build.dir}"/>
+
+        <!-- Copy Access Transformers -->
+        <ant antfile="plugins-setup.xml" target="copy-access-transformers"/>
+
+        <!-- Change file permissions (necessary for unix) -->
+        <chmod file="${forge.dir}/install.sh" perm="+x"/>
+
+        <!-- Install Forge -->
+        <echo message="Installing Forge #${forgebuild} for Minecraft ${mc.version}"/>
+
+        <delete dir="${mcp.dir}" failonerror="no"/>
+        <exec dir="${forge.dir}" executable="cmd" osfamily="windows" inputstring="Yes\n">
+            <arg line="/c install.cmd"/>
+        </exec>
+        <exec dir="${forge.dir}" executable="sh" osfamily="unix" inputstring="Yes\n">
+            <arg value="install.sh"/>
+        </exec>
+
+        <!-- Change file permissions (necessary for unix) -->
+        <chmod file="${mcp.dir}/updatemd5.sh" perm="+x"/>
+        <chmod file="${mcp.dir}/recompile.sh" perm="+x"/>
+        <chmod file="${mcp.dir}/reobfuscate.sh" perm="+x"/>
+        <chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x"/>
+        <chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x"/>
+
+        <!-- Install Patches -->
+        <ant antfile="plugins-setup.xml" target="apply-patches"/>
+
+    </target>
+
+    <target name="compile" unless="external.build">
+        <echo message="Compiling..."/>
+        <exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
+            <arg line="/c recompile.bat"/>
+        </exec>
+
+        <exec dir="${mcp.dir}" executable="bash" osfamily="unix">
+            <arg line="recompile.sh"/>
+        </exec>
+    </target>
+
+    <target name="reobfuscate">
+        <echo message="Reobfuscating..."/>
+        <exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
+            <arg line="/c reobfuscate_srg.bat"/>
+        </exec>
+
+        <exec dir="${mcp.dir}" executable="bash" osfamily="unix">
+            <arg line="reobfuscate_srg.sh"/>
+        </exec>
+
+        <!-- Clean dir -->
+        <delete dir="${classes.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+
+        <!-- Copy relevant classes -->
+        <echo message="Exporting classes..."/>
+        <copy todir="${classes.dir}">
+            <fileset dir="${mcp.dir}/reobf/minecraft">
+                <include name="xk/**/*.*"/>
+                <include name="xk/**/*.*"/>
+                <include name="invtweaks/api/ContainerGUI*.class"/>
+                <include name="invtweaks/api/ContainerSection*.class"/>
+                <include name="net/machinemuse/api/IModularItem.class"/>
+                <include name="net/machinemuse/api/IPowerModule.class"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <target name="pack-jar">
+        <!-- Copy resources -->
+        <copy todir="${classes.dir}/mods">
+            <fileset dir="${dir.xact.rsc}"/>
+        </copy>
+        <copy file="mcmod.info" todir="${classes.dir}"/>
+
+        <!-- Pack Jar -->
+        <echo message="Packing JAR: ${mod.name}-v${mod.version}"/>
+        <jar destfile="${dist.dir}/${mod.name}-v${mod.version}.jar" basedir="${classes.dir}"/>
+
+    </target>
+
+
+    <!-- Copy Sources -->
+
+    <target name="copy-sources">
+        <echo message="Copying Sources..."/>
+        <ant antfile="plugins-setup.xml" target="copy-sources"/>
+        <antcall target="copy-xact-sources"/>
+    </target>
+
+    <target name="copy-xact-sources" if="external.build">
+        <echo message="${dir.xact.src}"/>
+
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.xact.src}"/>
+        </copy>
+        <antcall target="copy-nei-plugin"/>
+        <antcall target="copy-mps-plugin"/>
+    </target>
+
+    <target name="copy-nei-plugin" if="build.plugin.nei">
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.plugin.nei}"/>
+        </copy>
+    </target>
+    <target name="copy-mps-plugin" if="build.plugin.mps">
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.plugin.mps}"/>
+        </copy>
+    </target>
+
+
+    <!-- Forge Install -->
+
+    <property file="${forge.dir}/forgeversion.properties"/>
+
+    <condition property="forge-installed">
+        <equals arg1="${forge.build.number}" arg2="${forgebuild}"/>
+    </condition>
+
+    <condition property="forge-already-downloaded">
+        <available file="${download.dir}/minecraftforge-src-${forge.version}.zip"/>
+    </condition>
+
+    <condition property="should-download-ant-contrib">
+        <or>
+            <available file="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
+            <available file="${download.dir}/minecraftforge-src-${forge.version}.zip"/>
+        </or>
+    </condition>
+
+    <target name="download-forge" depends="download-ant-contrib" unless="forge-already-downloaded">
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+            <classpath>
+                <pathelement location="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
+                <fileset dir="${download.dir}/ant-contrib/lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </taskdef>
+
+        <echo message="Downloading Forge ${forge.version}"/>
+
+        <getMethod url="http://files.minecraftforge.net/minecraftforge-src-${forge.version}.zip"
+                   responseDataFile="${download.dir}/minecraftforge-src-${forge.version}.zip">
+            <header name="User-Agent" value="Ant-${ant.version}/${ant.java.version}"/>
+        </getMethod>
+    </target>
+
+    <target name="download-ant-contrib" unless="should-download-ant-contrib">
+        <echo message="Getting: ant-contrib"/>
+        <mkdir dir="${download.dir}/tmp"/>
+        <mkdir dir="${download.dir}/ant-contrib/lib"/>
+        <get src="http://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.zip/download"
+             dest="${download.dir}/tmp/ant-contrib-1.0b3-bin.zip"/>
+        <get src="http://archive.apache.org/dist/commons/codec/binaries/commons-codec-1.6-bin.zip"
+             dest="${download.dir}/tmp/commons-codec-1.6-bin.zip"/>
+
+        <unzip src="${download.dir}/tmp/ant-contrib-1.0b3-bin.zip" dest="${download.dir}"/>
+        <unzip src="${download.dir}/tmp/commons-codec-1.6-bin.zip" dest="${download.dir}/tmp"/>
+
+        <move todir="${download.dir}/ant-contrib/lib">
+            <fileset file="${download.dir}/tmp/commons-codec-1.6/commons-codec-1.6.jar"/>
+        </move>
+
+        <!-- Delete useless files -->
+        <delete dir="${download.dir}/ant-contrib/docs"/>
+        <delete dir="${download.dir}/tmp"/>
+
+    </target>
+
+</project>

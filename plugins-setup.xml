@@ -1,4 +1,4 @@
-<project name="XACT Plugins" default="setup" basedir="">
+<project name="XACT Plugins" basedir="">
 
     <!-- Versions -->
     <property file="version.properties"/>
@@ -21,8 +21,11 @@
     </condition>
     <property name="forge.dir" value="${build.dir}/forge"/>
     <property name="download.dir" value="${build.dir}/downloads"/>
-    <property name="api.src.dir" value="${build.dir}/Mod APIs"/>
     <property name="mcp.dir" value="${forge.dir}/mcp"/>
+    <property name="mcpsrc.dir" value="${mcp.dir}/src/minecraft"/>
+    <condition property="api.src.dir" value="${build.dir}/Mod APIs" else="${mcpsrc.dir}">
+        <istrue value="${copy.xact.srcs}"/>
+    </condition>
 
 
     <!-- URLs -->
@@ -38,15 +41,49 @@
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${api.src.dir}"/>
 
-    <target name="setup" depends="extract-apis, scala-patch" description="Downloads and extracts the required APIs."/>
+    <target name="download-all" depends="download-apis, download-nei, download-mps"/>
+
+    <target name="copy-access-transformers" depends="copy-nei-access-transformers"/>
+
+    <target name="copy-sources" depends="copy-nei-sources, copy-mps-sources">
+
+        <echo message="Extracting Inventory Tweaks API... "/>
+        <unjar src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar" dest="${download.dir}"/>
+        <delete dir="${download.dir}/META-INF"/>
+        <mkdir dir="${api.src.dir}/invtweaks/api"/>
+        <move file="${download.dir}/invtweaks/api/ContainerGUI.java" todir="${api.src.dir}/invtweaks/api"/>
+        <move file="${download.dir}/invtweaks/api/ContainerSection.java" todir="${api.src.dir}/invtweaks/api"/>
+    </target>
+
+    <target name="apply-patches" depends="scala-patch"/>
 
 
     <!-- APIs -->
 
-    <condition property="have-apis">
-        <and>
-            <available file="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar"/>
+    <target name="download-apis">
+        <echo message="Downloading Inventory Tweaks API... "/>
+        <get src="${invtweaks.url}"
+             dest="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar"/>
+    </target>
 
+
+    <!-- Modular Powersuits -->
+
+    <target name="download-mps" if="build.plugin.mps" depends="download-mps-apis">
+        <get src="https://github.com/MachineMuse/MachineMusePowersuits/archive/master.zip"
+             dest="${download.dir}/mps.zip"/>
+    </target>
+
+    <target name="copy-mps-sources" if="build.plugin.mps" depends="extract-mps-apis">
+        <unzip src="${download.dir}/mps.zip" dest="${download.dir}"/>
+
+        <copy todir="${api.src.dir}">
+            <fileset dir="${download.dir}/MachineMusePowersuits-master/src/minecraft"/>
+        </copy>
+    </target>
+
+    <condition property="have-mps-apis">
+        <and>
             <available file="${download.dir}/industrialcraft-2-api_${ic2api.version}.zip"/>
             <available file="${download.dir}/UniversalElectricity_v${ueapi.version}.zip"/>
             <available file="${download.dir}/ICBM_API_v${icbmapi.version}.zip"/>
@@ -64,10 +101,7 @@
         </and>
     </condition>
 
-    <target name="download-apis" unless="${have-apis}">
-        <echo message="Downloading Inventory Tweaks API... "/>
-        <get src="${invtweaks.url}"
-             dest="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar"/>
+    <target name="download-mps-apis" unless="have-mps-apis">
 
         <echo message="Downloading IC2 API... "/>
         <get src="http://machinemuse.minecraftforge.net/industrialcraft-2-api_${ic2api.version}.zip"
@@ -125,14 +159,7 @@
              dest="${download.dir}/slick-util.jar"/>
     </target>
 
-    <target name="extract-apis" depends="download-apis">
-
-        <echo message="Extracting Inventory Tweaks API... "/>
-        <unjar src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar" dest="${download.dir}"/>
-        <delete dir="${download.dir}/META-INF"/>
-        <mkdir dir="${api.src.dir}/invtweaks/api"/>
-        <move file="${download.dir}/invtweaks/api/ContainerGUI.java" todir="${api.src.dir}/invtweaks/api"/>
-        <move file="${download.dir}/invtweaks/api/ContainerSection.java" todir="${api.src.dir}/invtweaks/api"/>
+    <target name="extract-mps-apis">
 
         <echo message="Extracting IC2 API... "/>
         <unzip src="${download.dir}/industrialcraft-2-api_${ic2api.version}.zip" dest="${download.dir}"/>
@@ -245,12 +272,57 @@
         <copy file="${download.dir}/slick-util.jar" todir="${mcp.dir}/lib"/>
     </target>
 
+    <!-- NEI -->
+
+    <target name="copy-nei-access-transformers" if="build.plugin.nei">
+        <mkdir dir="${forge.dir}/accesstransformers"/>
+        <copy todir="${forge.dir}/accesstransformers" file="${download.dir}/NEI/nei_at.cfg"/>
+        <copy todir="${forge.dir}/accesstransformers" file="${download.dir}/CCC/codechickencore_at.cfg"/>
+    </target>
+
+    <target name="copy-nei-sources" if="build.plugin.nei">
+        <copy todir="${mcp.dir}/src/minecraft" overwrite="true">
+            <fileset dir="${download.dir}/NEI">
+                <include name="codechicken/**/*.*"/>
+                <include name="net/**/*.*"/>
+            </fileset>
+            <fileset dir="${download.dir}/CCC">
+                <include name="codechicken/**/*.*"/>
+                <include name="net/**/*.*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <condition property="nei-downloaded">
+        <and>
+            <available file="${download.dir}/CCC-src.jar"/>
+            <available file="${download.dir}/NEI-src.jar"/>
+        </and>
+    </condition>
+
+    <target name="download-nei" unless="nei-downloaded" if="build.plugin.nei">
+        <mkdir dir="${download.dir}"/>
+        <echo message="Downloading NEI and CCC"/>
+
+        <get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.5.1/CodeChickenCore-src.jar"
+             dest="${download.dir}/CCC-src.jar"/>
+        <get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.5.1/NotEnoughItems-src.jar"
+             dest="${download.dir}/NEI-src.jar"/>
+
+        <!-- Extract NEI and CCC -->
+        <unzip src="${download.dir}/NEI-src.jar" dest="${download.dir}/NEI"/>
+        <unzip src="${download.dir}/CCC-src.jar" dest="${download.dir}/CCC"/>
+    </target>
 
     <!-- Patches -->
 
-    <target name="scala-patch">
+    <target name="scala-patch" if="build.plugin.mps">
         <echo message="Extracting Scala Libraries..."/>
         <unzip src="${download.dir}/scalalib-${scala.version}.zip" dest="${mcp.dir}"/>
+
+        <echo message="Applying Scala patches..."/>
+        <get src="http://overminddl1.com/minecraft/mcp_update_scala3.zip" dest="${download.dir}/scalapatch.zip"/>
+        <unzip src="${download.dir}/scalapatch.zip" dest="${mcp.dir}"/>
     </target>
 
 
