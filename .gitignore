@@ -7,3 +7,6 @@
 
 # Ignore dev changes #
 build.properties
+
+# Ignore build number #
+build.number
