@@ -1,6 +1,7 @@
 package xk.xact.core.tileentities;
 
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import xk.xact.inventory.Inventory;
@@ -13,7 +14,17 @@ public class TileWorkbench extends TileEntity {
 
 	public TileWorkbench() {
 		this.craftingGrid = new Inventory( 9, "craftingGrid" );
-		this.outputInv = new Inventory( 1, "outputInv" );
+		this.outputInv = new Inventory( 1, "outputInv" ) {
+
+			@Override
+			public ItemStack decrStackSize(int slotID, int amount) {
+				ItemStack stackInSlot = getStackInSlot( slotID );
+				if( stackInSlot != null ) {
+					setInventorySlotContents( slotID, null );
+				}
+				return stackInSlot;
+			}
+		};
 	}
 
 	///////////////
