@@ -34,7 +34,7 @@
     <property name="ue.download.dir" value="${download.dir}/ue/minecraft/universalelectricity"/>
 
     <property name="invtweaks.url"
-              value="http://199.91.152.46/0p5jffno6ctg/5ym8dndqqc1calm/InventoryTweaks-api-${invtweaks.version}.jar"/>
+              value="https://github.com/Kobata/inventory-tweaks/archive/${invtweaks.version}.zip"/>
 
 
     <!-- Main Targets -->
@@ -48,11 +48,12 @@
     <target name="copy-sources" depends="copy-nei-sources, copy-mps-sources">
 
         <echo message="Extracting Inventory Tweaks API... "/>
-        <unjar src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar" dest="${download.dir}"/>
-        <delete dir="${download.dir}/META-INF"/>
+        <unzip src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.zip" dest="${download.dir}"/>
         <mkdir dir="${api.src.dir}/invtweaks/api"/>
-        <move file="${download.dir}/invtweaks/api/ContainerGUI.java" todir="${api.src.dir}/invtweaks/api"/>
-        <move file="${download.dir}/invtweaks/api/ContainerSection.java" todir="${api.src.dir}/invtweaks/api"/>
+        <move file="${download.dir}/inventory-tweaks-${invtweaks.version}/src/minecraft/invtweaks/api/ContainerGUI.java"
+              todir="${api.src.dir}/invtweaks/api"/>
+        <move file="${download.dir}/inventory-tweaks-${invtweaks.version}/src/minecraft/invtweaks/api/ContainerSection.java"
+              todir="${api.src.dir}/invtweaks/api"/>
     </target>
 
     <target name="apply-patches" depends="scala-patch"/>
@@ -63,7 +64,7 @@
     <target name="download-apis">
         <echo message="Downloading Inventory Tweaks API... "/>
         <get src="${invtweaks.url}"
-             dest="${download.dir}/InventoryTweaks-api-${invtweaks.version}.jar"/>
+             dest="${download.dir}/InventoryTweaks-api-${invtweaks.version}.zip"/>
     </target>
 
 
