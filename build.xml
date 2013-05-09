@@ -128,7 +128,13 @@
         <copy todir="${classes.dir}/mods">
             <fileset dir="${dir.xact.rsc}"/>
         </copy>
-        <copy file="mcmod.info" todir="${classes.dir}"/>
+        <copy file="mcmod.info" todir="${classes.dir}">
+            <filterset>
+                <filter token="MC_VERSION" value="${mc.version}"/>
+                <filter token="MOD_VERSION" value="${mod.version}"/>
+            </filterset>
+        </copy>
+
 
         <!-- Pack Jar -->
         <buildnumber/>
