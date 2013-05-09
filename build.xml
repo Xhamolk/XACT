@@ -1,5 +1,7 @@
 <project name="XACT" default="build" basedir="">
 
+    <property environment="env"/>
+
     <!-- Versions -->
     <property file="build.properties"/>
     <property file="version.properties"/>
@@ -142,7 +144,9 @@
 
 
         <!-- Pack Jar -->
-        <buildnumber/>
+        <condition property="build.number" value="${env.BUILD_NUMBER}" else="000">
+            <isset property="${env.BUILD_NUMBER}"/>
+        </condition>
         <echo message="Packing JAR: ${mod.name} v${mod.version} #${build.number}"/>
         <jar destfile="${dist.dir}/${mod.name} v${mod.version}-${build.number}.jar" basedir="${classes.dir}"/>
 
