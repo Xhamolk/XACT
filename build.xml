@@ -44,6 +44,11 @@
 
     <!-- Main Targets -->
 
+    <target name="clean">
+        <delete dir="${forge.dir}"/>
+        <delete dir="${classes.dir}"/>
+    </target>
+
     <target name="reobf and pack" depends="reobfuscate, pack-jar"
             description="Reobfucate and pack a JAR for releasing. Doesn't install anything, and won't compile sources."/>
 
