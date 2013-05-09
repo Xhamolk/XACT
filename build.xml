@@ -38,7 +38,7 @@
     <property name="mcpsrc.dir" value="${mcp.dir}/src/minecraft"/>
 
 
-    <condition property="external.build">
+    <condition property="do.compile">
         <istrue value="${copy.xact.srcs}"/>
     </condition>
 
@@ -95,7 +95,7 @@
 
     </target>
 
-    <target name="compile" unless="external.build">
+    <target name="compile" unless="do.compile">
         <echo message="Compiling..."/>
         <exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
             <arg line="/c recompile.bat"/>
@@ -164,11 +164,12 @@
 
     <target name="copy-sources">
         <echo message="Copying Sources..."/>
+        <delete dir="${mcpsrc.dir}/xk"/>
         <ant antfile="plugins-setup.xml" target="copy-sources"/>
         <antcall target="copy-xact-sources"/>
     </target>
 
-    <target name="copy-xact-sources" if="external.build">
+    <target name="copy-xact-sources" if="do.compile">
         <echo message="${dir.xact.src}"/>
 
         <copy todir="${mcpsrc.dir}">
