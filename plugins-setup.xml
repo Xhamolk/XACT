@@ -144,7 +144,7 @@
              dest="${download.dir}/forestry-api-${forestryapi.version}.zip"/>
 
         <echo message="Downloading Thaumcraft API..."/>
-        <get src="http://machinemuse.minecraftforge.net/ThaumcraftApi ${thaumcraftapi.version}.zip"
+        <get src="http://machinemuse.net/ThaumcraftApi ${thaumcraftapi.version}.zip"
              dest="${download.dir}/ThaumcraftApi ${thaumcraftapi.version}.zip"/>
 
         <echo message="Downloading MFFS API..."/>
@@ -323,7 +323,7 @@
 
         <echo message="Applying Scala patches..."/>
         <get src="http://overminddl1.com/minecraft/mcp_update_scala3.zip" dest="${download.dir}/scalapatch.zip"/>
-        <unzip src="${download.dir}/scalapatch.zip" dest="${mcp.dir}"/>
+        <unzip src="${download.dir}/scalapatch.zip" dest="${mcp.dir}" overwrite="true"/>
     </target>
 
 
