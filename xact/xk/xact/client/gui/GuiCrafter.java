@@ -120,42 +120,35 @@ public class GuiCrafter extends CraftingGui {
 		// grid's contents.
 		if( 8 <= slot.slotNumber && slot.slotNumber < 18 - 1 ) {
 			int index = slot.slotNumber - 8;
-			int color;
 
 			// only paint the grid's real contents if there is no recipe being hovered.
 			if( hoveredRecipe == -1 ) {
 				super.drawSlotInventory( slot );
-				color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 			}
 			// If a recipe is being hovered, paint those ingredients instead.
 			else {
-				ItemStack itemToPaint = gridContents[index];
-
 				// Paint the "ghost item"
+				ItemStack itemToPaint = gridContents[index];
 				GuiUtils.paintItem( itemToPaint, slot.xDisplayPosition, slot.yDisplayPosition, this.mc, itemRenderer );
-				color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 			}
 
 			// Paint the item's overlay.
-			color |= TRANSPARENCY;
-			GuiUtils.paintOverlay( slot.xDisplayPosition, slot.yDisplayPosition, 16, color );
-
+			int color = getColorForGridSlot( slot );
+			if( color != -1 )
+				GuiUtils.paintOverlay( slot.xDisplayPosition, slot.yDisplayPosition, 16, color );
 			return;
 		}
 
-		if( slot.getHasStack() ) {
-			// output slots.
-			if( slot.slotNumber < 4 ) {
-				// paint slot's colored underlay if the slot is hovered.
-				if( slot.slotNumber == hoveredRecipe )
-					GuiUtils.paintSlotOverlay( slot, 22, getColorFor( slot.getSlotIndex() ) );
-			}
+		if( slot.getHasStack() && slot.slotNumber < 4 ) { // output slots.
+			// paint slot's colored underlay if the slot is hovered.
+			if( slot.slotNumber == hoveredRecipe )
+				GuiUtils.paintSlotOverlay( slot, 22, getColorForOutputSlot( slot.getSlotIndex() ) );
 		}
 
 		super.drawSlotInventory( slot );
 	}
 
-	private int getColorFor(int recipeIndex) {
+	private int getColorForOutputSlot(int recipeIndex) {
 		int color;
 		if( this.mc.thePlayer.capabilities.isCreativeMode ) {
 			color = GuiUtils.COLOR_BLUE;
@@ -167,6 +160,21 @@ public class GuiCrafter extends CraftingGui {
 		color |= TRANSPARENCY; // transparency layer.
 
 		return color;
+	}
+
+	private int getColorForGridSlot(Slot slot) {
+		ItemStack itemInSlot = slot.getStack();
+		if( itemInSlot != null && itemInSlot.stackSize > 0 ) {
+			return -1; // no overlay when the slot contains "real" items.
+		}
+		int index = slot.slotNumber - 8;
+		int color;
+		if( hoveredRecipe == -1 ) {
+			color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
+		} else {
+			color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
+		}
+		return color | TRANSPARENCY;
 	}
 
 	private int getHoveredRecipe(int mouseX, int mouseY) {
