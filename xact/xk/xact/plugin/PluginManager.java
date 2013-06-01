@@ -1,6 +1,7 @@
 package xk.xact.plugin;
 
 
+import xk.xact.XActMod;
 import xk.xact.api.SpecialCasedRecipe;
 import xk.xact.api.plugin.XACTPlugin;
 import xk.xact.util.ReflectionUtils;
@@ -18,12 +19,14 @@ public class PluginManager {
 	}
 
 	public static void initializePlugins() {
-		// Register ModularPowerSuits plug-in.
-		Class mpsPlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.mps.PluginForMPS" );
-		if( mpsPlugin != null ) {
-			Object instance = ReflectionUtils.newInstanceOf( mpsPlugin );
-			if( instance != null ) {
-				addPlugin( XACTPlugin.class.cast( instance ) );
+		if( XActMod.ENABLE_MPS_PLUGIN ) {
+			// Register ModularPowerSuits plug-in.
+			Class mpsPlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.mps.PluginForMPS" );
+			if( mpsPlugin != null ) {
+				Object instance = ReflectionUtils.newInstanceOf( mpsPlugin );
+				if( instance != null ) {
+					addPlugin( XACTPlugin.class.cast( instance ) );
+				}
 			}
 		}
 

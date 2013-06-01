@@ -76,6 +76,8 @@ public class XActMod {
 
 	public static boolean REPLACE_WORKBENCH;
 
+	public static boolean ENABLE_MPS_PLUGIN;
+
 	@Mod.PreInit
 	@SuppressWarnings("unused")
 	public void preInit(FMLPreInitializationEvent event) {
@@ -93,6 +95,11 @@ public class XActMod {
 		padID = config.getItem( "craftPad", 9103 ).getInt();
 		blankBlueprintID = config.getItem( "blankBlueprint", 9104 ).getInt();
 		blueprintID = config.getItem( "blueprint", 9105 ).getInt();
+
+		ENABLE_MPS_PLUGIN = config.get( "Plug-ins", "enableModularPowerSuitsPlugin", true,
+				"If true, XACT will try to initialize the plug-in for Modular PowerSuits. \n" +
+						"This plug-in let's you install the Craft Pad into the MPS Power Fist." )
+				.getBoolean( true );
 
 		REPLACE_WORKBENCH = config.get( "Miscellaneous", "addWorkbenchTileEntity", true,
 				"If true, XACT will make the vanilla workbench able to keep it's contents on the grid after the GUI is closed. \n" +
