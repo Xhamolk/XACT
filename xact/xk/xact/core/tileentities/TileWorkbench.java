@@ -3,6 +3,9 @@ package xk.xact.core.tileentities;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import xk.xact.inventory.Inventory;
 
@@ -44,5 +47,17 @@ public class TileWorkbench extends TileEntity {
 		outputInv.writeToNBT( compound );
 	}
 
+	@Override
+	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
+		if( packet.actionType == 0 )
+			readFromNBT( packet.customParam1 );
+	}
+
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound nbt = new NBTTagCompound();
+		writeToNBT( nbt );
+		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, nbt);
+	}
 
 }

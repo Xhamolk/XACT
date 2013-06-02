@@ -7,6 +7,10 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.ArrayList;
@@ -23,5 +27,18 @@ public abstract class TileMachine extends TileEntity {
 
 	@SideOnly(Side.CLIENT)
 	public abstract GuiContainer getGuiContainerFor(EntityPlayer player);
+
+	@Override
+	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
+		if( packet.actionType == 0 )
+			readFromNBT( packet.customParam1 );
+	}
+
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound nbt = new NBTTagCompound();
+		writeToNBT( nbt );
+		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, nbt);
+	}
 
 }
