@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", useMetadata = true)
+@Mod(modid = "xact", name = "XACT Mod", version = "0.3.4b", useMetadata = true)
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = { "xact_channel" }, packetHandler = PacketHandler.class)
 public class XActMod {
@@ -56,6 +56,7 @@ public class XActMod {
 	public static int padID;
 	public static int blankBlueprintID;
 	public static int blueprintID;
+	public static int upgradeToCrafterID;
 
 	// Items
 	public static Item itemRecipeBlank;
@@ -64,6 +65,7 @@ public class XActMod {
 	public static Item itemCraftPad;
 	public static Item itemBlueprintBlank;
 	public static Item itemBlueprint;
+	public static Item itemUpgradeToCrafter;
 
 	// Blocks
 	public static Block blockMachine;
@@ -95,6 +97,7 @@ public class XActMod {
 		padID = config.getItem( "craftPad", 9103 ).getInt();
 		blankBlueprintID = config.getItem( "blankBlueprint", 9104 ).getInt();
 		blueprintID = config.getItem( "blueprint", 9105 ).getInt();
+		upgradeToCrafterID = config.getItem( "upgradeToCrafter", 9106 ).getInt();
 
 		ENABLE_MPS_PLUGIN = config.get( "Plug-ins", "enableModularPowerSuitsPlugin", true,
 				"If true, XACT will try to initialize the plug-in for Modular PowerSuits. \n" +
@@ -122,6 +125,7 @@ public class XActMod {
 		itemCraftPad = new ItemPad( padID );
 		itemBlueprintBlank = new ItemBlankBlueprint( blankBlueprintID );
 		itemBlueprint = new ItemBlueprint( blueprintID );
+		itemUpgradeToCrafter = new ItemUpgrade( upgradeToCrafterID, ItemUpgrade.UpgradeType.ToCrafter );
 
 		// Init Blocks
 		blockMachine = new BlockMachine( machineID );
@@ -146,6 +150,7 @@ public class XActMod {
 		LanguageRegistry.addName( itemCraftPad, "Craft Pad" );
 		LanguageRegistry.addName( itemBlueprintBlank, "Blank Blueprint" );
 		LanguageRegistry.addName( itemBlueprint, "\u00a76" + "Blueprint" );
+		LanguageRegistry.addName( itemUpgradeToCrafter, ItemUpgrade.UpgradeType.ToCrafter.getLocalizedName() );
 
 		// machine's names
 		for( Machines machine : Machines.values() ) {
@@ -181,6 +186,7 @@ public class XActMod {
 		ItemStack[] ingredients;
 
 		// todo: add blueprint recipe.
+		// todo: add upgrade recipes.
 
 		// Recipe Chip
 		GameRegistry.addRecipe( new ItemStack( itemRecipeBlank, 16 ),
