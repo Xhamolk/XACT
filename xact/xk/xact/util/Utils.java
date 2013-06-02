@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.ConfigurationManager;
 import xk.xact.inventory.InventoryUtils;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class Utils {
 	}
 
 	public static void debug(String message) {
-		if( XActMod.DEBUG_MODE )
+		if( ConfigurationManager.DEBUG_MODE )
 			XActMod.logger.fine( message );
 
 	}

@@ -15,11 +15,9 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import xk.xact.config.ConfigurationManager;
 import xk.xact.core.Machines;
-import xk.xact.core.blocks.BlockMachine;
-import xk.xact.core.blocks.BlockVanillaWorkbench;
 import xk.xact.core.items.*;
 import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.core.tileentities.TileWorkbench;
@@ -48,16 +46,6 @@ public class XActMod {
 
 	public static Logger logger;
 
-	// IDs
-	public static int machineID;
-	public static int blankChipID;
-	public static int encodedChipID;
-	public static int caseID;
-	public static int padID;
-	public static int blankBlueprintID;
-	public static int blueprintID;
-	public static int upgradeToCrafterID;
-
 	// Items
 	public static Item itemRecipeBlank;
 	public static Item itemRecipeEncoded;
@@ -73,43 +61,15 @@ public class XActMod {
 
 	public static CreativeTabXACT xactTab;
 
-	// debugging information.
-	public static boolean DEBUG_MODE = false;
-
-	public static boolean REPLACE_WORKBENCH;
-
-	public static boolean ENABLE_MPS_PLUGIN;
-
 	@Mod.PreInit
 	@SuppressWarnings("unused")
 	public void preInit(FMLPreInitializationEvent event) {
-		Configuration config = new Configuration( event.getSuggestedConfigurationFile() );
-		config.load();
+		// Load Configurations
+		ConfigurationManager.loadConfiguration( event.getSuggestedConfigurationFile() );
 
 		// Initialize the logger.
 		logger = Logger.getLogger( "XACT-" + FMLCommonHandler.instance().getEffectiveSide() );
 		logger.setParent( FMLLog.getLogger() );
-
-		machineID = config.getBlock( "machineID", 3919 ).getInt();
-		blankChipID = config.getItem( "blankChip", 9100 ).getInt();
-		encodedChipID = config.getItem( "encodedChip", 9101 ).getInt();
-		caseID = config.getItem( "chipCase", 9102 ).getInt();
-		padID = config.getItem( "craftPad", 9103 ).getInt();
-		blankBlueprintID = config.getItem( "blankBlueprint", 9104 ).getInt();
-		blueprintID = config.getItem( "blueprint", 9105 ).getInt();
-		upgradeToCrafterID = config.getItem( "upgradeToCrafter", 9106 ).getInt();
-
-		ENABLE_MPS_PLUGIN = config.get( "Plug-ins", "enableModularPowerSuitsPlugin", true,
-				"If true, XACT will try to initialize the plug-in for Modular PowerSuits. \n" +
-						"This plug-in let's you install the Craft Pad into the MPS Power Fist." )
-				.getBoolean( true );
-
-		REPLACE_WORKBENCH = config.get( "Miscellaneous", "addWorkbenchTileEntity", true,
-				"If true, XACT will make the vanilla workbench able to keep it's contents on the grid after the GUI is closed. \n" +
-						"Make sure you clear the workbench's grid before setting this to false, or you will lose your items." )
-				.getBoolean( true );
-
-		config.save();
 	}
 
 	@Mod.Init
@@ -119,18 +79,10 @@ public class XActMod {
 		xactTab = new CreativeTabXACT();
 
 		// Init Items
-		itemRecipeBlank = new ItemChip( blankChipID, false );
-		itemRecipeEncoded = new ItemChip( encodedChipID, true );
-		itemChipCase = new ItemCase( caseID );
-		itemCraftPad = new ItemPad( padID );
-		itemBlueprintBlank = new ItemBlankBlueprint( blankBlueprintID );
-		itemBlueprint = new ItemBlueprint( blueprintID );
-		itemUpgradeToCrafter = new ItemUpgrade( upgradeToCrafterID, ItemUpgrade.UpgradeType.ToCrafter );
+		ConfigurationManager.initItems();
 
 		// Init Blocks
-		blockMachine = new BlockMachine( machineID );
-		if( REPLACE_WORKBENCH )
-			blockWorkbench = BlockVanillaWorkbench.createNew();
+		ConfigurationManager.initBlocks();
 
 		// Register side-sensitive Stuff
 		proxy.registerRenderInformation();
@@ -186,7 +138,6 @@ public class XActMod {
 		ItemStack[] ingredients;
 
 		// todo: add blueprint recipe.
-		// todo: add upgrade recipes.
 
 		// Recipe Chip
 		GameRegistry.addRecipe( new ItemStack( itemRecipeBlank, 16 ),

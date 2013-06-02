@@ -4,8 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import xk.xact.XActMod;
 import xk.xact.api.SpecialCasedRecipe;
+import xk.xact.config.ConfigurationManager;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.util.ItemsList;
 import xk.xact.util.Utils;
@@ -141,7 +141,7 @@ public class CraftRecipe {
 	// the output's name.
 	public String toString() {
 		String string = this.result.getItem().getItemDisplayName( result );
-		if( XActMod.DEBUG_MODE )
+		if( ConfigurationManager.DEBUG_MODE )
 			string += " (" + recipeID + (this.isOreRecipe() ? " ore" : "") + ") ";
 		return string;
 	}

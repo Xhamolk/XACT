@@ -1,9 +1,9 @@
 package xk.xact.plugin;
 
 
-import xk.xact.XActMod;
 import xk.xact.api.SpecialCasedRecipe;
 import xk.xact.api.plugin.XACTPlugin;
+import xk.xact.config.ConfigurationManager;
 import xk.xact.util.ReflectionUtils;
 import xk.xact.util.Utils;
 
@@ -19,7 +19,7 @@ public class PluginManager {
 	}
 
 	public static void initializePlugins() {
-		if( XActMod.ENABLE_MPS_PLUGIN ) {
+		if( ConfigurationManager.ENABLE_MPS_PLUGIN ) {
 			// Register ModularPowerSuits plug-in.
 			Class mpsPlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.mps.PluginForMPS" );
 			if( mpsPlugin != null ) {
