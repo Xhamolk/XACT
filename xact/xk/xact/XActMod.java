@@ -214,6 +214,14 @@ public class XActMod {
 		);
 		GameRegistry.addRecipe( new ShapedRecipes( 3, 2, ingredients, new ItemStack( itemCraftPad ) ) );
 
+		// Upgrade to Crafter
+		ingredients = RecipeUtils.ingredients(
+				XActMod.itemRecipeBlank,    Block.glass,        XActMod.itemRecipeBlank,
+				XActMod.itemRecipeBlank,    null,               XActMod.itemRecipeBlank,
+				Item.ingotIron,             Block.chest,        Item.ingotIron
+		);
+		GameRegistry.addRecipe( new ShapedRecipes( 3, 3, ingredients, new ItemStack( itemUpgradeToCrafter ) ) );
+
 		// Machines
 		for( Machines machine : Machines.values() ) {
 			GameRegistry.addRecipe( machine.getMachineRecipe() );
