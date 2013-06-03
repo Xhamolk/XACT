@@ -74,19 +74,6 @@ public class GuiCase extends GuiXACT {
 		return null;
 	}
 
-	private boolean isMouseOverSlot(Slot slot, int x, int y) {
-		return this.isPointInRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y );
-	}
-
-	private Slot getSlotAt(int x, int y) {
-		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ ) {
-			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( i );
-			if( isMouseOverSlot( slot, x, y ) )
-				return slot;
-		}
-		return null;
-	}
-
 	protected void drawRecipe(ItemStack chip) {
 		if( chip == null )
 			return;
