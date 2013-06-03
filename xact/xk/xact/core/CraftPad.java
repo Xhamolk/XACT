@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
-import xk.xact.client.gui.CraftingGui;
+import xk.xact.client.gui.GuiCrafting;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.inventory.Inventory;
@@ -129,8 +129,8 @@ public class CraftPad implements ICraftingDevice {
 
 	private void notifyClient() { // client-only
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-		if( screen != null && screen instanceof CraftingGui ) {
-			((CraftingGui) screen).pushRecipe( lastRecipe );
+		if( screen != null && screen instanceof GuiCrafting ) {
+			((GuiCrafting) screen).pushRecipe( lastRecipe );
 		}
 	}
 

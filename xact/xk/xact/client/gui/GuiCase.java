@@ -3,11 +3,9 @@ package xk.xact.client.gui;
 
 import invtweaks.api.ContainerGUI;
 import invtweaks.api.ContainerSection;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 import xk.xact.client.GuiUtils;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
@@ -19,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @ContainerGUI
-public class GuiCase extends GuiContainer {
+public class GuiCase extends GuiXACT {
 
 	public GuiCase(Container container) {
 		super( container );
@@ -30,23 +28,25 @@ public class GuiCase extends GuiContainer {
 	private Slot slot;
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( Textures.GUI_CASE );
-		int cornerX = (this.width - this.xSize) / 2;
-		int cornerY = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );
+	protected String getBaseTexture() {
+		return Textures.GUI_CASE;
+	}
+
+	@Override
+	protected void drawPostForeground(int x, int y) {
+		if( slot != null ) {
+			drawRecipe( slot.getStack() );
+		}
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partial, int x, int y) {
+		super.drawGuiContainerBackgroundLayer( partial, x, y );
 
 		this.slot = findSlotAt( x, y );
 		if( slot != null ) {
 			// paint the background grid.
-			this.drawTexturedModalRect( cornerX + 14, cornerY + 16, 197, 9, 52, 77 );
-		}
-	}
-
-	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		if( slot != null ) {
-			drawRecipe( slot.getStack() );
+			this.drawTexturedModalRect( guiLeft + 14, guiTop + 16, 197, 9, 52, 77 );
 		}
 	}
 

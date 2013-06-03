@@ -1,7 +1,6 @@
 package xk.xact.client.gui;
 
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -12,9 +11,9 @@ import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.RecipeDeque;
 
-public abstract class CraftingGui extends GuiContainer implements InteractiveCraftingGui {
+public abstract class GuiCrafting extends GuiXACT implements InteractiveCraftingGui {
 
-	public CraftingGui(Container container) {
+	public GuiCrafting(Container container) {
 		super( container );
 	}
 

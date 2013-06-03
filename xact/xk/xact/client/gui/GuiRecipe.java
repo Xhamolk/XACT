@@ -12,7 +12,7 @@ import xk.xact.inventory.InventoryUtils;
 import xk.xact.network.ClientProxy;
 
 // GUI used to set the recipe of a node.
-public class GuiRecipe extends CraftingGui {
+public class GuiRecipe extends GuiCrafting {
 
 	private EntityPlayer player;
 
@@ -28,38 +28,32 @@ public class GuiRecipe extends CraftingGui {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( Textures.GUI_RECIPE );
-		int cornerX = (this.width - this.xSize) / 2;
-		int cornerY = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );
+	public String getBaseTexture() {
+		return Textures.GUI_RECIPE;
+	}
 
+	@Override
+	public String getGuiTitle() {
+		return "Choose the Recipe";
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partial, int x, int y) {
+		super.drawGuiContainerBackgroundLayer( partial, x, y );
 		if( matching = matchingTarget() ) {
 			// draw the "success" button
-			this.drawTexturedModalRect( cornerX + 117, cornerY + 63, 176, 0, 14, 14 );
+			this.drawTexturedModalRect( guiLeft + 117, guiTop+ 63, 176, 0, 14, 14 );
 		} else {
 			// Paint the target.
 			paintTarget();
 		}
-
 		// todo: draw slot overlays.
 	}
 
 	@Override
-	public void drawGuiContainerForegroundLayer(int x, int y) {
-		// the title
-		int xPos = (this.xSize - fontRenderer.getStringWidth( "Choose the Recipe" )) / 2;
-		this.fontRenderer.drawString( "Choose the Recipe", xPos, 8, 4210752 );
-	}
-
-	@Override
 	protected void mouseClicked(int x, int y, int mouseButton) {
-		int cornerX = (this.width - this.xSize) / 2;
-		int cornerY = (this.height - this.ySize) / 2;
-
-		if( matching && cornerX + 117 <= x && x < cornerX + 117 + 14 ) {
-			if( cornerY + 63 <= y && y < cornerY + 63 + 14 ) {
+		if( matching && guiLeft + 117 <= x && x < guiTop + 117 + 14 ) {
+			if( guiLeft + 63 <= y && y < guiTop + 63 + 14 ) {
 				// todo: either 1 or 2.
 				buttonClicked( 1 );
 				return;

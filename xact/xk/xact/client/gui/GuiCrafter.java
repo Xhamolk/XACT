@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
 import xk.xact.client.GuiUtils;
 import xk.xact.client.button.CustomButtons;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @ContainerGUI
-public class GuiCrafter extends CraftingGui {
+public class GuiCrafter extends GuiCrafting {
 
 	private TileCrafter crafter;
 
@@ -93,7 +92,7 @@ public class GuiCrafter extends CraftingGui {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+	protected void drawTitle() {
 		int xPos = (this.xSize - fontRenderer.getStringWidth( "X.A.C.T. Crafter" )) / 2;
 		this.fontRenderer.drawString( "X.A.C.T. Crafter", xPos, 6, 4210752 );
 		this.fontRenderer.drawString( "Player's Inventory", 8, this.ySize - 94, 4210752 );
@@ -101,18 +100,17 @@ public class GuiCrafter extends CraftingGui {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY) {
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( Textures.GUI_CRAFTER );
-		int cornerX = (this.width - this.xSize) / 2;
-		int cornerY = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize, this.ySize );
-
+		super.drawGuiContainerBackgroundLayer( var1, mouseX, mouseY );
 		// Draw crafting grid
 		int currentRecipe = getHoveredRecipe( mouseX, mouseY );
 		if( hoveredRecipe != currentRecipe ) {
 			updateGhostContents( currentRecipe );
 		}
+	}
 
+	@Override
+	protected String getBaseTexture() {
+		return Textures.GUI_CRAFTER;
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 import xk.xact.XActMod;
 import xk.xact.client.GuiUtils;
 import xk.xact.client.button.CustomButtons;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @ContainerGUI
-public class GuiPad extends CraftingGui {
+public class GuiPad extends GuiCrafting {
 
 	private CraftPad craftPad;
 
@@ -47,23 +46,22 @@ public class GuiPad extends CraftingGui {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( Textures.GUI_PAD );
-		int cornerX = (this.width - this.xSize) / 2;
-		int cornerY = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect( cornerX, cornerY, 0, 0, this.xSize,
-				this.ySize );
+	protected String getBaseTexture() {
+		return Textures.GUI_PAD;
 	}
 
 	@Override
-	public void drawGuiContainerForegroundLayer(int x, int y) {
-		// the titles
+	protected void drawTitle() {
 		int xPos = 11 + (112 - fontRenderer.getStringWidth( "Craft Pad" )) / 2;
 		this.fontRenderer.drawString( "Craft Pad", xPos, 8, 4210752 );
 
 		xPos = 126 + (40 - fontRenderer.getStringWidth( "Chip" )) / 2;
 		this.fontRenderer.drawString( "Chip", xPos, 23, 4210752 );
+	}
+
+	@Override
+	public void drawGuiContainerBackgroundLayer(float partial, int x, int y) {
+		super.drawGuiContainerBackgroundLayer( partial, x, y );
 
 		// Paint the grid's overlays.
 		paintSlotOverlays();

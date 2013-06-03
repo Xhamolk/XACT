@@ -16,6 +16,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -46,6 +47,11 @@ public class GuiUtils {
 		int minY = slot.yDisplayPosition - off;
 
 		paintOverlay( minX, minY, size, color );
+	}
+
+	public static void paintIcon(Gui gui, Icon icon, int x, int y) {
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0F);
+		gui.drawTexturedModelRectFromIcon( x, y, icon, 16, 16 );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -209,4 +215,7 @@ public class GuiUtils {
 		return Minecraft.getMinecraft().thePlayer.worldObj;
 	}
 
+	public static void bindTexture(String texture) {
+		Minecraft.getMinecraft().renderEngine.bindTexture( texture );
+	}
 }
