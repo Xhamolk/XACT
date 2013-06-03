@@ -11,6 +11,7 @@ import xk.xact.client.GuiUtils;
 import xk.xact.client.button.CustomButtons;
 import xk.xact.client.button.GuiButtonCustom;
 import xk.xact.client.button.ICustomButtonMode;
+import xk.xact.client.gui.hooks.DynamicSlotPaintHook;
 import xk.xact.core.items.ItemChip;
 import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.gui.ContainerCrafter;

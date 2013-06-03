@@ -4,6 +4,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.Icon;
 import org.lwjgl.opengl.GL11;
 import xk.xact.client.GuiUtils;
+import xk.xact.client.gui.hooks.TabbedGui;
 
 public abstract class TabBase {
 

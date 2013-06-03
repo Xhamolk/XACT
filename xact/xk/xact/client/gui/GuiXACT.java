@@ -7,8 +7,9 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import xk.xact.client.GuiUtils;
+import xk.xact.client.gui.hooks.DynamicSlotPaintHook;
 import xk.xact.client.gui.tab.TabBase;
-import xk.xact.client.gui.tab.TabbedGui;
+import xk.xact.client.gui.hooks.TabbedGui;
 
 import java.util.List;
 

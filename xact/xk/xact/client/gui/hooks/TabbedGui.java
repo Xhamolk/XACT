@@ -1,4 +1,6 @@
-package xk.xact.client.gui.tab;
+package xk.xact.client.gui.hooks;
+
+import xk.xact.client.gui.tab.TabBase;
 
 import java.util.List;
 
