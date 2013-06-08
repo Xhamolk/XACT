@@ -63,7 +63,9 @@ public class BlockVanillaWorkbench extends BlockContainer {
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
+	public void onBlockHarvested(World world, int x, int y, int z, int metadata, EntityPlayer player) {
+		if( player.capabilities.isCreativeMode )
+			return;
 		TileWorkbench workbench = (TileWorkbench) world.getBlockTileEntity( x, y, z );
 		if( workbench != null ) {
 			ItemStack[] inventoryContents = workbench.craftingGrid.getContents();
@@ -73,7 +75,6 @@ public class BlockVanillaWorkbench extends BlockContainer {
 				Utils.dropItemAsEntity( world, x, y, z, current );
 			}
 		}
-		super.breakBlock( world, x, y, z, par5, par6 );
 	}
 
 	@Override

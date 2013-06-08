@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
+import xk.xact.config.ConfigurationManager;
 import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.core.tileentities.TileWorkbench;
 import xk.xact.util.Utils;
@@ -68,7 +69,7 @@ public class ItemUpgrade extends Item {
 			@Override
 			void onUpgrade(World world, int x, int y, int z, List<ItemStack> contents) {
 				// Set the XACT Crafter
-				world.setBlock( x, y, z, XActMod.machineID, 0, 3 );
+				world.setBlock( x, y, z, ConfigurationManager.machineID, 0, 3 );
 
 				// Give back the contents
 				TileCrafter tile = (TileCrafter) world.getBlockTileEntity( x, y, z );

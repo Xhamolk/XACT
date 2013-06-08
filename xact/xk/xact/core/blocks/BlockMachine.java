@@ -55,17 +55,17 @@ public class BlockMachine extends BlockContainer {
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
-		TileMachine entity = (TileMachine) world.getBlockTileEntity( x, y, z );
+	public void onBlockHarvested(World world, int x, int y, int z, int metadata, EntityPlayer player) {
+		if( player.capabilities.isCreativeMode )
+			return;
 
-		if( entity != null )
+		TileMachine entity = (TileMachine) world.getBlockTileEntity( x, y, z );
+		if( entity != null ) {
 			for( ItemStack stack : entity.getDropItems() ) {
 				if( stack != null )
 					Utils.dropItemAsEntity( world, x, y, z, stack );
 			}
-
-		super.breakBlock( world, x, y, z, par5, par6 );
-		world.removeBlockTileEntity( x, y, z );
+		}
 	}
 
 	@Override
