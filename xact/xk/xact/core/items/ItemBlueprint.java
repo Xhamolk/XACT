@@ -7,18 +7,16 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemMap;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapData;
 import xk.xact.XActMod;
 import xk.xact.util.Textures;
 
 import java.util.List;
 
-public class ItemBlueprint extends ItemMap { // its a "map" for simplicity reasons.
+public class ItemBlueprint extends Item {
 
 	public ItemBlueprint(int itemID) {
 		super( itemID );
@@ -37,16 +35,6 @@ public class ItemBlueprint extends ItemMap { // its a "map" for simplicity reaso
 	@SideOnly(Side.CLIENT) // Item's Texture
 	public void registerIcons(IconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon( Textures.ITEM_BLUEPRINT );
-	}
-
-	@Override
-	public MapData getMapData(ItemStack itemStack, World world) {
-		return null; // this is not really a map.
-	}
-
-	@Override
-	public Packet createMapDataPacket(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer){
-		return null; // no need to send updates to the client.
 	}
 
 	@Override
