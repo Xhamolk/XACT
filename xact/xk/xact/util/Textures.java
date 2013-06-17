@@ -18,6 +18,7 @@ public final class Textures {
 	public static final String ITEM_CASE = "xact:case";
 	public static final String ITEM_CHIP_BLANK = "xact:chip_blank";
 	public static final String ITEM_CHIP_ENCODED = "xact:chip_encoded";
+	public static final String ITEM_CHIP_INVALID = "xact:chip_invalid";
 	public static final String ITEM_PAD_ON = "xact:pad_on";
 	public static final String ITEM_PAD_OFF = "xact:pad_off";
 
