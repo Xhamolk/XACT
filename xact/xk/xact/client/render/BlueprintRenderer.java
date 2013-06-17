@@ -84,8 +84,8 @@ public class BlueprintRenderer implements IItemRenderer {
 
 		// More transformations...
 		var21 = player.getSwingProgress( partialTicks );
-		var10 = MathHelper.sin( var21 * var21 * 3.141593F );
-		float var11 = MathHelper.sin( MathHelper.sqrt_float( var21 ) * 3.141593F );
+		var10 = MathHelper.sin( var21 * var21 * (float)Math.PI );
+		float var11 = MathHelper.sin( MathHelper.sqrt_float( var21 ) * (float)Math.PI );
 		GL11.glRotatef( -var10 * 20.0F, 0.0F, 1.0F, 0.0F );
 		GL11.glRotatef( -var11 * 20.0F, 0.0F, 0.0F, 1.0F );
 		GL11.glRotatef( -var11 * 80.0F, 1.0F, 0.0F, 0.0F );
@@ -143,9 +143,6 @@ public class BlueprintRenderer implements IItemRenderer {
 
 	private void renderContents(RenderEngine renderEngine, FontRenderer fontRenderer, EntityPlayer player, ItemStack itemStack) {
 		GL11.glPushMatrix();
-		GL11.glEnable( GL11.GL_BLEND );
-		GL11.glBlendFunc( GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA );
-		GL11.glDisable( GL11.GL_ALPHA_TEST );
 		float rescale = 0.8f;
 		GL11.glScalef( rescale, rescale, rescale );
 
@@ -157,9 +154,6 @@ public class BlueprintRenderer implements IItemRenderer {
 			}
 		}
 
-		GL11.glScalef( 1.0f / rescale, 1.0f / rescale, 1.0f / rescale ); // not needed?
-		GL11.glEnable( GL11.GL_ALPHA_TEST );
-		GL11.glDisable( GL11.GL_BLEND );
 		GL11.glPopMatrix();
 	}
 
@@ -195,7 +189,7 @@ public class BlueprintRenderer implements IItemRenderer {
 	}
 
 	private void renderItem(ItemStack item, RenderEngine renderEngine, FontRenderer fontRenderer, int xPos, int yPos) {
-		itemRender.zLevel = (float) -0.009999999776482582D;
+		itemRender.zLevel = (float) -0.02f; // was -0.009999999776482582D;
 		itemRender.renderItemAndEffectIntoGUI( fontRenderer, renderEngine, item, xPos, yPos );
 	}
 
@@ -205,6 +199,8 @@ public class BlueprintRenderer implements IItemRenderer {
 
 	private void renderBlock(ItemStack item, RenderEngine renderEngine, FontRenderer fontRenderer, int x, int y) {
 		GL11.glPushMatrix();
+		GL11.glDisable(GL11.GL_LIGHTING);
+
 		renderEngine.bindTexture( "/terrain.png" );
 		GL11.glTranslatef( (float) (x - 2), (float) (y + 3), -11.0f );
 		GL11.glScalef( 10.0F, 10.0F, 10.0F );
@@ -213,7 +209,6 @@ public class BlueprintRenderer implements IItemRenderer {
 		GL11.glRotatef( 210.0F, 1.0F, 0.0F, 0.0F );
 		GL11.glRotatef( 45.0F, 0.0F, 1.0F, 0.0F );
 		GL11.glRotatef( -90.0F, 0.0F, 1.0F, 0.0F );
-		RenderHelper.enableStandardItemLighting();
 
 		int color = Item.itemsList[item.itemID].getColorFromItemStack( item, 0 );
 		float red = (float) (color >> 16 & 255) / 255.0F;
@@ -225,8 +220,6 @@ public class BlueprintRenderer implements IItemRenderer {
 		renderBlocks.useInventoryTint = true;
 		renderBlocks.renderBlockAsItem( block, item.getItemDamage(), 1.0F );
 
-		RenderHelper.disableStandardItemLighting();
-		GL11.glEnable( GL11.GL_CULL_FACE );
 		GL11.glPopMatrix();
 	}
 
