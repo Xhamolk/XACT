@@ -24,8 +24,6 @@ public class ConfigurationManager {
 		encodedChipID = config.getItem( "encodedChip", 9101 ).getInt();
 		caseID = config.getItem( "chipCase", 9102 ).getInt();
 		padID = config.getItem( "craftPad", 9103 ).getInt();
-		blankBlueprintID = config.getItem( "blankBlueprint", 9104 ).getInt();
-		blueprintID = config.getItem( "blueprint", 9105 ).getInt();
 		upgradeToCrafterID = config.getItem( "upgradeToCrafter", 9106 ).getInt();
 
 		ENABLE_MPS_PLUGIN = config.get( "Plug-ins", "enableModularPowerSuitsPlugin", true,
@@ -46,8 +44,6 @@ public class ConfigurationManager {
 		XActMod.itemRecipeEncoded = new ItemChip( encodedChipID, true );
 		XActMod.itemChipCase = new ItemCase( caseID );
 		XActMod.itemCraftPad = new ItemPad( padID );
-		XActMod.itemBlueprintBlank = new ItemBlankBlueprint( blankBlueprintID );
-		XActMod.itemBlueprint = new ItemBlueprint( blueprintID );
 		XActMod.itemUpgradeToCrafter = new ItemUpgrade( upgradeToCrafterID, ItemUpgrade.UpgradeType.ToCrafter );
 	}
 
@@ -63,8 +59,6 @@ public class ConfigurationManager {
 	public static int encodedChipID;
 	public static int caseID;
 	public static int padID;
-	public static int blankBlueprintID;
-	public static int blueprintID;
 	public static int upgradeToCrafterID;
 
 	public static boolean REPLACE_WORKBENCH;

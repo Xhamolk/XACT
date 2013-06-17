@@ -13,8 +13,6 @@ public final class Textures {
 	public static final String GUI_RECIPE = "/mods/xact/textures/gui/GuiRecipe.png";
 
 	// Items
-	public static final String ITEM_BLUEPRINT = "xact:blueprint";
-	public static final String ITEM_BLUEPRINT_BLANK = "xact:blueprint_blank";
 	public static final String ITEM_CASE = "xact:case";
 	public static final String ITEM_CHIP_BLANK = "xact:chip_blank";
 	public static final String ITEM_CHIP_ENCODED = "xact:chip_encoded";
@@ -30,7 +28,6 @@ public final class Textures {
 
 	// Other
 	public static final String MISC_BUTTONS = "/mods/xact/textures/other/buttons_1.png";
-	public static final String BLUEPRINT_BG = "/mods/xact/textures/other/blueprint_bg.png";
 
 	// NEI: Usage Handler
 	public static final String NEI_CHIP_HANDLER = "/mods/xact/textures/gui/ChipHandler.png";

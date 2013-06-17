@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import xk.xact.XActMod;
 import xk.xact.client.KeyBindingHandler;
-import xk.xact.client.render.BlueprintRenderer;
 import xk.xact.client.render.ChipRenderer;
 import xk.xact.client.gui.GuiCase;
 import xk.xact.client.gui.GuiPad;
@@ -37,7 +36,6 @@ public class ClientProxy extends CommonProxy {
 	public void registerRenderInformation() {
 		// Custom IItemRenderer
 		MinecraftForgeClient.registerItemRenderer( XActMod.itemRecipeEncoded.itemID, new ChipRenderer() );
-		MinecraftForgeClient.registerItemRenderer( XActMod.itemBlueprint.itemID, new BlueprintRenderer() );
 	}
 
 	@Override

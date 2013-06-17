@@ -8,10 +8,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import xk.xact.client.GuiUtils;
 import xk.xact.client.gui.hooks.DynamicSlotPaintHook;
-import xk.xact.client.gui.tab.TabBase;
-import xk.xact.client.gui.hooks.TabbedGui;
-
-import java.util.List;
 
 /**
  * Base class for all the Gui components in XACT
@@ -20,7 +16,6 @@ import java.util.List;
  */
 public abstract class GuiXACT extends GuiContainer {
 
-	public final boolean isTabbedGui;
 	public final boolean hasDynamicPaintingHook;
 
 	protected int mouseX = 0;
@@ -28,7 +23,6 @@ public abstract class GuiXACT extends GuiContainer {
 
 	public GuiXACT(Container container) {
 		super( container );
-		this.isTabbedGui = this instanceof TabbedGui;
 		this.hasDynamicPaintingHook = this instanceof DynamicSlotPaintHook;
 	}
 
@@ -44,19 +38,6 @@ public abstract class GuiXACT extends GuiContainer {
 	@Override
 	protected void mouseClicked(int x, int y, int mouseButton) {
 		super.mouseClicked( x, y, mouseButton );
-		if( isTabbedGui ) {
-			TabBase tab = TabBase.getTabAt( (TabbedGui) this, mouseX, mouseY );
-
-			if( tab != null ) {
-				List<TabBase> tabs = ((TabbedGui) this).getTabs();
-				for( TabBase other : tabs ) {
-					if( other != tab && other.side == tab.side && other.open ) {
-						other.toggleOpen();
-					}
-				}
-				tab.toggleOpen();
-			}
-		}
 	}
 
 	@Override
@@ -68,7 +49,6 @@ public abstract class GuiXACT extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partial, int x, int y) {
 		drawBaseTexture();
-		drawTabs();
 		drawToolTip();
 	}
 
@@ -84,25 +64,6 @@ public abstract class GuiXACT extends GuiContainer {
 		this.drawTexturedModalRect( guiLeft, guiTop, 0, 0, this.xSize, this.ySize );
 	}
 
-	protected void drawTabs() {
-		if( !isTabbedGui )
-			return;
-		List<TabBase> tabs = ((TabbedGui) this).getTabs();
-
-		int yPosRight = 4;
-		int yPosLeft = 4;
-
-		for( TabBase tab : tabs ) {
-			tab.update();
-			if( tab.side == TabBase.TabSide.LEFT ) {
-				tab.draw( guiLeft, guiTop + yPosLeft );
-				yPosLeft += tab.currentHeight;
-			} else if( tab.side == TabBase.TabSide.RIGHT ) {
-				tab.draw( guiLeft + xSize, guiTop + yPosRight );
-				yPosRight += tab.currentHeight;
-			}
-		}
-	}
 
 	protected void drawPostForeground(int x, int y) {
 	}

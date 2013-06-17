@@ -51,8 +51,6 @@ public class XActMod {
 	public static Item itemRecipeEncoded;
 	public static Item itemChipCase;
 	public static Item itemCraftPad;
-	public static Item itemBlueprintBlank;
-	public static Item itemBlueprint;
 	public static Item itemUpgradeToCrafter;
 
 	// Blocks
@@ -100,8 +98,6 @@ public class XActMod {
 		LanguageRegistry.addName( itemRecipeEncoded, "\u00a72" + "Recipe Chip" );
 		LanguageRegistry.addName( itemChipCase, "Chip Case" );
 		LanguageRegistry.addName( itemCraftPad, "Craft Pad" );
-		LanguageRegistry.addName( itemBlueprintBlank, "Blank Blueprint" );
-		LanguageRegistry.addName( itemBlueprint, "\u00a76" + "Blueprint" );
 		LanguageRegistry.addName( itemUpgradeToCrafter, ItemUpgrade.UpgradeType.ToCrafter.getLocalizedName() );
 
 		// machine's names
@@ -136,8 +132,6 @@ public class XActMod {
 
 	private void addRecipes() {
 		ItemStack[] ingredients;
-
-		// todo: add blueprint recipe.
 
 		// Recipe Chip
 		GameRegistry.addRecipe( new ItemStack( itemRecipeBlank, 16 ),
