@@ -1,10 +1,11 @@
-package xk.xact.client;
+package xk.xact.client.render;
 
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
+import xk.xact.client.GuiUtils;
 import xk.xact.core.items.ItemChip;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
