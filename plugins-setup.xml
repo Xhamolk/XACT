@@ -78,9 +78,9 @@
 
         <copy todir="${api.src.dir}">
             <fileset dir="${download.dir}/MachineMusePowersuits-master/src/minecraft">
-                <include name="net.machinemuse.api.IModularItem.java"/>
-                <include name="net.machinemuse.api.IPowerModule.java"/>
-                <include name="net.machinemuse.api.IPropertyModifier.java"/>
+                <include name="net/machinemuse/api/IModularItem.java"/>
+                <include name="net/machinemuse/api/IPowerModule.java"/>
+                <include name="net/machinemuse/api/IPropertyModifier.java"/>
             </fileset>
         </copy>
     </target>
