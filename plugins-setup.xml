@@ -81,6 +81,7 @@
                 <include name="net/machinemuse/api/IModularItem.java"/>
                 <include name="net/machinemuse/api/IPowerModule.java"/>
                 <include name="net/machinemuse/api/IPropertyModifier.java"/>
+                <include name="net/machinemuse/api/moduletrigger/IRightClickModule.java"/>
             </fileset>
         </copy>
     </target>
