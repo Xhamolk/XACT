@@ -90,8 +90,6 @@
         <chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x"/>
         <chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x"/>
 
-        <!-- Install Patches -->
-        <ant antfile="plugins-setup.xml" target="apply-patches"/>
 
     </target>
 
