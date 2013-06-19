@@ -1,11 +1,8 @@
 package xk.xact.plugin.mps;
 
 
-import net.machinemuse.api.IModularItem;
 import net.machinemuse.api.moduletrigger.IRightClickModule;
-import net.machinemuse.powersuits.common.ModularPowersuits;
-import net.machinemuse.powersuits.powermodule.PowerModuleBase;
-import net.machinemuse.utils.MuseCommonStrings;
+
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -14,16 +11,16 @@ import xk.xact.XActMod;
 
 import java.util.Arrays;
 
-public class CraftPadModule extends PowerModuleBase implements IRightClickModule {
+public class CraftPadModule extends AbstractModule implements IRightClickModule {
 
 	public static final String MODULE_NAME = "XACT CraftPad";
-	public static final String MODULE_CATEGORY = MuseCommonStrings.CATEGORY_SPECIAL;
+	public static final String MODULE_CATEGORY = "Special"; // MuseCommonStrings.CATEGORY_SPECIAL
 	public static final String MODULE_DESCRIPTION = "Build-in the CraftPad into your Power Tool";
 
 	@SuppressWarnings("unchecked")
 	public CraftPadModule() {
-		super( Arrays.asList( (IModularItem) ModularPowersuits.powerTool ) );
-		addInstallCost( new ItemStack( XActMod.itemCraftPad ) );
+		super( Arrays.asList( PluginForMPS.ModularItems.TOOL.getItem() ) );
+		installCost.add( new ItemStack( XActMod.itemCraftPad ) );
 	}
 
 	@Override
@@ -62,11 +59,6 @@ public class CraftPadModule extends PowerModuleBase implements IRightClickModule
 	@Override
 	public String getName() {
 		return MODULE_NAME;
-	}
-
-	@Override
-	public String getTextureFile() {
-		return null; // unused
 	}
 
 	@Override
