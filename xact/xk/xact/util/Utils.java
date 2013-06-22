@@ -153,4 +153,20 @@ public class Utils {
 		return list;
 	}
 
+	public static boolean[] decodeInt(int source, int length) {
+		boolean[] retValue = new boolean[length];
+		for( int i = 0; i < length; i++ ) {
+			retValue[i] = ((source >> i) & 1) == 1;
+		}
+		return retValue;
+	}
+
+	public static int encodeInt(boolean[] b) {
+		int retValue = 0;
+		for( int i = 0; i < b.length; i++ ) {
+			int foo = b[i] ? 1 : 0;
+			retValue = retValue | (foo << i);
+		}
+		return retValue;
+	}
 }
