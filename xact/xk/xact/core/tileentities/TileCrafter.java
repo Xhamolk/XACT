@@ -123,7 +123,10 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	private CraftRecipe[] recipes = new CraftRecipe[getRecipeCount()];
 
-	public boolean[] missingIngredients = new boolean[9];
+	/**
+	 * The current state of the recipes loaded into this machine.
+	 */
+	public boolean[][] recipeStates = new boolean[getRecipeCount()][9];
 
 	// whether if the recipe's state must be red.
 	public boolean isRedState(int i) {
@@ -146,7 +149,6 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 						notifyClientOfRecipeChanged();
 					}
 				}
-				this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[i] );
 			} else {
 				ItemStack stack = this.circuits.getStackInSlot( i );
 				if( stack == null )
@@ -162,12 +164,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		}
 	}
 
+	// Updates the states of the recipes.
 	public void updateStates() {
 		for( int i = 0; i < getRecipeCount(); i++ ) {
 			// if the recipe can be crafted.
 			craftableRecipes[i] = (recipes[i] != null) && getHandler().canCraft( this.getRecipe( i ), null );
+			recipeStates[i] = getHandler().getMissingIngredientsArray( recipes[i] );
 		}
-		this.missingIngredients = getHandler().getMissingIngredientsArray( recipes[4] );
 	}
 
 	///////////////

@@ -29,10 +29,12 @@ import java.util.Map;
 public class GuiCrafter extends GuiCrafting {
 
 	private TileCrafter crafter;
+	private ContainerCrafter container;
 
 	public GuiCrafter(TileCrafter crafter, EntityPlayer player) {
 		super( new ContainerCrafter( crafter, player ) );
 		this.crafter = crafter;
+		this.container = (ContainerCrafter) super.inventorySlots;
 		this.ySize = 256;
 	}
 
@@ -166,12 +168,8 @@ public class GuiCrafter extends GuiCrafting {
 			return -1; // no overlay when the slot contains "real" items.
 		}
 		int index = slot.slotNumber - 8;
-		int color;
-		if( hoveredRecipe == -1 ) {
-			color = crafter.missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
-		} else {
-			color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
-		}
+		boolean[] missingIngredients = container.recipeStates[hoveredRecipe == -1 ? 4 : hoveredRecipe];
+		int color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
 		return color | TRANSPARENCY;
 	}
 
@@ -212,7 +210,6 @@ public class GuiCrafter extends GuiCrafting {
 		}
 
 		gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
-		missingIngredients = hoveredRecipe == -1 ? crafter.missingIngredients : crafter.getHandler().getMissingIngredientsArray( recipe );
 	}
 
 

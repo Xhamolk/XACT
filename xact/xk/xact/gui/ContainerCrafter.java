@@ -1,14 +1,20 @@
 package xk.xact.gui;
 
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.InteractiveCraftingContainer;
 import xk.xact.core.items.ItemChip;
 import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.recipes.CraftManager;
+import xk.xact.util.Utils;
 
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The container used for the Crafter's GUI.
@@ -21,12 +27,21 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 
 	private int gridFirstSlot;
 
+	/**
+	 * Used to know what ingredients are missing for each recipe.
+	 */
+	public boolean[][] recipeStates;
+
+	private final boolean clientSide; // used to know on what side this container is running.
+
 	public ContainerCrafter(TileCrafter crafter, EntityPlayer player) {
 		this.crafter = crafter;
 		this.player = player;
-		buildContainer();
+		this.clientSide = crafter.worldObj.isRemote;
+		this.recipeStates = new boolean[crafter.getRecipeCount()][9];
 		crafter.updateRecipes();
 		crafter.updateStates();
+		buildContainer();
 	}
 
 	private void buildContainer() {
@@ -335,6 +350,48 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		return retValue;
 	}
 
+	// --------------- Update information ---------------
+
+	@Override
+	public void addCraftingToCrafters(ICrafting iCrafting) {
+		super.addCraftingToCrafters( iCrafting );
+		syncClients( Arrays.asList( iCrafting ) );
+	}
+
+	@Override
+	public void detectAndSendChanges() {
+		super.detectAndSendChanges();
+		if( clientSide ) return;
+
+		syncClients( crafters );
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBar(int var, int value) {
+		if( var < crafter.getRecipeCount() ) { // Update recipe states from server info.
+			recipeStates[var] = Utils.decodeInt( value, 9 );
+		}
+	}
+
+	private void syncClients(List<ICrafting> clients) {
+		if( clients == null || clients.size() == 0 )
+			return;
+
+		int i;
+		int statesCount = crafter.getRecipeCount(); // when needed, add more here.
+
+		for( i = 0; i < statesCount; i++ ) { // Sync recipe states.
+			if( !Arrays.equals( recipeStates[i], crafter.recipeStates[i] ) ) {
+				recipeStates[i] = crafter.recipeStates[i];
+				int encodedState = Utils.encodeInt( recipeStates[i] );
+
+				for( ICrafting client : clients ) {
+					client.sendProgressBarUpdate( this, i, encodedState );
+				}
+			}
+		}
+	}
 
 	// InteractiveCraftingContainer
 	@Override
