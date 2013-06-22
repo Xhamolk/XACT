@@ -289,7 +289,9 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		return true;
 	}
 
-	public void onInventoryChanged() { // this is called when adding stuff through pipes/tubes/etc 
+	@Override
+	public void onInventoryChanged() { // this is called when adding stuff through pipes/tubes/etc
+		super.onInventoryChanged();
 		resources.onInventoryChanged();
 	}
 
