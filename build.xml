@@ -145,13 +145,14 @@
             </filterset>
         </copy>
 
+        <!-- Clean dist dir. -->
+        <delete dir="${dist.dir}"/>
+        <mkdir dir="${dist.dir}"/>
 
         <!-- Pack Jar -->
         <echo message="Packing JAR: ${mod.name} v${mod.version} #${build.number}"/>
         <jar destfile="${dist.dir}/${mod.name} v${mod.version}-${build.number}.jar" basedir="${classes.dir}"/>
 
-        <!-- Clean classes dir. -->
-        <delete dir="${classes.dir}"/>
     </target>
 
 
