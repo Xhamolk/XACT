@@ -39,8 +39,6 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		this.player = player;
 		this.clientSide = crafter.worldObj.isRemote;
 		this.recipeStates = new boolean[crafter.getRecipeCount()][9];
-		crafter.updateRecipes();
-		crafter.updateStates();
 		buildContainer();
 	}
 
