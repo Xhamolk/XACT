@@ -18,6 +18,7 @@ import xk.xact.network.ClientProxy;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.Textures;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +150,7 @@ public class GuiCrafter extends GuiCrafting {
 		int color;
 		if( this.mc.thePlayer.capabilities.isCreativeMode ) {
 			color = GuiUtils.COLOR_BLUE;
-		} else if( crafter.isRedState( recipeIndex ) ) {
+		} else if( Utils.anyOf( container.recipeStates[recipeIndex] ) ) {
 			color = GuiUtils.COLOR_RED;
 		} else {
 			color = GuiUtils.COLOR_GREEN;
