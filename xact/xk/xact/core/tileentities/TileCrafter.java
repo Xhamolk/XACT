@@ -136,7 +136,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			return;
 		}
 
-		if( stateUpdatePending ) {
+		if( stateUpdatePending && !worldObj.isRemote ) {
 			updateStates();
 			stateUpdatePending = false;
 		}
@@ -312,6 +312,8 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		resources.readFromNBT( compound );
 		circuits.readFromNBT( compound );
 		craftGrid.readFromNBT( compound );
+		updateRecipes();
+		stateUpdatePending = true;
 	}
 
 	@Override
