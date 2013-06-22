@@ -17,7 +17,6 @@ import xk.xact.gui.ContainerCrafter;
 import xk.xact.network.ClientProxy;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
-import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Textures;
 
 import java.util.ArrayList;
@@ -163,10 +162,10 @@ public class GuiCrafter extends GuiCrafting {
 	}
 
 	private int getColorForGridSlot(Slot slot) {
-		ItemStack itemInSlot = slot.getStack();
-		if( itemInSlot != null && itemInSlot.stackSize > 0 ) {
-			return -1; // no overlay when the slot contains "real" items.
-		}
+//		ItemStack itemInSlot = slot.getStack();
+//		if( itemInSlot != null && itemInSlot.stackSize > 0 ) {
+//			return -1; // no overlay when the slot contains "real" items.
+//		}
 		int index = slot.slotNumber - 8;
 		boolean[] missingIngredients = container.recipeStates[hoveredRecipe == -1 ? 4 : hoveredRecipe];
 		int color = missingIngredients[index] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
@@ -187,29 +186,16 @@ public class GuiCrafter extends GuiCrafting {
 	}
 
 	private int hoveredRecipe = -1;
-	public ItemStack[] gridContents = new ItemStack[9];
-	public boolean[] missingIngredients = new boolean[9];
+	private final ItemStack[] emptyGrid = new ItemStack[9];
+	public ItemStack[] gridContents = emptyGrid;
 	private static final int TRANSPARENCY = 128 << 24; // 50%
 
 	private void updateGhostContents(int newIndex) {
 		this.hoveredRecipe = newIndex == -1 ? -1 : newIndex % 4;
-		doGhostUpdateLocally();
-	}
-
-	private void doGhostUpdateLocally() {
-		ContainerCrafter container = (ContainerCrafter) this.inventorySlots;
-		TileCrafter crafter = container.crafter;
-
-		CraftRecipe recipe;
-		if( hoveredRecipe == -1 ) {
-			recipe = RecipeUtils.getRecipe( crafter.craftGrid.getContents(), crafter.worldObj );
-		} else if( hoveredRecipe < crafter.getRecipeCount() ) {
-			recipe = crafter.getRecipe( hoveredRecipe );
-		} else {
-			throw new IllegalStateException( "XACT-GuiCrafter: invalid hoveredRecipe index" );
+		if( hoveredRecipe != -1 ) {
+			CraftRecipe recipe = crafter.getRecipe( hoveredRecipe );
+			gridContents = recipe == null ? emptyGrid : recipe.getIngredients();
 		}
-
-		gridContents = recipe == null ? new ItemStack[9] : recipe.getIngredients();
 	}
 
 
