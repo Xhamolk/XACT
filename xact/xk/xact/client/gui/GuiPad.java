@@ -60,12 +60,17 @@ public class GuiPad extends GuiCrafting {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(float partial, int x, int y) {
-		super.drawGuiContainerBackgroundLayer( partial, x, y );
+    protected void drawSlotInventory(Slot slot) {
+        super.drawSlotInventory( slot );
 
-		// Paint the grid's overlays.
-		paintSlotOverlays();
-	}
+        int slotIndex = slot.slotNumber;
+        if( 0 < slotIndex && slotIndex <= 9 ) { // grid slots
+            int color = missingIngredients[slotIndex - 1] ? GuiUtils.COLOR_RED : GuiUtils.COLOR_GRAY;
+            color |= 128 << 24; // transparency
+
+            GuiUtils.paintSlotOverlay( slot, 16, color );
+        }
+    }
 
 	// title: (43,8) size: 88x12
 
@@ -109,31 +114,6 @@ public class GuiPad extends GuiCrafting {
 			}
 			craftPad.recentlyUpdated = false;
 		}
-
-	}
-
-	private void paintSlotOverlays() {
-
-		// Items overlay: (alpha 50%)
-		// normal = gray
-		// missing = red
-
-		int transparency = 128 << 24;
-
-		int gray = transparency | GuiUtils.COLOR_GRAY;
-		int red = transparency | GuiUtils.COLOR_RED;
-
-		for( int index = 1; index <= 9; index++ ) {
-			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( index );
-			if( slot == null )
-				continue;
-
-			int color = missingIngredients[index - 1] ? red : gray;
-
-			GuiUtils.paintSlotOverlay( slot, 16, color );
-		}
-
-		// todo: paint the overlay on the output slot.
 
 	}
 
