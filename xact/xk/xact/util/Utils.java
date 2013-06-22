@@ -169,4 +169,19 @@ public class Utils {
 		}
 		return retValue;
 	}
+
+	public static boolean anyOf(boolean[] array) {
+		for( boolean b : array ) {
+			if( b ) return true;
+		}
+		return false;
+	}
+
+	public static boolean allOf(boolean[] array) {
+		for( boolean b : array ) {
+			if( b ) return false;
+		}
+		return true;
+	}
+
 }

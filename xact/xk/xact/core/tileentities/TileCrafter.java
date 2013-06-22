@@ -142,11 +142,6 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		}
 	}
 
-	// whether if the recipe's state must be red.
-	public boolean isRedState(int i) {
-		return recipes[i] != null && !craftableRecipes[i];
-	}
-
 	// Gets the recipe's result.
 	public ItemStack getRecipeResult(int slot) {
 		CraftRecipe recipe = this.getRecipe( slot );
