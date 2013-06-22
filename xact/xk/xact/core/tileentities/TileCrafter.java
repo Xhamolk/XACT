@@ -64,13 +64,15 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	// Should only be accessed client-side for rendering purposes.
 	public boolean recentlyUpdated = false;
 
+	private boolean stateUpdatePending = false;
+
 	public TileCrafter() {
 		this.results = new Inventory( getRecipeCount(), "Results" );
 		this.circuits = new Inventory( 4, "Encoded Recipes" ) {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				TileCrafter.this.updateStates();
+				stateUpdatePending = true;
 				recentlyUpdated = true;
 			}
 		};
@@ -78,14 +80,14 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				TileCrafter.this.updateStates();
+				stateUpdatePending = true;
 				recentlyUpdated = true;
 			}
 		};
 		this.resources = new Inventory( 3 * 9, "Resources" ) {
 			@Override
 			public void onInventoryChanged() {
-				TileCrafter.this.updateStates();
+				stateUpdatePending = true;
 				recentlyUpdated = true;
 			}
 		};
@@ -127,6 +129,18 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 * The current state of the recipes loaded into this machine.
 	 */
 	public boolean[][] recipeStates = new boolean[getRecipeCount()][9];
+
+	@Override
+	public void updateEntity() {
+		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
+			return;
+		}
+
+		if( stateUpdatePending ) {
+			updateStates();
+			stateUpdatePending = false;
+		}
+	}
 
 	// whether if the recipe's state must be red.
 	public boolean isRedState(int i) {

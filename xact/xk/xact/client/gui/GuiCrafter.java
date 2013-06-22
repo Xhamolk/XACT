@@ -41,8 +41,6 @@ public class GuiCrafter extends GuiCrafting {
 	@SuppressWarnings("unchecked")
 	public void initGui() {
 		super.initGui();
-		crafter.updateRecipes();
-		crafter.updateStates();
 		updateGhostContents( -1 );
 		/* Buttons:
 			 *  42, 21.     120, 21
