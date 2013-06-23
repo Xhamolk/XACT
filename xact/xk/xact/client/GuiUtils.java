@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import xk.xact.network.ClientProxy;
 import xk.xact.util.CustomPacket;
 import xk.xact.util.Utils;
 
@@ -217,5 +218,14 @@ public class GuiUtils {
 
 	public static void bindTexture(String texture) {
 		Minecraft.getMinecraft().renderEngine.bindTexture( texture );
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static void openGui(int guiID) {
+		try {
+			ClientProxy.getNetClientHandler().addToSendQueue( CustomPacket.openGui( guiID ).toPacket() );
+		} catch( IOException e ) {
+			Utils.logException( "Problem opening GUI (id: "+ guiID+")", e, false );
+		}
 	}
 }
