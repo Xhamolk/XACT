@@ -190,7 +190,7 @@ public class GuiUtils {
 	}
 
 	public static Slot getHoveredSlot(Container container, int mouseX, int mouseY) {
-		Utils.debug( String.format( "Getting slot at: (%s, %s)", mouseX, mouseY ) );
+		Utils.debug( "Getting slot at: (%s, %s)", mouseX, mouseY );
 
 		for( int i = 0; i < container.inventorySlots.size(); i++ ) {
 			Slot slot = container.getSlot( i );

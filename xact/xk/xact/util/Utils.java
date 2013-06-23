@@ -26,18 +26,18 @@ public class Utils {
 		}
 	}
 
-	public static void debug(String message) {
+	public static void debug(String message, Object... data) {
 		if( ConfigurationManager.DEBUG_MODE )
-			XActMod.logger.fine( message );
+			XActMod.logger.fine( String.format( message, data ) );
 
 	}
 
-	public static void log(String string) {
-		XActMod.logger.info( string );
+	public static void log(String message, Object... data) {
+		XActMod.logger.info( String.format( message, data ) );
 	}
 
-	public static void logError(String string) {
-		XActMod.logger.warning( string );
+	public static void logError(String message, Object... data) {
+		XActMod.logger.warning( String.format( message, data ) );
 	}
 
 	public static void logException(String string, Exception exception, boolean stopGame) {
