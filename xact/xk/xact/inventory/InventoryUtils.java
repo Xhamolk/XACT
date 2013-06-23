@@ -1,6 +1,7 @@
 package xk.xact.inventory;
 
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -184,6 +185,22 @@ public class InventoryUtils {
 		Inventory inventory = new Inventory( 9, "" );
 		inventory.setContents( items );
 		return simulateCraftingInventory( null, inventory );
+	}
+
+	/**
+	 * Whether if the player has the specified item in it's hotbar.
+	 *
+	 * @param player    the player
+	 * @param itemStack the item that must be on the player's hotbar.
+	 */
+	public static boolean checkHotbar(EntityPlayer player, ItemStack itemStack) {
+		for( int i = 0; i < 9; i++ ) {
+			ItemStack current = player.inventory.mainInventory[i];
+			if( current != null && InventoryUtils.similarStacks( itemStack, current, false ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
