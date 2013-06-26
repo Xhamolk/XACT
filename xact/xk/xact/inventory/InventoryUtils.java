@@ -9,6 +9,9 @@ import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import xk.xact.api.IInventoryAdapter;
+import xk.xact.inventory.adapter.LinearInventory;
+import xk.xact.util.InvalidInventoryAdapterException;
 
 public class InventoryUtils {
 
@@ -201,6 +204,17 @@ public class InventoryUtils {
 			}
 		}
 		return false;
+	}
+
+	public static IInventoryAdapter getInventoryAdapter(Object inventory) {
+		if( inventory != null ) {
+			if( inventory instanceof IInventory ) {
+				return new LinearInventory( (IInventory) inventory );
+			}
+
+			throw new InvalidInventoryAdapterException( inventory.getClass() );
+		}
+		return null;
 	}
 
 }
