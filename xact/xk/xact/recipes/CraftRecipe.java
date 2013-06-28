@@ -10,6 +10,9 @@ import xk.xact.inventory.InventoryUtils;
 import xk.xact.util.ItemsList;
 import xk.xact.util.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The representation of a crafting recipe.
  * Is the one stored on the
@@ -84,6 +87,37 @@ public class CraftRecipe {
 		}
 
 		return simpleIngredients = list.toArray();
+	}
+
+	/**
+	 * Generates a map that links the simplified ingredients indexes with the position on the grid.
+	 * <p>
+	 * Key: the simplified ingredient index.
+	 * Map: the grid index.
+	 */
+	public Map<Integer, int[]> getGridIndexes() {
+		ItemStack[] ingredients = getIngredients();
+		ItemStack[] simplifiedIngredients = getSimplifiedIngredients();
+		Map<Integer, int[]> map = new HashMap<Integer, int[]>();
+
+		for( int simplifiedIndex = 0; simplifiedIndex < simplifiedIngredients.length; simplifiedIndex++ ) {
+			ItemStack current = simplifiedIngredients[simplifiedIndex];
+			int count = 0;
+
+			for( int gridIndex = 0; count < current.stackSize && gridIndex < ingredients.length; gridIndex++ ) {
+				if( ingredients[gridIndex] != null && ingredients[gridIndex].isItemEqual( current )
+						&& ItemStack.areItemStackTagsEqual( ingredients[gridIndex], current ) ) {
+
+					if( !map.containsKey( simplifiedIndex ) ) {
+						map.put( simplifiedIndex, new int[current.stackSize] );
+					}
+					map.get( simplifiedIndex )[count] = gridIndex;
+					count++;
+				}
+			}
+		}
+
+		return map;
 	}
 
 	/**
