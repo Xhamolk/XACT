@@ -2,15 +2,12 @@ package xk.xact.api;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import xk.xact.inventory.InvSlot;
-import xk.xact.inventory.InvSlotIterator;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.network.CommonProxy;
 import xk.xact.recipes.CraftRecipe;
@@ -18,6 +15,8 @@ import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static xk.xact.util.Utils.copyArray;
 
@@ -43,7 +42,7 @@ public abstract class CraftingHandler {
 	public static CraftingHandler createCraftingHandler(final ICraftingDevice device) {
 		return new CraftingHandler( device ) {
 			@Override
-			public IInventory[] getAvailableInventories() {
+			public List getAvailableInventories() {
 				return device.getAvailableInventories();
 			}
 		};
@@ -134,10 +133,13 @@ public abstract class CraftingHandler {
 
 				if( containerStack != null ) {
 					if( stackInSlot.getItem().doesContainerItemLeaveCraftingGrid( stackInSlot ) ) {
-						for( IInventory inv : device.getAvailableInventories() ) {
-							containerStack = InventoryUtils.addStackToInventory( containerStack, inv, false );
-							if( containerStack == null )
-								continue mainLoop;
+						for( Object inventory : getAvailableInventories() ) {
+							IInventoryAdapter adapter = InventoryUtils.getInventoryAdapter( inventory );
+							if( adapter != null ) {
+								containerStack = adapter.placeItem( containerStack );
+								if( containerStack == null )
+									continue mainLoop;
+							}
 						}
 					}
 
@@ -175,24 +177,16 @@ public abstract class CraftingHandler {
 		if( stack == null )
 			return true; // technically, counts as a success.
 
-		for( IInventory inv : getAvailableInventories() ) {
-			// Merge with existing stacks.
-			ItemStack remaining = InventoryUtils.addStackToInventory( stack, inv, true );
-			if( remaining == null ) {
+		for( Object inventory : getAvailableInventories() ) {
+			IInventoryAdapter adapter = InventoryUtils.getInventoryAdapter( inventory );
+			ItemStack result = adapter.placeItem( stack );
+			if( result == null ) {
 				stack.stackSize = 0;
 				return true;
+			} else {
+				stack.stackSize = result.stackSize;
 			}
-
-			// Add to the first empty slot available.
-			remaining = InventoryUtils.addStackToInventory( remaining, inv, false );
-			if( remaining == null ) {
-				stack.stackSize = 0;
-				return true;
-			}
-
-			stack.stackSize = remaining.stackSize;
 		}
-
 		return false;
 	}
 
@@ -202,9 +196,9 @@ public abstract class CraftingHandler {
 	 * <p/>
 	 * You might want (or not) to include the player's inventory at the end of this list.
 	 *
-	 * @return an array of IInventory objects.
+	 * @return a list of inventories.
 	 */
-	public abstract IInventory[] getAvailableInventories();
+	public abstract List getAvailableInventories();
 
 
 	/**
@@ -218,17 +212,20 @@ public abstract class CraftingHandler {
 	 */
 	public int getCountFor(CraftRecipe recipe, ItemStack stack, boolean countAll) {
 		int found = 0;
-		IInventory[] inventories = getAvailableInventories();
 		int ingredientIndex = RecipeUtils.getIngredientIndex( recipe, stack );
 		if( ingredientIndex == -1 )
 			return 0; // not an ingredient! do something!
-		for( IInventory inv : inventories ) {
-			for( InvSlot slot : InvSlotIterator.createNewFor( inv ) ) {
-				if( !countAll && found >= stack.stackSize )
-					return found; // prevent counting on more if found enough already.
-
-				if( slot != null && !slot.isEmpty() && slotContainsIngredient( slot, recipe, ingredientIndex ) )
-					found += slot.stack.stackSize;
+		for( Object inventory : getAvailableInventories() ) {
+			IInventoryAdapter adapter = InventoryUtils.getInventoryAdapter( inventory );
+			for( ItemStack item : adapter ) {
+				if( !countAll && found >= stack.stackSize ) {
+					return found;
+				}
+				if( item == null )
+					continue;
+				if( isItemMatchingIngredient( item, recipe, ingredientIndex ) ) {
+					found += item.stackSize;
+				}
 			}
 		}
 		return found;
@@ -349,66 +346,55 @@ public abstract class CraftingHandler {
 	}
 
 	protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe, boolean doRemove) {
-		ItemStack[] ingredients = recipe.getIngredients();
-		ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
+		Map<Integer, int[]> gridIndexes = recipe.getGridIndexes();
+		ItemStack[] simplifiedIngredients = recipe.getSimplifiedIngredients();
+		ItemStack[] contents = new ItemStack[9];
 
-		items:
-		for( int i = 0; i < ingredients.length; i++ ) {
-			ItemStack ingredient = ingredients[i];
-			if( ingredient == null ) {
-				continue;
-			}
+		ingredient:
+		for( int i = 0; i < simplifiedIngredients.length; i++ ) {
+			int[] indexes = gridIndexes.get( i );
+			int required = simplifiedIngredients[i].stackSize;
 
-			int required = ingredient.stackSize;
+			for( Object inventory : getAvailableInventories() ) {
+				IInventoryAdapter adapter = InventoryUtils.getInventoryAdapter( inventory );
+				for( ItemStack item : adapter ) {
+					if( required <= 0 ) {
+						continue ingredient; // next ingredient
+					}
+					if( item == null || item.stackSize <= 0 ) {
+						continue; // next inventory item
+					}
 
-			// iterate through every slot on every available inventory.
-			for( IInventory inv : getAvailableInventories() ) {
-				for( InvSlot slot : InvSlotIterator.createNewFor( inv ) ) {
-					if( required <= 0 ) continue items;
-					if( slot == null )
-						continue;
+					int available = item.stackSize;
+					for( int index : indexes ) {
+						if( required <= 0 || available <= 0 )
+							break;
 
-					if( slotContainsIngredient( slot, recipe, i ) ) {
-						ItemStack stackInSlot = inv.getStackInSlot( slot.slotIndex );
-
-						if( stackInSlot.stackSize > required ) {
-
-							if( doRemove ) {
-								contents[i] = inv.decrStackSize( slot.slotIndex, required );
-								inv.onInventoryChanged();
-							} else {
-								contents[i] = stackInSlot.copy();
-								contents[i].stackSize = required;
-							}
-							continue items;
-						} else {
-							if( contents[i] == null ) {
-								contents[i] = doRemove ? stackInSlot : stackInSlot.copy();
-							} else {
-								contents[i].stackSize += stackInSlot.stackSize;
-							}
-							required -= stackInSlot.stackSize;
-							if( doRemove ) {
-								inv.setInventorySlotContents( slot.slotIndex, null );
-								inv.onInventoryChanged();
-							}
+						if( contents[index] != null || !isItemMatchingIngredient( item, recipe, index )) {
+							continue; // try on next grid slot.
 						}
+
+						if( doRemove ) {
+							contents[index] = adapter.takeItem( item, 1 );
+						} else {
+							contents[index] = item.copy();
+							contents[index].stackSize = 1;
+						}
+						required--;
+						available -= contents[index] == null ? 0 : contents[index].stackSize;
 					}
 				}
 			}
-			// should find the all items, since canCraft was true.
 		}
 		return contents;
 	}
 
-	protected boolean slotContainsIngredient(InvSlot slot, CraftRecipe recipe, int ingredientIndex) {
-		if( slot == null || slot.isEmpty() )
+	protected boolean isItemMatchingIngredient(ItemStack item, CraftRecipe recipe, int ingredientIndex) {
+		if( item == null )
 			return false;
-
 		ItemStack ingredient = recipe.getIngredients()[ingredientIndex];
 
-		// the direct comparison.
-		if( slot.containsItemsFrom( ingredient ) )
+		if( InventoryUtils.similarStacks( item, ingredient, true ) )
 			return true;
 
 		// Ore dictionary?
@@ -419,10 +405,10 @@ public abstract class CraftingHandler {
 				ArrayList<ItemStack> equivalencies = OreDictionary.getOres( oreID );
 
 				for( ItemStack current : equivalencies ) {
-					if( slot.containsItemsFrom( current ) ) // do I need this initial check?
+					if( InventoryUtils.similarStacks( item, current, true ) ) // do I need this initial check?
 						return true;
-					if( slot.stack.itemID == current.itemID ) {
-						if( current.getItemDamage() == -1 || slot.stack.getItemDamage() == current.getItemDamage() )
+					if( item.itemID == current.itemID ) {
+						if( current.getItemDamage() == -1 || item.getItemDamage() == current.getItemDamage() )
 							return true;
 					}
 				}
@@ -430,7 +416,7 @@ public abstract class CraftingHandler {
 		}
 
 		// regular test: if replacing the item on that spot still matches with the recipe.
-		return recipe.matchesIngredient( ingredientIndex, slot.stack, device.getWorld() );
+		return recipe.matchesIngredient( ingredientIndex, item, device.getWorld() );
 	}
 
 }

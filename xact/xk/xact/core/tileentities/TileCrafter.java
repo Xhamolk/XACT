@@ -21,6 +21,8 @@ import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Xhamolk_
@@ -64,15 +66,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	// Should only be accessed client-side for rendering purposes.
 	public boolean recentlyUpdated = false;
 
-	private boolean stateUpdatePending = false;
-
 	public TileCrafter() {
 		this.results = new Inventory( getRecipeCount(), "Results" );
 		this.circuits = new Inventory( 4, "Encoded Recipes" ) {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				stateUpdatePending = true;
+				updateStates();
 				recentlyUpdated = true;
 			}
 		};
@@ -80,14 +80,14 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				stateUpdatePending = true;
+				updateStates();
 				recentlyUpdated = true;
 			}
 		};
 		this.resources = new Inventory( 3 * 9, "Resources" ) {
 			@Override
 			public void onInventoryChanged() {
-				stateUpdatePending = true;
+				updateStates();
 				recentlyUpdated = true;
 			}
 		};
@@ -130,17 +130,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public boolean[][] recipeStates = new boolean[getRecipeCount()][9];
 
-	@Override
-	public void updateEntity() {
-		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
-			return;
-		}
-
-		if( stateUpdatePending && !worldObj.isRemote ) {
-			updateStates();
-			stateUpdatePending = false;
-		}
-	}
+//	@Override
+//	public void updateEntity() {
+//		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
+//			return;
+//		}
+//		// Leaving this here in case I need to tick something later.
+//	}
 
 	// Gets the recipe's result.
 	public ItemStack getRecipeResult(int slot) {
@@ -154,7 +150,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			if( i == 4 ) {
 				recipes[i] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
 				if( recipes[i] != null ) {
-					if( this.worldObj.isRemote ) { // client-side only
+					if( this.worldObj != null && this.worldObj.isRemote ) { // client-side only
 						notifyClientOfRecipeChanged();
 					}
 				}
@@ -185,19 +181,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///////////////
 	///// ICraftingDevice
 
-	/**
-	 * Gets all the available inventories.
-	 * In other words, all the inventories from which this crafter can pull resources.
-	 * Adjacent chests (except on the top) will be included.
-	 *
-	 * @return an array of all the available IInventories.
-	 */
-	public IInventory[] getAvailableInventories() {
+	@Override
+	public List getAvailableInventories() {
 		// Pulling from adjacent inventories is pending until I find a solution for the client-side issues.
 //		List<IInventory> list = Utils.getAdjacentInventories( worldObj, xCoord, yCoord, zCoord );
 //		list.add( 0, resources );
 //		return list.toArray( new IInventory[0] );
-		return new IInventory[] { resources };
+		return Arrays.asList( resources );
 	}
 
 	@Override
@@ -313,7 +303,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		circuits.readFromNBT( compound );
 		craftGrid.readFromNBT( compound );
 		updateRecipes();
-		stateUpdatePending = true;
+		updateStates();
 	}
 
 	@Override
