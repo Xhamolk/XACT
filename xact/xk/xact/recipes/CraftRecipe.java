@@ -25,6 +25,8 @@ public class CraftRecipe {
 
 	private ItemStack[] simpleIngredients = null;
 
+	private Map<Integer, int[]> indexMap = null;
+
 	public final int size;
 
 	public int recipeID = -1;
@@ -96,9 +98,12 @@ public class CraftRecipe {
 	 * Map: the grid index.
 	 */
 	public Map<Integer, int[]> getGridIndexes() {
+		if( indexMap != null )
+			return indexMap;
+
 		ItemStack[] ingredients = getIngredients();
 		ItemStack[] simplifiedIngredients = getSimplifiedIngredients();
-		Map<Integer, int[]> map = new HashMap<Integer, int[]>();
+		indexMap = new HashMap<Integer, int[]>();
 
 		for( int simplifiedIndex = 0; simplifiedIndex < simplifiedIngredients.length; simplifiedIndex++ ) {
 			ItemStack current = simplifiedIngredients[simplifiedIndex];
@@ -108,16 +113,16 @@ public class CraftRecipe {
 				if( ingredients[gridIndex] != null && ingredients[gridIndex].isItemEqual( current )
 						&& ItemStack.areItemStackTagsEqual( ingredients[gridIndex], current ) ) {
 
-					if( !map.containsKey( simplifiedIndex ) ) {
-						map.put( simplifiedIndex, new int[current.stackSize] );
+					if( !indexMap.containsKey( simplifiedIndex ) ) {
+						indexMap.put( simplifiedIndex, new int[current.stackSize] );
 					}
-					map.get( simplifiedIndex )[count] = gridIndex;
+					indexMap.get( simplifiedIndex )[count] = gridIndex;
 					count++;
 				}
 			}
 		}
 
-		return map;
+		return indexMap;
 	}
 
 	/**
