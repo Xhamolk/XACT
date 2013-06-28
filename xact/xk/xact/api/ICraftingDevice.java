@@ -1,8 +1,9 @@
 package xk.xact.api;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.world.World;
 import xk.xact.recipes.CraftRecipe;
+
+import java.util.List;
 
 /**
  * Used by the CraftingHandler.
@@ -14,10 +15,10 @@ public interface ICraftingDevice { // todo: javadoc.
 	 * <p/>
 	 * You might want (or not) to include the player's inventory at the end of this list.
 	 *
-	 * @return an array of IInventory objects.
+	 * @return a list of inventories.
 	 * @see CraftingHandler#createCraftingHandler(ICraftingDevice)
 	 */
-	public abstract IInventory[] getAvailableInventories();
+	public abstract List getAvailableInventories();
 
 
 	public abstract int getRecipeCount();

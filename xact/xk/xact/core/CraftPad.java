@@ -14,6 +14,9 @@ import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.inventory.Inventory;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  *
@@ -98,8 +101,8 @@ public class CraftPad implements ICraftingDevice {
 	/// ICraftingDevice
 
 	@Override
-	public final IInventory[] getAvailableInventories() {
-		return new IInventory[] {player.inventory};
+	public final List getAvailableInventories() {
+		return Arrays.asList( player.inventory );
 	}
 
 	@Override

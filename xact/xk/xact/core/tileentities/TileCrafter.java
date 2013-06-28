@@ -21,6 +21,8 @@ import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Xhamolk_
@@ -154,7 +156,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			if( i == 4 ) {
 				recipes[i] = RecipeUtils.getRecipe( craftGrid.getContents(), this.worldObj );
 				if( recipes[i] != null ) {
-					if( this.worldObj.isRemote ) { // client-side only
+					if( this.worldObj != null && this.worldObj.isRemote ) { // client-side only
 						notifyClientOfRecipeChanged();
 					}
 				}
@@ -185,19 +187,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///////////////
 	///// ICraftingDevice
 
-	/**
-	 * Gets all the available inventories.
-	 * In other words, all the inventories from which this crafter can pull resources.
-	 * Adjacent chests (except on the top) will be included.
-	 *
-	 * @return an array of all the available IInventories.
-	 */
-	public IInventory[] getAvailableInventories() {
+	@Override
+	public List getAvailableInventories() {
 		// Pulling from adjacent inventories is pending until I find a solution for the client-side issues.
 //		List<IInventory> list = Utils.getAdjacentInventories( worldObj, xCoord, yCoord, zCoord );
 //		list.add( 0, resources );
 //		return list.toArray( new IInventory[0] );
-		return new IInventory[] { resources };
+		return Arrays.asList( resources );
 	}
 
 	@Override
