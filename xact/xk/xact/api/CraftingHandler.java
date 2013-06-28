@@ -346,47 +346,45 @@ public abstract class CraftingHandler {
 	}
 
 	protected ItemStack[] findAndGetRecipeIngredients(CraftRecipe recipe, boolean doRemove) {
-		ItemStack[] ingredients = recipe.getIngredients();
-		ItemStack[] contents = new ItemStack[recipe.size]; // the return value.
+		Map<Integer, int[]> gridIndexes = recipe.getGridIndexes();
+		ItemStack[] simplifiedIngredients = recipe.getSimplifiedIngredients();
+		ItemStack[] contents = new ItemStack[9];
 
-		items:
-		for( int i = 0; i < ingredients.length; i++ ) {
-			ItemStack ingredient = ingredients[i];
-			if( ingredient == null ) {
-				continue;
-			}
+		ingredient:
+		for( int i = 0; i < simplifiedIngredients.length; i++ ) {
+			int[] indexes = gridIndexes.get( i );
+			int required = simplifiedIngredients[i].stackSize;
 
-			int required = ingredient.stackSize;
-
-			// iterate through every slot on every available inventory.
 			for( Object inventory : getAvailableInventories() ) {
 				IInventoryAdapter adapter = InventoryUtils.getInventoryAdapter( inventory );
 				for( ItemStack item : adapter ) {
-					if( required <= 0 )
-						continue items;
-					if( item == null ) continue; // next slot
-					if( isItemMatchingIngredient( item, recipe, i ) ) {
-						if( item.stackSize > required ) {
-							if( doRemove ) {
-								contents[i] = adapter.takeItem( item, required );
-							} else {
-								contents[i] = item.copy();
-								contents[i].stackSize = required;
-							}
-							continue items;
-						} else {
-							ItemStack s = doRemove ? adapter.takeItem( item, required ) : item.copy();
-							if( contents[i] == null ) {
-								contents[i] = s;
-							} else {
-								contents[i].stackSize += s.stackSize;
-							}
-							required -= s.stackSize;
+					if( required <= 0 ) {
+						continue ingredient; // next ingredient
+					}
+					if( item == null || item.stackSize <= 0 ) {
+						continue; // next inventory item
+					}
+
+					int available = item.stackSize;
+					for( int index : indexes ) {
+						if( required <= 0 || available <= 0 )
+							break;
+
+						if( contents[index] != null || !isItemMatchingIngredient( item, recipe, index )) {
+							continue; // try on next grid slot.
 						}
+
+						if( doRemove ) {
+							contents[index] = adapter.takeItem( item, 1 );
+						} else {
+							contents[index] = item.copy();
+							contents[index].stackSize = 1;
+						}
+						required--;
+						available -= contents[index] == null ? 0 : contents[index].stackSize;
 					}
 				}
 			}
-			// should find the all items, since canCraft was true.
 		}
 		return contents;
 	}
