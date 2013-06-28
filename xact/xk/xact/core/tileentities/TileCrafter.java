@@ -66,15 +66,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	// Should only be accessed client-side for rendering purposes.
 	public boolean recentlyUpdated = false;
 
-	private boolean stateUpdatePending = false;
-
 	public TileCrafter() {
 		this.results = new Inventory( getRecipeCount(), "Results" );
 		this.circuits = new Inventory( 4, "Encoded Recipes" ) {
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				stateUpdatePending = true;
+				updateStates();
 				recentlyUpdated = true;
 			}
 		};
@@ -82,14 +80,14 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				stateUpdatePending = true;
+				updateStates();
 				recentlyUpdated = true;
 			}
 		};
 		this.resources = new Inventory( 3 * 9, "Resources" ) {
 			@Override
 			public void onInventoryChanged() {
-				stateUpdatePending = true;
+				updateStates();
 				recentlyUpdated = true;
 			}
 		};
@@ -132,17 +130,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public boolean[][] recipeStates = new boolean[getRecipeCount()][9];
 
-	@Override
-	public void updateEntity() {
-		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
-			return;
-		}
-
-		if( stateUpdatePending && !worldObj.isRemote ) {
-			updateStates();
-			stateUpdatePending = false;
-		}
-	}
+//	@Override
+//	public void updateEntity() {
+//		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
+//			return;
+//		}
+//		// Leaving this here in case I need to tick something later.
+//	}
 
 	// Gets the recipe's result.
 	public ItemStack getRecipeResult(int slot) {
@@ -309,7 +303,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		circuits.readFromNBT( compound );
 		craftGrid.readFromNBT( compound );
 		updateRecipes();
-		stateUpdatePending = true;
+		updateStates();
 	}
 
 	@Override
