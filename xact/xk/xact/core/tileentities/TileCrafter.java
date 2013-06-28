@@ -62,6 +62,9 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public final Inventory resources; // size = 3*9 = 27
 
+	// Used to trigger state updates on the next tick.
+	private boolean stateUpdatePending = false;
+
 	// Used by GuiCrafter to update it's internal state.
 	// Should only be accessed client-side for rendering purposes.
 	public boolean recentlyUpdated = false;
@@ -72,7 +75,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				updateStates();
+				stateUpdatePending = true;
 				recentlyUpdated = true;
 			}
 		};
@@ -80,7 +83,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			@Override
 			public void onInventoryChanged() {
 				TileCrafter.this.updateRecipes();
-				updateStates();
+				stateUpdatePending = true;
 				recentlyUpdated = true;
 			}
 		};
@@ -130,13 +133,17 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	 */
 	public boolean[][] recipeStates = new boolean[getRecipeCount()][9];
 
-//	@Override
-//	public void updateEntity() {
-//		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
-//			return;
-//		}
-//		// Leaving this here in case I need to tick something later.
-//	}
+	@Override
+	public void updateEntity() {
+		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
+			return;
+		}
+		// Leaving this here in case I need to tick something later.
+		if( stateUpdatePending ) {
+			updateStates();
+			stateUpdatePending = false;
+		}
+	}
 
 	// Gets the recipe's result.
 	public ItemStack getRecipeResult(int slot) {
@@ -303,7 +310,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		circuits.readFromNBT( compound );
 		craftGrid.readFromNBT( compound );
 		updateRecipes();
-		updateStates();
+		stateUpdatePending = true;
 	}
 
 	@Override
