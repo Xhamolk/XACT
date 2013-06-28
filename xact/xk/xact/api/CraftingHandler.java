@@ -2,7 +2,6 @@ package xk.xact.api;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -16,6 +15,8 @@ import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static xk.xact.util.Utils.copyArray;
 
@@ -41,7 +42,7 @@ public abstract class CraftingHandler {
 	public static CraftingHandler createCraftingHandler(final ICraftingDevice device) {
 		return new CraftingHandler( device ) {
 			@Override
-			public IInventory[] getAvailableInventories() {
+			public List getAvailableInventories() {
 				return device.getAvailableInventories();
 			}
 		};
@@ -132,10 +133,13 @@ public abstract class CraftingHandler {
 
 				if( containerStack != null ) {
 					if( stackInSlot.getItem().doesContainerItemLeaveCraftingGrid( stackInSlot ) ) {
-						for( IInventory inv : device.getAvailableInventories() ) {
-							containerStack = InventoryUtils.addStackToInventory( containerStack, inv, false );
-							if( containerStack == null )
-								continue mainLoop;
+						for( Object inventory : getAvailableInventories() ) {
+							IInventoryAdapter adapter = InventoryUtils.getInventoryAdapter( inventory );
+							if( adapter != null ) {
+								containerStack = adapter.placeItem( containerStack );
+								if( containerStack == null )
+									continue mainLoop;
+							}
 						}
 					}
 
@@ -192,9 +196,9 @@ public abstract class CraftingHandler {
 	 * <p/>
 	 * You might want (or not) to include the player's inventory at the end of this list.
 	 *
-	 * @return an array of IInventory objects.
+	 * @return a list of inventories.
 	 */
-	public abstract IInventory[] getAvailableInventories();
+	public abstract List getAvailableInventories();
 
 
 	/**
@@ -220,7 +224,7 @@ public abstract class CraftingHandler {
 				if( item == null )
 					continue;
 				if( isItemMatchingIngredient( item, recipe, ingredientIndex ) ) {
-					found += stack.stackSize;
+					found += item.stackSize;
 				}
 			}
 		}
@@ -358,7 +362,9 @@ public abstract class CraftingHandler {
 			for( Object inventory : getAvailableInventories() ) {
 				IInventoryAdapter adapter = InventoryUtils.getInventoryAdapter( inventory );
 				for( ItemStack item : adapter ) {
-					if( item == null ) continue;
+					if( required <= 0 )
+						continue items;
+					if( item == null ) continue; // next slot
 					if( isItemMatchingIngredient( item, recipe, i ) ) {
 						if( item.stackSize > required ) {
 							if( doRemove ) {
@@ -369,16 +375,13 @@ public abstract class CraftingHandler {
 							}
 							continue items;
 						} else {
+							ItemStack s = doRemove ? adapter.takeItem( item, required ) : item.copy();
 							if( contents[i] == null ) {
-								contents[i] = item.copy();
+								contents[i] = s;
 							} else {
-								contents[i].stackSize += item.stackSize;
+								contents[i].stackSize += s.stackSize;
 							}
-							required -= item.stackSize;
-
-							if( doRemove ) {
-								adapter.takeItem( item, item.stackSize );
-							}
+							required -= s.stackSize;
 						}
 					}
 				}

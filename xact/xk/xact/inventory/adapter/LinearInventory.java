@@ -46,6 +46,7 @@ public class LinearInventory implements IInventoryAdapter {
 				} else {
 					toAdd = slot.stack.copy();
 					quantity -= slot.stack.stackSize;
+					inventory.setInventorySlotContents( slot.slotIndex, null );
 				}
 				if( toAdd != null ) {
 					inventory.onInventoryChanged();
