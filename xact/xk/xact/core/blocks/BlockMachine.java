@@ -2,6 +2,7 @@ package xk.xact.core.blocks;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -65,6 +66,17 @@ public class BlockMachine extends BlockContainer {
 				if( stack != null )
 					Utils.dropItemAsEntity( world, x, y, z, stack );
 			}
+		}
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborID) {
+		if( neighborID <= 0 )
+			return;
+
+		TileEntity tileEntity = world.getBlockTileEntity( x, y, z );
+		if( tileEntity != null && tileEntity instanceof TileMachine ) {
+			((TileMachine) tileEntity).onBlockUpdate( neighborID );
 		}
 	}
 
