@@ -2,7 +2,7 @@ package xk.xact.plugin;
 
 
 import net.minecraft.inventory.IInventory;
-import xk.xact.api.IInventoryAdapter;
+import xk.xact.api.IInventoryAdapterProvider;
 import xk.xact.api.SpecialCasedRecipe;
 import xk.xact.api.plugin.XACTPlugin;
 import xk.xact.config.ConfigurationManager;
@@ -15,7 +15,7 @@ public class PluginManager {
 
 	private static List<SpecialCasedRecipe> specialCasedRecipes = new ArrayList<SpecialCasedRecipe>();
 	private static List<XACTPlugin> plugins = new ArrayList<XACTPlugin>();
-	private static Map<Class, IInventoryAdapter> inventoryAdapters = new HashMap<Class,IInventoryAdapter>();
+	private static Map<Class, IInventoryAdapterProvider> inventoryAdapters = new HashMap<Class, IInventoryAdapterProvider>();
 
 	public static void checkEverything() {
 	}
@@ -56,14 +56,14 @@ public class PluginManager {
 		return specialCasedRecipes;
 	}
 
-	public static Map<Class, IInventoryAdapter> getInventoryAdapters() {
+	public static Map<Class, IInventoryAdapterProvider> getInventoryAdapters() {
 		return Collections.unmodifiableMap( inventoryAdapters );
 	}
 
-	public static void registerInventoryAdapter(Class inventoryClass, IInventoryAdapter adapter) {
-		if( inventoryClass != null && adapter != null ) {
+	public static void registerInventoryAdapter(Class inventoryClass, IInventoryAdapterProvider provider) {
+		if( inventoryClass != null && provider != null ) {
 			if( !inventoryClass.equals( IInventory.class ) ) {
-				inventoryAdapters.put( inventoryClass, adapter );
+				inventoryAdapters.put( inventoryClass, provider );
 			}
 		}
 	}

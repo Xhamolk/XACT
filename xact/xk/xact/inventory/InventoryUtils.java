@@ -212,7 +212,7 @@ public class InventoryUtils {
 		if( inventory != null ) {
 			for(Class adapterClass : PluginManager.getInventoryAdapters().keySet() ) {
 				if( adapterClass != null && adapterClass.isAssignableFrom( inventory.getClass() ))
-					return PluginManager.getInventoryAdapters().get( adapterClass );
+					return PluginManager.getInventoryAdapters().get( adapterClass ).createInventoryAdapter( inventory );
 			}
 			if( inventory instanceof IInventory ) {
 				return new LinearInventory( (IInventory) inventory );
