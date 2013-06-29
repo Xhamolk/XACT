@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import xk.xact.api.IInventoryAdapter;
 import xk.xact.inventory.adapter.LinearInventory;
+import xk.xact.plugin.PluginManager;
 import xk.xact.util.InvalidInventoryAdapterException;
 
 public class InventoryUtils {
@@ -206,8 +207,13 @@ public class InventoryUtils {
 		return false;
 	}
 
+	@SuppressWarnings( "unchecked" )
 	public static IInventoryAdapter getInventoryAdapter(Object inventory) {
 		if( inventory != null ) {
+			for(Class adapterClass : PluginManager.getInventoryAdapters().keySet() ) {
+				if( adapterClass != null && adapterClass.isAssignableFrom( inventory.getClass() ))
+					return PluginManager.getInventoryAdapters().get( adapterClass );
+			}
 			if( inventory instanceof IInventory ) {
 				return new LinearInventory( (IInventory) inventory );
 			}
@@ -215,6 +221,22 @@ public class InventoryUtils {
 			throw new InvalidInventoryAdapterException( inventory.getClass() );
 		}
 		return null;
+	}
+
+	@SuppressWarnings( "unchecked" )
+	public static boolean isValidInventory(Object inventory) {
+		if( inventory != null ) {
+			for(Class invClass : PluginManager.getInventoryAdapters().keySet() ) {
+				if( invClass != null && invClass.isAssignableFrom( inventory.getClass() ))
+					return true;
+			}
+			// temporarily ignoring IInventory.
+
+//			if( inventory instanceof IInventory ) {
+//				return true;
+//			}
+		}
+		return false;
 	}
 
 }

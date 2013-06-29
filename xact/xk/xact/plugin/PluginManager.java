@@ -1,19 +1,21 @@
 package xk.xact.plugin;
 
 
+import net.minecraft.inventory.IInventory;
+import xk.xact.api.IInventoryAdapter;
 import xk.xact.api.SpecialCasedRecipe;
 import xk.xact.api.plugin.XACTPlugin;
 import xk.xact.config.ConfigurationManager;
 import xk.xact.util.ReflectionUtils;
 import xk.xact.util.Utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PluginManager {
 
 	private static List<SpecialCasedRecipe> specialCasedRecipes = new ArrayList<SpecialCasedRecipe>();
 	private static List<XACTPlugin> plugins = new ArrayList<XACTPlugin>();
+	private static Map<Class, IInventoryAdapter> inventoryAdapters = new HashMap<Class,IInventoryAdapter>();
 
 	public static void checkEverything() {
 	}
@@ -54,4 +56,15 @@ public class PluginManager {
 		return specialCasedRecipes;
 	}
 
+	public static Map<Class, IInventoryAdapter> getInventoryAdapters() {
+		return Collections.unmodifiableMap( inventoryAdapters );
+	}
+
+	public static void registerInventoryAdapter(Class inventoryClass, IInventoryAdapter adapter) {
+		if( inventoryClass != null && adapter != null ) {
+			if( !inventoryClass.equals( IInventory.class ) ) {
+				inventoryAdapters.put( inventoryClass, adapter );
+			}
+		}
+	}
 }

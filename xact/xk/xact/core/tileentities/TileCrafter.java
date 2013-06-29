@@ -10,15 +10,18 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
-import xk.xact.client.gui.GuiCrafting;
 import xk.xact.client.gui.GuiCrafter;
+import xk.xact.client.gui.GuiCrafting;
 import xk.xact.gui.ContainerCrafter;
 import xk.xact.inventory.Inventory;
+import xk.xact.inventory.InventoryUtils;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+import xk.xact.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,10 +194,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	@Override
 	public List getAvailableInventories() {
 		// Pulling from adjacent inventories is pending until I find a solution for the client-side issues.
+		List list = getAdjacentInventories( this );
+		list.add( 0, resources );
+		return list;
 //		List<IInventory> list = Utils.getAdjacentInventories( worldObj, xCoord, yCoord, zCoord );
 //		list.add( 0, resources );
 //		return list.toArray( new IInventory[0] );
-		return Arrays.asList( resources );
+//		return Arrays.asList( resources );
 	}
 
 	@Override
@@ -330,6 +336,19 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		if( screen != null && screen instanceof GuiCrafting ) {
 			((GuiCrafting) screen).pushRecipe( recipes[4] );
 		}
+	}
+
+	// ---------- Pulling from Adjacent Inventories ---------- //
+
+	@SuppressWarnings("unchecked")
+	public static List getAdjacentInventories(TileCrafter machine) {
+		List<TileEntity> tiles = Utils.getAdjacentTileEntities( machine.worldObj, machine.xCoord, machine.yCoord, machine.zCoord );
+		List<Object> adjacentInventories = new ArrayList<Object>();
+		for( TileEntity tile : tiles ) {
+			if( tile != null && InventoryUtils.isValidInventory( tile ) )
+				adjacentInventories.add( tile );
+		}
+		return adjacentInventories;
 	}
 
 }
