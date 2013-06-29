@@ -119,6 +119,9 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 		ItemStack stack = stackInSlot.copy();
 
 		if( slot instanceof SlotCraft ) {
+			if( player.worldObj.isRemote ) // the server should handle this.
+				return null;
+
 			if( !slot.canTakeStack( player ) )
 				return null;
 			// add to the resources buffer.
@@ -369,6 +372,7 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 	public void updateProgressBar(int var, int value) {
 		if( var < crafter.getRecipeCount() ) { // Update recipe states from server info.
 			recipeStates[var] = Utils.decodeInt( value, 9 );
+			crafter.craftableRecipes[var] = !Utils.anyOf( recipeStates[var] );
 		}
 	}
 

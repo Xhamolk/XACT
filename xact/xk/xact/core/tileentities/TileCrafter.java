@@ -24,7 +24,6 @@ import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -127,7 +126,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///////////////
 	///// Current State (requires updates)
 
-	private boolean[] craftableRecipes = new boolean[getRecipeCount()];
+	public boolean[] craftableRecipes = new boolean[getRecipeCount()];
 
 	private CraftRecipe[] recipes = new CraftRecipe[getRecipeCount()];
 
@@ -181,6 +180,9 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	// Updates the states of the recipes.
 	public void updateStates() {
+		if( worldObj.isRemote ) {
+			return; // don't do this client-side.
+		}
 		for( int i = 0; i < getRecipeCount(); i++ ) {
 			// if the recipe can be crafted.
 			craftableRecipes[i] = (recipes[i] != null) && getHandler().canCraft( this.getRecipe( i ), null );
