@@ -83,6 +83,9 @@ public abstract class CraftingHandler {
 		GameRegistry.onItemCrafted( player, craftedItem, craftMatrix );
 
 		consumeIngredients( craftMatrix, player );
+
+		// Update the device's state.
+		device.updateState();
 	}
 
 	/**

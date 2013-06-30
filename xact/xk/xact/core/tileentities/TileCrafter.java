@@ -92,7 +92,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		this.resources = new Inventory( 3 * 9, "Resources" ) {
 			@Override
 			public void onInventoryChanged() {
-				updateStates();
+				stateUpdatePending = true;
 				recentlyUpdated = true;
 			}
 		};
@@ -142,7 +142,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		}
 		// Leaving this here in case I need to tick something later.
 		if( stateUpdatePending ) {
-			updateStates();
+			updateState();
 			stateUpdatePending = false;
 		}
 	}
@@ -179,7 +179,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	}
 
 	// Updates the states of the recipes.
-	public void updateStates() {
+	public void updateState() {
 		if( worldObj.isRemote ) {
 			return; // don't do this client-side.
 		}

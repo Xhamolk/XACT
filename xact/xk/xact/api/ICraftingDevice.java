@@ -31,4 +31,9 @@ public interface ICraftingDevice { // todo: javadoc.
 
 	public abstract World getWorld();
 
+	/**
+	 * This is called after crafting anything, so the device can update it's state.
+	 */
+	public abstract void updateState();
+
 }
