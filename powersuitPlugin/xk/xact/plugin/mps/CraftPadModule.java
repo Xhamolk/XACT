@@ -57,7 +57,12 @@ public class CraftPadModule extends AbstractModule implements IRightClickModule 
 	}
 
 	@Override
-	public String getName() {
+	public String getDataName() {
+		return "module.craftPad";
+	}
+
+	@Override
+	public String getLocalizedName() {
 		return MODULE_NAME;
 	}
 

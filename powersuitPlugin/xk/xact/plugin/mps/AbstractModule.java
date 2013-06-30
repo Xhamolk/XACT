@@ -77,8 +77,8 @@ public abstract class AbstractModule implements IPowerModule {
 	@Override
 	public double applyPropertyModifiers(NBTTagCompound itemTag, String propertyName, double propertyValue) {
 		Iterable<IPropertyModifier> propertyModifiersIterable = propertyModifiers.get( propertyName );
-		if( propertyModifiersIterable != null && itemTag.hasKey( this.getName() ) ) {
-			NBTTagCompound moduleTag = itemTag.getCompoundTag( this.getName() );
+		if( propertyModifiersIterable != null && itemTag.hasKey( this.getDataName() ) ) {
+			NBTTagCompound moduleTag = itemTag.getCompoundTag( this.getDataName() );
 			for( IPropertyModifier modifier : propertyModifiersIterable ) {
 				propertyValue = modifier.applyModifier( moduleTag, propertyValue );
 			}
