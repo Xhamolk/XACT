@@ -129,6 +129,8 @@
                 <include name="invtweaks/api/ContainerSection*.class"/>
                 <include name="net/machinemuse/api/IModularItem.class"/>
                 <include name="net/machinemuse/api/IPowerModule.class"/>
+                <include name="net/mcft/copy/betterstorage/api/ICrateStorage.class"/>
+                <include name="net/mcft/copy/betterstorage/api/ICrateWatcher.class"/>
             </fileset>
         </copy>
 
