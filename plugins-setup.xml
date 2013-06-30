@@ -41,11 +41,11 @@
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${api.src.dir}"/>
 
-    <target name="download-all" depends="download-apis, download-nei, download-mps"/>
+    <target name="download-all" depends="download-apis, download-nei, download-mps, download-betterStorage"/>
 
     <target name="copy-access-transformers" depends="copy-nei-access-transformers"/>
 
-    <target name="copy-sources" depends="copy-nei-sources, copy-mps-sources">
+    <target name="copy-sources" depends="copy-nei-sources, copy-mps-sources, copy-betterStorage-sources">
 
         <echo message="Extracting Inventory Tweaks API... "/>
         <unzip src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.zip" dest="${download.dir}"/>
@@ -131,6 +131,27 @@
         <unzip src="${download.dir}/NEI-${nei.commit}.zip" dest="${download.dir}"/>
     </target>
 
+    <!-- Better Storage -->
+
+    <target name="copy-betterStorage-sources" if="build.plugin.betterStorage">
+        <unzip src="${download.dir}/betterStorage.zip" dest="${download.dir}"/>
+
+        <copy todir="${api.src.dir}">
+            <fileset dir="${download.dir}/mod_BetterStorage-master/src">
+                <include name="net/mcft/copy/betterstorage/api/ICrateStorage.java"/>
+                <include name="net/mcft/copy/betterstorage/api/ICrateWatcher.java"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <condition property="betterStorage-downloaded">
+        <available file="${download.dir}/betterStorage.zip"/>
+    </condition>
+
+    <target name="download-betterStorage" unless="betterStorage-downloaded">
+        <get src="https://github.com/copyboy/mod_BetterStorage/archive/master.zip"
+             dest="${download.dir}/betterStorage.zip"/>
+    </target>
 
 
 </project>
