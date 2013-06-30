@@ -88,20 +88,22 @@
 
 
     <!-- NEI -->
+    <property name="ccc.dir" value="${download.dir}/ChickenBones-codechickencore-${ccc.commit}"/>
+    <property name="nei.dir" value="${download.dir}/ChickenBones-notenoughitems-${nei.commit}"/>
 
     <target name="copy-nei-access-transformers" if="build.plugin.nei">
         <mkdir dir="${forge.dir}/accesstransformers"/>
-        <copy todir="${forge.dir}/accesstransformers" file="${download.dir}/NEI/nei_at.cfg"/>
-        <copy todir="${forge.dir}/accesstransformers" file="${download.dir}/CCC/codechickencore_at.cfg"/>
+        <copy todir="${forge.dir}/accesstransformers" file="${ccc.dir}/codechickencore_at.cfg"/>
+        <copy todir="${forge.dir}/accesstransformers" file="${nei.dir}/nei_at.cfg"/>
     </target>
 
     <target name="copy-nei-sources" if="build.plugin.nei">
         <copy todir="${mcp.dir}/src/minecraft" overwrite="true">
-            <fileset dir="${download.dir}/NEI">
+            <fileset dir="${ccc.dir}">
                 <include name="codechicken/**/*.*"/>
                 <include name="net/**/*.*"/>
             </fileset>
-            <fileset dir="${download.dir}/CCC">
+            <fileset dir="${nei.dir}">
                 <include name="codechicken/**/*.*"/>
                 <include name="net/**/*.*"/>
             </fileset>
@@ -110,8 +112,8 @@
 
     <condition property="nei-downloaded">
         <and>
-            <available file="${download.dir}/CCC-src.jar"/>
-            <available file="${download.dir}/NEI-src.jar"/>
+            <available file="${download.dir}/CCC-${ccc.commit}.zip"/>
+            <available file="${download.dir}/NEI-${nei.commit}.zip"/>
         </and>
     </condition>
 
@@ -119,14 +121,14 @@
         <mkdir dir="${download.dir}"/>
         <echo message="Downloading NEI and CCC"/>
 
-        <get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.5.1/CodeChickenCore-src.jar"
-             dest="${download.dir}/CCC-src.jar"/>
-        <get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.5.1/NotEnoughItems-src.jar"
-             dest="${download.dir}/NEI-src.jar"/>
+        <get src="https://bitbucket.org/ChickenBones/codechickencore/get/${ccc.commit}.zip"
+             dest="${download.dir}/CCC-${ccc.commit}.zip"/>
+        <get src="https://bitbucket.org/ChickenBones/notenoughitems/get/${nei.commit}.zip"
+             dest="${download.dir}/NEI-${nei.commit}.zip"/>
 
         <!-- Extract NEI and CCC -->
-        <unzip src="${download.dir}/NEI-src.jar" dest="${download.dir}/NEI"/>
-        <unzip src="${download.dir}/CCC-src.jar" dest="${download.dir}/CCC"/>
+        <unzip src="${download.dir}/CCC-${ccc.commit}.zip" dest="${download.dir}"/>
+        <unzip src="${download.dir}/NEI-${nei.commit}.zip" dest="${download.dir}"/>
     </target>
 
 
