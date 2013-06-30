@@ -32,6 +32,17 @@ public class PluginManager {
 			}
 		}
 
+		if( ConfigurationManager.ENABLE_BETTER_STORAGE_PLUGIN ) {
+			// Register BetterStorage plug-in.
+			Class betterStoragePlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.betterstorage.PluginForBetterStorage" );
+			if( betterStoragePlugin != null ) {
+				Object instance = ReflectionUtils.newInstanceOf( betterStoragePlugin );
+				if( instance != null ) {
+					addPlugin( XACTPlugin.class.cast( instance ) );
+				}
+			}
+		}
+
 		// Load all other plugins.
 		Utils.log( "Loading plug-ins..." );
 		for( XACTPlugin plugin : plugins ) {

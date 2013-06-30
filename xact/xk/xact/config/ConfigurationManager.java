@@ -31,6 +31,12 @@ public class ConfigurationManager {
 						"This plug-in let's you install the Craft Pad into the MPS Power Fist." )
 				.getBoolean( true );
 
+		ENABLE_BETTER_STORAGE_PLUGIN = config.get( "Plug-ins", "enableBetterStoragePlugin", true,
+				"If true, XACT will try to initialize the plug-in for the Better Storage mod. \n" +
+						"This plug-in enables the XACT Crafter to pull resources from adjacent crates (from Better Storage)." )
+				.getBoolean( true );
+
+
 		REPLACE_WORKBENCH = config.get( "Miscellaneous", "addWorkbenchTileEntity", true,
 				"If true, XACT will make the vanilla workbench able to keep it's contents on the grid after the GUI is closed. \n" +
 						"Make sure you clear the workbench's grid before setting this to false, or you will lose your items." )
@@ -64,6 +70,8 @@ public class ConfigurationManager {
 	public static boolean REPLACE_WORKBENCH;
 
 	public static boolean ENABLE_MPS_PLUGIN;
+
+	public static boolean ENABLE_BETTER_STORAGE_PLUGIN;
 
 	// debugging information.
 	public static boolean DEBUG_MODE = false;

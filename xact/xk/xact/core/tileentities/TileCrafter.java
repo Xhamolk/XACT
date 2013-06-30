@@ -2,6 +2,8 @@ package xk.xact.core.tileentities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.mcft.copy.betterstorage.api.ICrateStorage;
+import net.mcft.copy.betterstorage.api.ICrateWatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -12,10 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
 import xk.xact.client.gui.GuiCrafter;
 import xk.xact.client.gui.GuiCrafting;
+import xk.xact.config.ConfigurationManager;
 import xk.xact.gui.ContainerCrafter;
 import xk.xact.inventory.Inventory;
 import xk.xact.inventory.InventoryUtils;
@@ -29,7 +33,7 @@ import java.util.List;
 /**
  * @author Xhamolk_
  */
-public class TileCrafter extends TileMachine implements IInventory, ICraftingDevice {
+public class TileCrafter extends TileMachine implements IInventory, ICraftingDevice, ICrateWatcher {
 
 	/*
 	Available Inventories:
@@ -66,6 +70,9 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 
 	// Used to trigger state updates on the next tick.
 	private boolean stateUpdatePending = false;
+
+	// Whether if the neighbors have changed, so this machine should update on the next tick.
+	private boolean neighborsUpdatePending = false;
 
 	// Used by GuiCrafter to update it's internal state.
 	// Should only be accessed client-side for rendering purposes.
@@ -123,6 +130,28 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		return new GuiCrafter( this, player );
 	}
 
+	@Override
+	public void onBlockUpdate(int neighborID) {
+		neighborsUpdatePending = true;
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
+		neighborsUpdatePending = true;
+	}
+
+	@Override
+	public void invalidate() {
+		super.invalidate();
+		for( ICrateStorage crate : adjacentCrates ) {
+			if( crate != null ) {
+				crate.unregisterCrateWatcher( this );
+			}
+		}
+		adjacentCrates = null;
+	}
+
 	///////////////
 	///// Current State (requires updates)
 
@@ -140,7 +169,12 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
 			return;
 		}
-		// Leaving this here in case I need to tick something later.
+
+		if( neighborsUpdatePending && !worldObj.isRemote ) {
+			checkForAdjacentCrates();
+			neighborsUpdatePending = false;
+		}
+
 		if( stateUpdatePending ) {
 			updateState();
 			stateUpdatePending = false;
@@ -351,6 +385,42 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 				adjacentInventories.add( tile );
 		}
 		return adjacentInventories;
+	}
+
+	// ---------- Better Storage integration ---------- //
+
+	private ICrateStorage[] adjacentCrates = new ICrateStorage[6];
+
+	@Override
+	public void onCrateItemsModified(ItemStack stack) {
+		stateUpdatePending = true;
+	}
+
+	private void checkForAdjacentCrates() {
+		if( !ConfigurationManager.ENABLE_BETTER_STORAGE_PLUGIN )
+			return;
+
+		boolean foundChanges = false;
+
+		for( int i = 0; i < 6; i++ ) {
+			int x = xCoord + ForgeDirection.VALID_DIRECTIONS[i].offsetX;
+			int y = yCoord + ForgeDirection.VALID_DIRECTIONS[i].offsetY;
+			int z = zCoord + ForgeDirection.VALID_DIRECTIONS[i].offsetZ;
+
+			TileEntity tile = worldObj.getBlockTileEntity( x, y, z );
+			if( tile != null && tile instanceof ICrateStorage ) {
+				if( adjacentCrates[i] == null ) {
+					adjacentCrates[i] = (ICrateStorage) tile;
+					adjacentCrates[i].registerCrateWatcher( this );
+					foundChanges = true;
+				}
+			} else if( adjacentCrates[i] != null  ) {
+				adjacentCrates[i] = null;
+				foundChanges = true;
+			}
+		}
+		if( foundChanges )
+			stateUpdatePending = true;
 	}
 
 }
