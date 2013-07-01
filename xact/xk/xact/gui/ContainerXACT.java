@@ -309,7 +309,7 @@ public abstract class ContainerXACT extends Container {
 			counter = 0;
 			lastItemStack = stackInSlot;
 		}
-		if( ++counter < counterMax -1 ) {
+		if( ++counter < counterMax ) {
 			this.slotClick( slotID, mouseClick, 1, player );
 		} else {
 			counter = 0;
