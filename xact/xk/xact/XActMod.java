@@ -51,7 +51,6 @@ public class XActMod {
 	public static Item itemRecipeEncoded;
 	public static Item itemChipCase;
 	public static Item itemCraftPad;
-	public static Item itemUpgradeToCrafter;
 
 	// Blocks
 	public static Block blockMachine;
@@ -98,7 +97,6 @@ public class XActMod {
 		LanguageRegistry.addName( itemRecipeEncoded, "\u00a72" + "Recipe Chip" );
 		LanguageRegistry.addName( itemChipCase, "Chip Case" );
 		LanguageRegistry.addName( itemCraftPad, "Craft Pad" );
-		LanguageRegistry.addName( itemUpgradeToCrafter, ItemUpgrade.UpgradeType.ToCrafter.getLocalizedName() );
 
 		// machine's names
 		for( Machines machine : Machines.values() ) {
@@ -159,14 +157,6 @@ public class XActMod {
 				null, null, null
 		);
 		GameRegistry.addRecipe( new ShapedRecipes( 3, 2, ingredients, new ItemStack( itemCraftPad ) ) );
-
-		// Upgrade to Crafter
-		ingredients = RecipeUtils.ingredients(
-				XActMod.itemRecipeBlank,    Block.glass,        XActMod.itemRecipeBlank,
-				XActMod.itemRecipeBlank,    null,               XActMod.itemRecipeBlank,
-				Item.ingotIron,             Block.chest,        Item.ingotIron
-		);
-		GameRegistry.addRecipe( new ShapedRecipes( 3, 3, ingredients, new ItemStack( itemUpgradeToCrafter ) ) );
 
 		// Machines
 		for( Machines machine : Machines.values() ) {
