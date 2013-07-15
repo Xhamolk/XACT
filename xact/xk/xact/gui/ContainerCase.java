@@ -117,6 +117,11 @@ public class ContainerCase extends ContainerItem {
 		chipCase.inventoryChanged = false;
 	}
 
+	@Override
+	public int getHeldItemSlotIndex() {
+		return player.inventory.currentItem;
+	}
+
 	///////////////
 	///// ContainerXACT
 

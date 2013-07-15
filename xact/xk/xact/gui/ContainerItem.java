@@ -59,16 +59,18 @@ public abstract class ContainerItem extends ContainerXACT {
 	 */
 	public abstract void onContentsStored(ItemStack itemStack);
 
+	public abstract int getHeldItemSlotIndex();
+
 	/**
 	 * Whether if <code>slot</code> contains the currently held item.
 	 *
 	 * @param slot   the Slot being checked.
 	 * @param player the EntityPlayer that is using the ContainerItem
-	 * @return true if the <code>slot.isSlotInInventory(player.inventory, player.inventory.currentItem)</code> is true.
+	 * @return true if the <code>slot.isSlotInInventory(player.inventory, getHeldItemSlotIndex())</code> is true.
 	 * @see Slot#isSlotInInventory(net.minecraft.inventory.IInventory, int)
 	 */
 	protected boolean slotContainsHeldItem(Slot slot, EntityPlayer player) {
-		return slot != null && slot.isSlotInInventory( player.inventory, player.inventory.currentItem );
+		return slot != null && slot.isSlotInInventory( player.inventory, getHeldItemSlotIndex() );
 	}
 
 	/**
@@ -90,7 +92,7 @@ public abstract class ContainerItem extends ContainerXACT {
 	public void onTickUpdate(EntityPlayer player) {
 		// Save contents to NBT.
 		if( isInUse && hasInventoryChanged() ) {
-			ItemStack itemStack = player.inventory.getStackInSlot( player.inventory.currentItem );
+			ItemStack itemStack = getParentItem();
 			saveContentsToNBT( itemStack );
 			onContentsStored( itemStack );
 		}
@@ -122,12 +124,16 @@ public abstract class ContainerItem extends ContainerXACT {
 					return false;
 				}
 			}
-			if( flag == 2 && buttonPressed == player.inventory.currentItem ) {
-				onPickupPrevented( player, player.inventory.getCurrentItem(), getSlotWithHeldItem( player ) );
+			if( flag == 2 && buttonPressed == getHeldItemSlotIndex() ) {
+				onPickupPrevented( player, getParentItem(), getSlotWithHeldItem( player ) );
 				return false;
 			}
 		}
 		return true;
+	}
+
+	protected ItemStack getParentItem() {
+		return player.inventory.mainInventory[getHeldItemSlotIndex()];
 	}
 
 }

@@ -196,22 +196,23 @@ public class InventoryUtils {
 	 *
 	 * @param player    the player
 	 * @param itemStack the item that must be on the player's hotbar.
+	 * @return If found, returns the slot's index. Returns -1 otherwise.
 	 */
-	public static boolean checkHotbar(EntityPlayer player, ItemStack itemStack) {
+	public static int checkHotbar(EntityPlayer player, ItemStack itemStack) {
 		for( int i = 0; i < 9; i++ ) {
 			ItemStack current = player.inventory.mainInventory[i];
 			if( current != null && InventoryUtils.similarStacks( itemStack, current, false ) ) {
-				return true;
+				return i;
 			}
 		}
-		return false;
+		return -1;
 	}
 
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings("unchecked")
 	public static IInventoryAdapter getInventoryAdapter(Object inventory) {
 		if( inventory != null ) {
-			for(Class adapterClass : PluginManager.getInventoryAdapters().keySet() ) {
-				if( adapterClass != null && adapterClass.isAssignableFrom( inventory.getClass() ))
+			for( Class adapterClass : PluginManager.getInventoryAdapters().keySet() ) {
+				if( adapterClass != null && adapterClass.isAssignableFrom( inventory.getClass() ) )
 					return PluginManager.getInventoryAdapters().get( adapterClass ).createInventoryAdapter( inventory );
 			}
 			if( inventory instanceof IInventory ) {
@@ -226,7 +227,7 @@ public class InventoryUtils {
 	@SuppressWarnings( "unchecked" )
 	public static boolean isValidInventory(Object inventory) {
 		if( inventory != null ) {
-			for(Class invClass : PluginManager.getInventoryAdapters().keySet() ) {
+			for( Class invClass : PluginManager.getInventoryAdapters().keySet() ) {
 				if( invClass != null && invClass.isAssignableFrom( inventory.getClass() ))
 					return true;
 			}

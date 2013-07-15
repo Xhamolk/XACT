@@ -220,12 +220,18 @@ public class GuiUtils {
 		Minecraft.getMinecraft().renderEngine.bindTexture( texture );
 	}
 
+	/**
+	 * Sends a packet to the server to open the specified GUI.
+	 *
+	 * @param guiID the ID of the GUI. Truncated to byte.
+	 * @param meta the additional information that the GUI Handler might need. Truncated to short.
+	 */
 	@SideOnly(Side.CLIENT)
-	public static void openGui(int guiID) {
+	public static void openGui(int guiID, int meta) {
 		try {
-			ClientProxy.getNetClientHandler().addToSendQueue( CustomPacket.openGui( guiID ).toPacket() );
+			ClientProxy.getNetClientHandler().addToSendQueue( CustomPacket.openGui( guiID, meta, 0, 0, 0 ).toPacket() );
 		} catch( IOException e ) {
-			Utils.logException( "Problem opening GUI (id: "+ guiID+")", e, false );
+			Utils.logException( "Problem opening GUI (id: "+ guiID+", meta: "+meta+")", e, false );
 		}
 	}
 }

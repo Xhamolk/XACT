@@ -31,8 +31,9 @@ public class KeyBindingHandler extends KeyBindingRegistry.KeyHandler {
 			GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
 			if( currentScreen == null ) {
 				if( kb.keyDescription.equals( "xact.openGrid" ) ) {
-					if( canOpenCraftPad() )
-						GuiUtils.openGui( 3 ); // Open Craft Pad GUI.
+					int slot = getCraftPadIndex();
+					if( slot != -1 )
+						GuiUtils.openGui( 3, slot + 1 ); // Open Craft Pad GUI.
 				}
 				return;
 			}
@@ -69,12 +70,12 @@ public class KeyBindingHandler extends KeyBindingRegistry.KeyHandler {
 				false,
 				false,
 				false,
-                false,
+				false,
 				false
 		};
 	}
 
-	private boolean canOpenCraftPad() {
+	private int getCraftPadIndex() {
 		return InventoryUtils.checkHotbar( Minecraft.getMinecraft().thePlayer, new ItemStack( XActMod.itemCraftPad ) );
 	}
 

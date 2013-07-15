@@ -27,7 +27,10 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+	public Object getServerGuiElement(int GuiID, EntityPlayer player, World world, int x, int y, int z) {
+		int ID = (GuiID & 0xFF);
+		int meta = (GuiID >> 8) & 0xFFFF;
+
 		// ID:
 		// 0: machines
 		// 1: library
@@ -58,8 +61,9 @@ public class CommonProxy implements IGuiHandler {
 		}
 
 		if( ID == 3 ) { // Craft Pad
-			CraftPad craftPad = new CraftPad( player.inventory.getCurrentItem(), player );
-			return new ContainerPad( craftPad, player );
+			int invSlot = meta == 0 ? player.inventory.currentItem : meta - 1;
+			CraftPad craftPad = new CraftPad( player.inventory.mainInventory[invSlot], player );
+			return new ContainerPad( craftPad, player, invSlot );
 		}
 
 		// no ID == 4. GuiPlan, client-side only.

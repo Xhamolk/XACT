@@ -37,11 +37,12 @@ public class PacketHandler implements IPacketHandler {
 				if( action == 0x01 ) {
 					EntityPlayer player = (EntityPlayer) packetSender;
 					byte guiID = packetData.readByte();
+					short meta = packetData.readShort();
 					int x = packetData.readInt();
 					int y = packetData.readInt();
 					int z = packetData.readInt();
 
-					player.openGui( XActMod.instance, guiID, player.worldObj, x, y, z );
+					player.openGui( XActMod.instance, (meta << 8) | guiID, player.worldObj, x, y, z );
 					return;
 				}
 
@@ -51,7 +52,7 @@ public class PacketHandler implements IPacketHandler {
 					int stacks = packetData.readByte();
 					int offSet = packetData.readByte();
 
-					for( int i = 0; i < stacks ; i++ ) {
+					for( int i = 0; i < stacks; i++ ) {
 						ItemStack item = getItemStack( packetData );
 						container.setStack( offSet++, item );
 					}
@@ -94,8 +95,8 @@ public class PacketHandler implements IPacketHandler {
 				}
 
 				Utils.logError( "Packet Unhandled: " + action );
-			} catch ( IOException e ) {
-				Utils.logException( "Packet Handler: "+ action, e, true );
+			} catch( IOException e ) {
+				Utils.logException( "Packet Handler: " + action, e, true );
 			}
 		}
 
@@ -116,7 +117,7 @@ public class PacketHandler implements IPacketHandler {
 			stack.setTagCompound( stackNbtTag );
 
 			return stack;
-		} catch ( IOException e ) {
+		} catch( IOException e ) {
 			return null;
 		}
 	}

@@ -75,13 +75,10 @@ public class CustomPacket {
 
 	}
 
-	public static CustomPacket openGui(int guiID) throws IOException {
-		return openGui( guiID,  0, 0, 0 );
-	}
-
-	public static CustomPacket openGui(int guiID, int x, int y, int z) throws IOException {
+	public static CustomPacket openGui(int guiID, int meta, int x, int y, int z) throws IOException {
 		CustomPacket packet = new CustomPacket( (byte) 0x01 );
 		packet.add( (byte) guiID );
+		packet.add( (short) meta );
 		packet.add( x );
 		packet.add( y );
 		packet.add( z );

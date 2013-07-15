@@ -12,10 +12,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import xk.xact.XActMod;
 import xk.xact.client.KeyBindingHandler;
-import xk.xact.client.render.ChipRenderer;
 import xk.xact.client.gui.GuiCase;
 import xk.xact.client.gui.GuiPad;
 import xk.xact.client.gui.GuiVanillaWorkbench;
+import xk.xact.client.render.ChipRenderer;
 import xk.xact.core.ChipCase;
 import xk.xact.core.CraftPad;
 import xk.xact.core.tileentities.TileMachine;
@@ -50,7 +50,10 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+	public Object getClientGuiElement(int GuiID, EntityPlayer player, World world, int x, int y, int z) {
+		int ID = (GuiID & 0xFF);
+		int meta = (GuiID >> 8) & 0xFFFF;
+
 		// ID:
 		// 0: machines
 		// 1: library
@@ -81,8 +84,9 @@ public class ClientProxy extends CommonProxy {
 		}
 
 		if( ID == 3 ) { // Craft Pad
-			CraftPad craftPad = new CraftPad( player.inventory.getCurrentItem(), player );
-			return new GuiPad( craftPad, new ContainerPad( craftPad, player ) );
+			int invSlot = meta == 0 ? player.inventory.currentItem : meta - 1;
+			CraftPad craftPad = new CraftPad( player.inventory.mainInventory[invSlot], player );
+			return new GuiPad( craftPad, new ContainerPad( craftPad, player, invSlot ) );
 		}
 
 		if( ID == 4 ) { // Open the plan.

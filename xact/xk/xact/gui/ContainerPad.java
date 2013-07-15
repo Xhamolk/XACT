@@ -21,10 +21,13 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 	private int gridFirstSlot;
 
-	public ContainerPad(CraftPad pad, EntityPlayer player) {
+	private int heldItemSlot;
+
+	public ContainerPad(CraftPad pad, EntityPlayer player, int heldItemSlot) {
 		super( player );
 		this.craftPad = pad;
 		this.player = player;
+		this.heldItemSlot = heldItemSlot;
 		buildContainer();
 		super.isInUse = true;
 		craftPad.updateRecipe();
@@ -283,7 +286,7 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	@Override
 	public void onCraftGuiClosed(EntityPlayer player) {
 		super.onCraftGuiClosed( player );
-		ItemStack current = player.inventory.getCurrentItem();
+		ItemStack current = getParentItem();
 		if( current != null ) {
 			current.setItemDamage( 0 );
 		}
@@ -313,6 +316,11 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	@Override
 	public void onContentsStored(ItemStack itemStack) {
 		craftPad.inventoryChanged = false;
+	}
+
+	@Override
+	public int getHeldItemSlotIndex() {
+		return heldItemSlot;
 	}
 
 	///////////////
