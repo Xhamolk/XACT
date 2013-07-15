@@ -4,6 +4,7 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import xk.xact.core.ChipCase;
@@ -62,7 +63,9 @@ public class CommonProxy implements IGuiHandler {
 
 		if( ID == 3 ) { // Craft Pad
 			int invSlot = meta == 0 ? player.inventory.currentItem : meta - 1;
-			CraftPad craftPad = new CraftPad( player.inventory.mainInventory[invSlot], player );
+			ItemStack item = player.inventory.mainInventory[invSlot];
+			item.setItemDamage( 1 );
+			CraftPad craftPad = new CraftPad( item, player );
 			return new ContainerPad( craftPad, player, invSlot );
 		}
 
