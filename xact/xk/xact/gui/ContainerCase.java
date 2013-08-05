@@ -1,6 +1,9 @@
 package xk.xact.gui;
 
 
+import invtweaks.api.container.ChestContainer;
+import invtweaks.api.container.ContainerSection;
+import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -8,6 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import xk.xact.core.ChipCase;
 import xk.xact.core.items.ItemChip;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ContainerCase extends ContainerItem {
 
@@ -137,5 +144,22 @@ public class ContainerCase extends ContainerItem {
 	protected boolean isUpdateRequired() {
 		return false;
 	}
+
+	// -------------------- Compatibility with Inventory Tweaks --------------------
+
+	@ContainerSectionCallback
+	public Map<ContainerSection, List<Slot>> getContainerSections() {
+		Map<ContainerSection, List<Slot>> map = new HashMap<ContainerSection, List<Slot>>();
+		List<Slot> slots = inventorySlots;
+
+		map.put( ContainerSection.CHEST, slots.subList( 0, 30 ) ); // the storage slots
+		return map;
+	}
+
+	@ChestContainer.RowSizeCallback
+	public int rowSize() {
+		return 6;
+	}
+
 
 }

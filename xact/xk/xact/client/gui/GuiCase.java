@@ -1,8 +1,6 @@
 package xk.xact.client.gui;
 
 
-import invtweaks.api.ContainerGUI;
-import invtweaks.api.ContainerSection;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -12,11 +10,6 @@ import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Textures;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-@ContainerGUI
 public class GuiCase extends GuiXACT {
 
 	public GuiCase(Container container) {
@@ -93,20 +86,4 @@ public class GuiCase extends GuiXACT {
 		}
 	}
 
-	// Compatibility with Inventory Tweaks.
-	@ContainerGUI.ContainerSectionCallback
-	@SuppressWarnings({ "unchecked", "unused" })
-	public Map<ContainerSection, List<Slot>> getContainerSections() {
-		Map<ContainerSection, List<Slot>> map = new HashMap<ContainerSection, List<Slot>>();
-		List<Slot> slots = inventorySlots.inventorySlots;
-
-		map.put( ContainerSection.CHEST, slots.subList( 0, 30 ) ); // the storage slots
-		return map;
-	}
-
-	@ContainerGUI.RowSizeCallback
-	@SuppressWarnings("unused")
-	public int getChestRowSize() {
-		return 6;
-	}
 }

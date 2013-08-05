@@ -338,7 +338,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int slot, ItemStack itemstack) {
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
 		return true;  // Whether if an item can be placed at the slot
 	}
 

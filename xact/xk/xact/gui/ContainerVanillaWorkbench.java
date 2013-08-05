@@ -1,12 +1,18 @@
 package xk.xact.gui;
 
 
+import invtweaks.api.container.ContainerSection;
+import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import xk.xact.core.tileentities.TileWorkbench;
 import xk.xact.inventory.InventoryUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ContainerVanillaWorkbench extends Container {
 
@@ -106,6 +112,20 @@ public class ContainerVanillaWorkbench extends Container {
 	@Override
 	public boolean canDragIntoSlot(Slot slot) {
 		return slot.inventory != workbench.outputInv;
+	}
+
+	// -------------------- Compatibility with Inventory Tweaks --------------------
+
+	@ContainerSectionCallback
+	@SuppressWarnings({ "unchecked", "unused" })
+	public java.util.Map<ContainerSection, List<Slot>> getContainerSections() {
+		Map<ContainerSection, List<Slot>> map = new HashMap<ContainerSection, List<Slot>>();
+		List<Slot> slots = inventorySlots;
+
+		map.put( ContainerSection.CRAFTING_OUT, slots.subList( 0, 1 ) ); // output slot
+		map.put( ContainerSection.CRAFTING_IN, slots.subList( 1, 1 + 9 ) ); // crafting grid.
+
+		return map;
 	}
 
 }

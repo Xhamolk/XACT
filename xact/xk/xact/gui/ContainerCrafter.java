@@ -3,6 +3,8 @@ package xk.xact.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import invtweaks.api.container.ContainerSection;
+import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
@@ -13,8 +15,7 @@ import xk.xact.core.tileentities.TileCrafter;
 import xk.xact.recipes.CraftManager;
 import xk.xact.util.Utils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * The container used for the Crafter's GUI.
@@ -430,4 +431,27 @@ public class ContainerCrafter extends ContainerXACT implements InteractiveCrafti
 	protected boolean isUpdateRequired() {
 		return false;
 	}
+
+	// -------------------- Compatibility with Inventory Tweaks --------------------
+
+	@ContainerSectionCallback
+	@SuppressWarnings({ "unchecked", "unused" })
+	public java.util.Map<ContainerSection, List<Slot>> getContainerSections() {
+		Map<ContainerSection, List<Slot>> map = new HashMap<ContainerSection, List<Slot>>();
+		List<Slot> slots = inventorySlots;
+
+		map.put( ContainerSection.CRAFTING_OUT, getSlots( 0, 1, 2, 3, 17 ) ); // output slots
+		map.put( ContainerSection.CRAFTING_IN_PERSISTENT, slots.subList( 4, 17 ) ); // crafting grid and chips.
+		map.put( ContainerSection.CHEST, slots.subList( 18, 18 + 27 ) ); // the resources buffer
+		return map;
+	}
+
+	private List<Slot> getSlots(int... indexes) {
+		List<Slot> slots = new ArrayList<Slot>();
+		for( int index : indexes ) {
+			slots.add( getSlot( index ) );
+		}
+		return slots;
+	}
+
 }

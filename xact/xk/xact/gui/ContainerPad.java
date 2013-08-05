@@ -1,6 +1,8 @@
 package xk.xact.gui;
 
 
+import invtweaks.api.container.ContainerSection;
+import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -12,6 +14,10 @@ import xk.xact.core.items.ItemChip;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ContainerPad extends ContainerItem implements InteractiveCraftingContainer {
 
@@ -343,6 +349,21 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 	@Override
 	protected boolean isUpdateRequired() {
 		return false;
+	}
+
+	// -------------------- Compatibility with Inventory Tweaks --------------------
+
+	@ContainerSectionCallback
+	@SuppressWarnings({ "unchecked", "unused" })
+	public java.util.Map<ContainerSection, List<Slot>> getContainerSections() {
+		Map<ContainerSection, List<Slot>> map = new HashMap<ContainerSection, List<Slot>>();
+		int i = 0;
+		List<Slot> slots = inventorySlots;
+
+		map.put( ContainerSection.CRAFTING_OUT, slots.subList( i, i += 1 ) ); // output slot
+		map.put( ContainerSection.CRAFTING_IN_PERSISTENT, slots.subList( i, i += 9 ) ); // crafting grid.
+		map.put( ContainerSection.CHEST, slots.subList( i, i += 1 ) ); // chip slot
+		return map;
 	}
 
 }
