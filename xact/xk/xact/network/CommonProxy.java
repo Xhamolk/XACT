@@ -5,8 +5,8 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.common.FakePlayer;
 import xk.xact.core.ChipCase;
 import xk.xact.core.CraftPad;
 import xk.xact.core.tileentities.TileMachine;
@@ -101,25 +101,7 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	private EntityPlayer createFakePlayer(World world) {
-		EntityPlayer player = new EntityPlayer( world ) {
-
-			@Override
-			public void sendChatToPlayer(String var1) {
-			}
-
-			@Override
-			public boolean canCommandSenderUseCommand(int var1, String var2) {
-				return false;
-			}
-
-			@Override
-			public ChunkCoordinates getPlayerCoordinates() {
-				return null;
-			}
-
-		};
-		player.username = "[XACT]";
-		return player;
+		return new FakePlayer( world, "[XACT]" );
 	}
 
 }

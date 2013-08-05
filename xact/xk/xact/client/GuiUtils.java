@@ -9,7 +9,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.multiplayer.NetClientHandler;
-import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
@@ -17,6 +16,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -75,11 +75,11 @@ public class GuiUtils {
 		itemRenderer.zLevel = 0.0F;
 	}
 
-	public static void paintEffectOverlay(int x, int y, RenderEngine renderEngine, RenderItem itemRenderer, float red, float green, float blue, float alpha) {
+	public static void paintEffectOverlay(int x, int y,RenderItem itemRenderer, float red, float green, float blue, float alpha) {
 		GL11.glDepthFunc( GL11.GL_GREATER );
 		GL11.glDisable( GL11.GL_LIGHTING );
 		GL11.glDepthMask( false );
-		renderEngine.bindTexture( "%blur%/misc/glint.png" ); // do I want to change this to something else?
+		bindTexture( "%blur%/misc/glint.png" ); // do I want to change this to something else?
 
 		itemRenderer.zLevel -= 50.0F;
 		GL11.glEnable( GL11.GL_BLEND );
@@ -217,7 +217,7 @@ public class GuiUtils {
 	}
 
 	public static void bindTexture(String texture) {
-		Minecraft.getMinecraft().renderEngine.bindTexture( texture );
+		Minecraft.getMinecraft().renderEngine.func_110577_a( new ResourceLocation( texture ));
 	}
 
 	/**

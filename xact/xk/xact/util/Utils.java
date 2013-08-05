@@ -21,9 +21,7 @@ import java.util.logging.Level;
 public class Utils {
 
 	public static void notifyPlayer(EntityPlayer player, String message) {
-		if( player.worldObj.isRemote ) {
-			player.sendChatToPlayer( message );
-		}
+		player.addChatMessage( message );
 	}
 
 	public static void debug(String message, Object... data) {

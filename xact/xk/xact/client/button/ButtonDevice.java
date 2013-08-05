@@ -33,7 +33,7 @@ public class ButtonDevice extends GuiButtonCustom {
 	@Override
 	protected void drawBackgroundLayer(Minecraft mc, int mouseX, int mouseY) {
 		// Draw button.
-		GL11.glBindTexture( GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture( Textures.MISC_BUTTONS ) );
+		GuiUtils.bindTexture( Textures.MISC_BUTTONS );
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		this.drawTexturedModalRect( this.xPosition, this.yPosition, textureIndex * 14, 0, this.width, this.height );
 	}

@@ -60,8 +60,8 @@ public class ContainerCase extends ContainerItem {
 	}
 
 	@Override
-	public void onCraftGuiClosed(EntityPlayer player) {
-		super.onCraftGuiClosed( player );
+	public void onContainerClosed(EntityPlayer player) {
+		super.onContainerClosed( player );
 
 		// Reset the metadata value
 		ItemStack itemStack = player.inventory.getCurrentItem();

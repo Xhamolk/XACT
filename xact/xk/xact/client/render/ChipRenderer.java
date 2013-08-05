@@ -36,7 +36,7 @@ public class ChipRenderer implements IItemRenderer {
 			GuiUtils.paintItem( recipe.getResult(), 0, 0, Minecraft.getMinecraft(), GuiUtils.itemRender );
 		}
 		// Green overlay
-		GuiUtils.paintEffectOverlay( 0, 0, Minecraft.getMinecraft().renderEngine, GuiUtils.itemRender, 0.25f, 0.55f, 0.3f, 0.85f );
+		GuiUtils.paintEffectOverlay( 0, 0, GuiUtils.itemRender, 0.25f, 0.55f, 0.3f, 0.85f );
 
 		drawing = false;
 		GL11.glEnable( GL11.GL_CULL_FACE );

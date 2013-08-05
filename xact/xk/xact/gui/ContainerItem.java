@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import xk.xact.util.Utils;
 
 import java.util.List;
 
@@ -84,7 +85,7 @@ public abstract class ContainerItem extends ContainerXACT {
 	protected void onPickupPrevented(EntityPlayer player, ItemStack itemStack, Slot slot) {
 		if( !(player instanceof EntityPlayerMP) ) { // send the chat message client-side.
 			String itemName = itemStack.getDisplayName();
-			player.sendChatToPlayer( "Cannot move <" + itemName + "> while it's in use." );
+			Utils.notifyPlayer( player, "Cannot move <" + itemName + "> while it's in use." );
 		}
 	}
 

@@ -5,6 +5,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import xk.xact.client.GuiUtils;
 
 /**
  * Base class for all the Gui components in XACT
@@ -54,7 +55,7 @@ public abstract class GuiXACT extends GuiContainer {
 
 	protected void drawBaseTexture() {
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.mc.renderEngine.bindTexture( getBaseTexture() );
+		GuiUtils.bindTexture( getBaseTexture() );
 		this.drawTexturedModalRect( guiLeft, guiTop, 0, 0, this.xSize, this.ySize );
 	}
 

@@ -284,8 +284,8 @@ public class ContainerPad extends ContainerItem implements InteractiveCraftingCo
 
 
 	@Override
-	public void onCraftGuiClosed(EntityPlayer player) {
-		super.onCraftGuiClosed( player );
+	public void onContainerClosed(EntityPlayer player) {
+		super.onContainerClosed( player );
 		ItemStack current = getParentItem();
 		if( current != null ) {
 			current.setItemDamage( 0 );

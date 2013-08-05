@@ -95,7 +95,7 @@ public abstract class ContainerXACT extends Container {
 				return;
 
 			if( func_94527_a( slot, playerInventory.getItemStack(), true ) && slot.isItemValid( playerInventory.getItemStack() )
-					&& playerInventory.getItemStack().stackSize > this.draggedSlots.size() && this.func_94531_b( slot ) ) {
+					&& playerInventory.getItemStack().stackSize > this.draggedSlots.size() && this.canDragIntoSlot( slot ) ) {
 
 				this.draggedSlots.add( slot );
 			}
@@ -111,7 +111,7 @@ public abstract class ContainerXACT extends Container {
 						continue;
 
 					if( func_94527_a( slot, playerInventory.getItemStack(), true ) && slot.isItemValid( playerStack )
-							&& playerStack.stackSize >= this.draggedSlots.size() && this.func_94531_b( slot ) ) {
+							&& playerStack.stackSize >= this.draggedSlots.size() && this.canDragIntoSlot( slot ) ) {
 
 						ItemStack itemStack = playerStack.copy();
 						if( isGhostSlot( slot ) ) {
