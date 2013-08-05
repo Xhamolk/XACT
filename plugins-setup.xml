@@ -136,10 +136,10 @@
     <!-- Better Storage -->
 
     <target name="copy-betterStorage-sources" if="build.plugin.betterStorage">
-        <unzip src="${download.dir}/betterStorage.zip" dest="${download.dir}"/>
+        <unzip src="${download.dir}/BetterStorage-${betterStorage.commit}.zip" dest="${download.dir}"/>
 
         <copy todir="${api.src.dir}">
-            <fileset dir="${download.dir}/mod_BetterStorage-master/src">
+            <fileset dir="${download.dir}/BetterStorage-${betterStorage.commit}/src">
                 <include name="net/mcft/copy/betterstorage/api/ICrateStorage.java"/>
                 <include name="net/mcft/copy/betterstorage/api/ICrateWatcher.java"/>
             </fileset>
@@ -147,12 +147,12 @@
     </target>
 
     <condition property="betterStorage-downloaded">
-        <available file="${download.dir}/betterStorage.zip"/>
+        <available file="${download.dir}/BetterStorage-${betterStorage.commit}.zip"/>
     </condition>
 
     <target name="download-betterStorage" unless="betterStorage-downloaded">
-        <get src="https://github.com/copyboy/mod_BetterStorage/archive/master.zip"
-             dest="${download.dir}/betterStorage.zip"/>
+        <get src="https://github.com/copyboy/mod_BetterStorage/archive/${betterStorage.commit}.zip"
+             dest="${download.dir}/BetterStorage-${betterStorage.commit}.zip"/>
     </target>
 
 
