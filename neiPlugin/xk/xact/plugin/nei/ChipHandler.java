@@ -12,6 +12,7 @@ import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChipHandler extends TemplateRecipeHandler {
 
@@ -40,7 +41,7 @@ public class ChipHandler extends TemplateRecipeHandler {
 		}
 
 		@Override
-		public ArrayList<PositionedStack> getIngredients() {
+		public List<PositionedStack> getIngredients() {
 			return getCycledIngredients( cycleticks / 20, ingredients );
 		}
 
