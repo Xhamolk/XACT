@@ -217,51 +217,10 @@
         <available file="${main.download.dir}/minecraftforge-src-${forge.version}.zip"/>
     </condition>
 
-    <condition property="should-download-ant-contrib">
-        <or>
-            <available file="${main.download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
-            <available file="${main.download.dir}/minecraftforge-src-${forge.version}.zip"/>
-        </or>
-    </condition>
-
-    <target name="download-forge" depends="download-ant-contrib" unless="forge-already-downloaded">
-        <taskdef resource="net/sf/antcontrib/antlib.xml">
-            <classpath>
-                <pathelement location="${main.download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
-                <fileset dir="${main.download.dir}/ant-contrib/lib">
-                    <include name="*.jar"/>
-                </fileset>
-            </classpath>
-        </taskdef>
-
+    <target name="download-forge" unless="forge-already-downloaded">
         <echo message="Downloading Forge ${forge.version}"/>
-
-        <getMethod url="http://files.minecraftforge.net/minecraftforge-src-${forge.version}.zip"
-                   responseDataFile="${main.download.dir}/minecraftforge-src-${forge.version}.zip">
-            <header name="User-Agent" value="Ant-${ant.version}/${ant.java.version}"/>
-        </getMethod>
-    </target>
-
-    <target name="download-ant-contrib" unless="should-download-ant-contrib">
-        <echo message="Getting: ant-contrib"/>
-        <mkdir dir="${main.download.dir}/tmp"/>
-        <mkdir dir="${main.download.dir}/ant-contrib/lib"/>
-        <get src="http://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.zip/download"
-             dest="${main.download.dir}/tmp/ant-contrib-1.0b3-bin.zip"/>
-        <get src="http://archive.apache.org/dist/commons/codec/binaries/commons-codec-1.6-bin.zip"
-             dest="${main.download.dir}/tmp/commons-codec-1.6-bin.zip"/>
-
-        <unzip src="${main.download.dir}/tmp/ant-contrib-1.0b3-bin.zip" dest="${main.download.dir}"/>
-        <unzip src="${main.download.dir}/tmp/commons-codec-1.6-bin.zip" dest="${main.download.dir}/tmp"/>
-
-        <move todir="${main.download.dir}/ant-contrib/lib">
-            <fileset file="${main.download.dir}/tmp/commons-codec-1.6/commons-codec-1.6.jar"/>
-        </move>
-
-        <!-- Delete useless files -->
-        <delete dir="${main.download.dir}/ant-contrib/docs"/>
-        <delete dir="${main.download.dir}/tmp"/>
-
+        <get src="http://files.minecraftforge.net/minecraftforge-src-${forge.version}.zip"
+             dest="${main.download.dir}/minecraftforge-src-${forge.version}.zip"/>
     </target>
 
     <!-- Build Number -->
