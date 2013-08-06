@@ -30,13 +30,18 @@ public class ChipRenderer implements IItemRenderer {
 	public void renderItem(ItemRenderType type, ItemStack itemStack, Object... data) {
 		drawing = true;
 
+		GL11.glEnable( GL11.GL_LIGHTING );
+
 		CraftRecipe recipe = RecipeUtils.getRecipe( itemStack, Minecraft.getMinecraft().theWorld );
 		if( recipe != null ) {
-			GL11.glEnable( GL11.GL_LIGHTING );
 			GuiUtils.paintItem( recipe.getResult(), 0, 0, Minecraft.getMinecraft(), GuiUtils.itemRender );
+
+			// Green overlay
+			GuiUtils.paintEffectOverlay( 0, 0, GuiUtils.itemRender, 0.25f, 0.55f, 0.3f, 0.85f );
+		} else {
+			// paint invalid chip icon
+			GuiUtils.paintItem( ItemChip.invalidChip, 0, 0, Minecraft.getMinecraft(), GuiUtils.itemRender );
 		}
-		// Green overlay
-		GuiUtils.paintEffectOverlay( 0, 0, GuiUtils.itemRender, 0.25f, 0.55f, 0.3f, 0.85f );
 
 		drawing = false;
 		GL11.glEnable( GL11.GL_CULL_FACE );

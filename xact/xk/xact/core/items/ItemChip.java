@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import xk.xact.XActMod;
 import xk.xact.util.Textures;
 import xk.xact.recipes.CraftRecipe;
@@ -32,6 +33,8 @@ public class ItemChip extends Item {
 		this.encoded = encoded;
 		this.setUnlocalizedName( "recipeChip." + (encoded ? "encoded" : "blank") );
 		this.setCreativeTab( XActMod.xactTab );
+		if( encoded )
+			invalidChip = new ItemStack( this, 1, 1 );
 	}
 
 	@Override
@@ -68,6 +71,22 @@ public class ItemChip extends Item {
 			this.itemIcon = iconRegister.registerIcon( Textures.ITEM_CHIP_ENCODED );
 		else
 			this.itemIcon = iconRegister.registerIcon( Textures.ITEM_CHIP_BLANK );
+
+		if( invalidChipIcon == null )
+			invalidChipIcon = iconRegister.registerIcon( Textures.ITEM_CHIP_INVALID );
 	}
+
+	@SideOnly(Side.CLIENT)
+	private static Icon invalidChipIcon;
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Icon getIconFromDamage(int damage) {
+		if( damage == 1 )
+			return invalidChipIcon;
+		return super.getIconFromDamage( damage );
+	}
+
+	public static ItemStack invalidChip;
 
 }
