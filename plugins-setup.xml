@@ -109,6 +109,10 @@
                 <include name="codechicken/**/*.*"/>
                 <include name="net/**/*.*"/>
             </fileset>
+            <fileset dir="${download.dir}/CCLib-${ccLib.version}/src">
+                <include name="codechicken/**/*.*"/>
+                <include name="net/**/*.*"/>
+            </fileset>
         </copy>
     </target>
 
@@ -116,21 +120,25 @@
         <and>
             <available file="${download.dir}/CCC-${ccc.commit}.zip"/>
             <available file="${download.dir}/NEI-${nei.commit}.zip"/>
+            <available file="${download.dir}/CCLib-${ccLib.version}.jar"/>
         </and>
     </condition>
 
     <target name="download-nei" unless="nei-downloaded" if="build.plugin.nei">
         <mkdir dir="${download.dir}"/>
-        <echo message="Downloading NEI and CCC"/>
+        <echo message="Downloading NEI, CCC and CodeChickenLib"/>
 
         <get src="https://bitbucket.org/ChickenBones/codechickencore/get/${ccc.commit}.zip"
              dest="${download.dir}/CCC-${ccc.commit}.zip"/>
         <get src="https://bitbucket.org/ChickenBones/notenoughitems/get/${nei.commit}.zip"
              dest="${download.dir}/NEI-${nei.commit}.zip"/>
+        <get src="http://files.minecraftforge.net/CodeChickenLib/CodeChickenLib-${ccLib.version}.jar"
+             dest="${download.dir}/CCLib-${ccLib.version}.jar"/>
 
-        <!-- Extract NEI and CCC -->
+        <!-- Extract NEI, CCC and CodeChickenLib -->
         <unzip src="${download.dir}/CCC-${ccc.commit}.zip" dest="${download.dir}"/>
         <unzip src="${download.dir}/NEI-${nei.commit}.zip" dest="${download.dir}"/>
+        <unzip src="${download.dir}/CCLib-${ccLib.version}.jar" dest="${download.dir}/CCLib-${ccLib.version}"/>
     </target>
 
     <!-- Better Storage -->
