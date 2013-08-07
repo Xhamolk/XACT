@@ -6,11 +6,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class Textures {
 
+	public static final String TEXTURES_ROOT = "/assets/xact/textures/";
+
 	// GUI Textures
-	public static final String GUI_CRAFTER = "/mods/xact/textures/gui/GuiCrafter.png";
-	public static final String GUI_PAD = "/mods/xact/textures/gui/GuiPad.png";
-	public static final String GUI_CASE = "/mods/xact/textures/gui/GuiCase.png";
-	public static final String GUI_RECIPE = "/mods/xact/textures/gui/GuiRecipe.png";
+	public static final String GUI_CRAFTER = TEXTURES_ROOT + "gui/GuiCrafter.png";
+	public static final String GUI_PAD = TEXTURES_ROOT + "gui/GuiPad.png";
+	public static final String GUI_CASE = TEXTURES_ROOT + "gui/GuiCase.png";
+	public static final String GUI_RECIPE = TEXTURES_ROOT + "gui/GuiRecipe.png";
 
 	// Items
 	public static final String ITEM_CASE = "xact:case";
@@ -28,8 +30,8 @@ public final class Textures {
 	public static final String CRAFTER_SIDE = "xact:crafter_side";
 
 	// Other
-	public static final String MISC_BUTTONS = "/mods/xact/textures/other/buttons_1.png";
+	public static final String MISC_BUTTONS = TEXTURES_ROOT + "other/buttons_1.png";
 
 	// NEI: Usage Handler
-	public static final String NEI_CHIP_HANDLER = "/mods/xact/textures/gui/ChipHandler.png";
+	public static final String NEI_CHIP_HANDLER = TEXTURES_ROOT + "gui/ChipHandler.png";
 }
