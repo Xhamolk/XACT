@@ -3,9 +3,13 @@ package xk.xact.client.button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
+import xk.xact.util.Textures;
 
 // Used by GuiCrafter for the buttons that save/load/delete recipes.
 public abstract class GuiButtonCustom extends GuiButton {
+
+	protected static final ResourceLocation TEXTURE_BUTTONS = new ResourceLocation( Textures.MISC_BUTTONS );
 
 	protected GuiButtonCustom(int posX, int posY) {
 		this( -1, posX, posY, 0, 0 );

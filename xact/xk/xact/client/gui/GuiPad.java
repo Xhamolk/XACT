@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import xk.xact.XActMod;
 import xk.xact.client.GuiUtils;
 import xk.xact.client.button.CustomButtons;
@@ -17,6 +18,8 @@ import xk.xact.recipes.CraftRecipe;
 import xk.xact.util.Textures;
 
 public class GuiPad extends GuiCrafting {
+
+	private static final ResourceLocation guiTexture = new ResourceLocation( Textures.GUI_PAD );
 
 	private CraftPad craftPad;
 
@@ -39,8 +42,8 @@ public class GuiPad extends GuiCrafting {
 	}
 
 	@Override
-	protected String getBaseTexture() {
-		return Textures.GUI_PAD;
+	protected ResourceLocation getBaseTexture() {
+		return guiTexture;
 	}
 
 	@Override

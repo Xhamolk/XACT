@@ -3,6 +3,7 @@ package xk.xact.client.gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import xk.xact.client.GuiUtils;
@@ -51,7 +52,7 @@ public abstract class GuiXACT extends GuiContainer {
 		return null;
 	}
 
-	protected abstract String getBaseTexture();
+	protected abstract ResourceLocation getBaseTexture();
 
 	protected void drawBaseTexture() {
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );

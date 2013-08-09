@@ -15,6 +15,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xk.xact.XActMod;
 import xk.xact.core.tileentities.TileWorkbench;
+import xk.xact.util.Textures;
 import xk.xact.util.Utils;
 
 
@@ -79,10 +80,10 @@ public class BlockVanillaWorkbench extends BlockContainer {
 
 	@Override
 	public void registerIcons(IconRegister iconRegister) {
-		this.TEXTURE_TOP = iconRegister.registerIcon( "workbench_top" );
-		this.TEXTURE_FRONT = iconRegister.registerIcon( "workbench_front" );
-		this.TEXTURE_SIDE = iconRegister.registerIcon( "workbench_side" );
-		this.TEXTURE_BOTTOM = iconRegister.registerIcon( "wood_spruce" );
+		this.TEXTURE_TOP = iconRegister.registerIcon( Textures.WORKBENCH_TOP );
+		this.TEXTURE_FRONT = iconRegister.registerIcon( Textures.WORKBENCH_FRONT );
+		this.TEXTURE_SIDE = iconRegister.registerIcon( Textures.WORKBENCH_SIDE );
+		this.TEXTURE_BOTTOM = iconRegister.registerIcon( Textures.WORKBENCH_BOTTOM );
 	}
 
 	@SideOnly(Side.CLIENT)

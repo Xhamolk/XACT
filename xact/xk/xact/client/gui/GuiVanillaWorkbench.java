@@ -2,12 +2,16 @@ package xk.xact.client.gui;
 
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import xk.xact.client.GuiUtils;
 import xk.xact.gui.ContainerVanillaWorkbench;
+import xk.xact.util.Textures;
 
 public class GuiVanillaWorkbench extends GuiContainer {
+
+	private static final ResourceLocation guiTexture = new ResourceLocation( Textures.GUI_WORKBENCH );
 
 	public GuiVanillaWorkbench(ContainerVanillaWorkbench container) {
 		super( container );
@@ -22,7 +26,7 @@ public class GuiVanillaWorkbench extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		GuiUtils.bindTexture( "/gui/crafting.png" );
+		GuiUtils.bindTexture( guiTexture );
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize );
 	}
 

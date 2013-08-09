@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import xk.xact.XActMod;
 import xk.xact.client.GuiUtils;
 import xk.xact.client.button.CustomButtons;
@@ -19,6 +20,8 @@ import xk.xact.util.Textures;
 import xk.xact.util.Utils;
 
 public class GuiCrafter extends GuiCrafting {
+
+	private static final ResourceLocation guiTexture = new ResourceLocation( Textures.GUI_CRAFTER );
 
 	private TileCrafter crafter;
 	private ContainerCrafter container;
@@ -101,8 +104,8 @@ public class GuiCrafter extends GuiCrafting {
 	}
 
 	@Override
-	protected String getBaseTexture() {
-		return Textures.GUI_CRAFTER;
+	protected ResourceLocation getBaseTexture() {
+		return guiTexture;
 	}
 
 	@Override

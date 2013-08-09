@@ -36,7 +36,7 @@ public class ButtonItem extends GuiButtonCustom {
 
 	@Override
 	protected void drawBackgroundLayer(Minecraft mc, int mouseX, int mouseY) {
-		GuiUtils.bindTexture( Textures.MISC_BUTTONS );
+		GuiUtils.bindTexture( TEXTURE_BUTTONS );
 		int textureX = isSpecial ? 0 : 52;
 		if( field_82253_i )
 			textureX += 22;

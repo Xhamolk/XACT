@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import xk.xact.client.GuiUtils;
 import xk.xact.util.Textures;
@@ -13,6 +14,8 @@ import xk.xact.network.ClientProxy;
 
 // GUI used to set the recipe of a node.
 public class GuiRecipe extends GuiCrafting {
+
+	private static final ResourceLocation guiTexture = new ResourceLocation( Textures.GUI_RECIPE );
 
 	private EntityPlayer player;
 
@@ -28,8 +31,8 @@ public class GuiRecipe extends GuiCrafting {
 	}
 
 	@Override
-	public String getBaseTexture() {
-		return Textures.GUI_RECIPE;
+	protected ResourceLocation getBaseTexture() {
+		return guiTexture;
 	}
 
 	@Override

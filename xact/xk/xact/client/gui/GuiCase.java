@@ -4,6 +4,7 @@ package xk.xact.client.gui;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import xk.xact.client.GuiUtils;
 import xk.xact.recipes.CraftManager;
 import xk.xact.recipes.CraftRecipe;
@@ -11,6 +12,8 @@ import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Textures;
 
 public class GuiCase extends GuiXACT {
+
+	private static final ResourceLocation guiTexture = new ResourceLocation( Textures.GUI_CASE );
 
 	public GuiCase(Container container) {
 		super( container );
@@ -21,8 +24,8 @@ public class GuiCase extends GuiXACT {
 	private Slot slot;
 
 	@Override
-	protected String getBaseTexture() {
-		return Textures.GUI_CASE;
+	protected ResourceLocation getBaseTexture() {
+		return guiTexture;
 	}
 
 	@Override
