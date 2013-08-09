@@ -75,11 +75,13 @@ public class GuiUtils {
 		itemRenderer.zLevel = 0.0F;
 	}
 
+	private static final ResourceLocation GLINT = new ResourceLocation( "textures/misc/enchanted_item_glint.png" );
+
 	public static void paintEffectOverlay(int x, int y,RenderItem itemRenderer, float red, float green, float blue, float alpha) {
 		GL11.glDepthFunc( GL11.GL_GREATER );
 		GL11.glDisable( GL11.GL_LIGHTING );
 		GL11.glDepthMask( false );
-		bindTexture( "%blur%/misc/glint.png" ); // do I want to change this to something else?
+		bindTexture( GLINT ); // do I want to change this to something else?
 
 		itemRenderer.zLevel -= 50.0F;
 		GL11.glEnable( GL11.GL_BLEND );
