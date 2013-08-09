@@ -90,8 +90,6 @@
         <chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x"/>
         <chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x"/>
 
-        <!-- Install Scala patch -->
-        <antcall target="scala-patch"/>
     </target>
 
     <target name="compile" if="do.compile">
@@ -139,7 +137,7 @@
 
     <target name="pack-jar" depends="get-build-number">
         <!-- Copy resources -->
-        <copy todir="${classes.dir}/mods">
+        <copy todir="${classes.dir}/${dir.xact.rsc}">
             <fileset dir="${dir.xact.rsc}"/>
         </copy>
         <copy file="mcmod.info" todir="${classes.dir}">
@@ -194,15 +192,6 @@
         <copy todir="${mcpsrc.dir}">
             <fileset dir="${dir.plugin.betterStorage}"/>
         </copy>
-    </target>
-
-    <target name="scala-patch">
-        <echo message="Downloading Scala-ignore Patch..."/>
-        <get src="https://dl.dropboxusercontent.com/u/103923320/scala-ignore-patch-v1.zip"
-             dest="${download.dir}/scala-ignore-patch.zip"/>
-
-        <echo message="Applying patch..."/>
-        <unzip src="${download.dir}/scala-ignore-patch.zip" dest="${mcp.dir}" overwrite="true"/>
     </target>
 
     <!-- Forge Install -->
