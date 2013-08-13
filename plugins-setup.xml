@@ -218,10 +218,10 @@
         <delete dir="${download.dir}/appeng-${ae.version}"/>
         <unzip src="${download.dir}/appeng-${ae.version}.zip" dest="${download.dir}/appeng-${ae.version}"/>
 
-        <mkdir dir="${api.src.dir}/appeng/api"/>
-        <copy todir="${api.src.dir}/appeng/api">
-            <fileset dir="${download.dir}/appeng-${ae.version}/appeng/api">
-                <include name="*/**/*.java"/>
+        <mkdir dir="${api.src.dir}/appeng"/>
+        <copy todir="${api.src.dir}/appeng">
+            <fileset dir="${download.dir}/appeng-${ae.version}/appeng">
+                <include name="api/**/*.java"/>
             </fileset>
         </copy>
     </target>
