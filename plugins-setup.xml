@@ -41,11 +41,11 @@
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${api.src.dir}"/>
 
-    <target name="download-all" depends="download-apis, download-nei, download-mps, download-betterStorage"/>
+    <target name="download-all" depends="download-apis, download-nei, download-mps, download-betterStorage, download-ae"/>
 
     <target name="copy-access-transformers" depends="copy-nei-access-transformers"/>
 
-    <target name="copy-sources" depends="copy-nei-sources, copy-mps-sources, copy-betterStorage-sources">
+    <target name="copy-sources" depends="copy-nei-sources, copy-mps-sources, copy-betterStorage-sources, copy-ae-sources">
 
         <echo message="Extracting Inventory Tweaks API... "/>
         <unzip src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.zip" dest="${download.dir}"/>
@@ -163,5 +163,28 @@
              dest="${download.dir}/BetterStorage-${betterStorage.commit}.zip"/>
     </target>
 
+    <!-- Applied Energistics -->
+
+    <condition property="ae-downloaded">
+        <and>
+            <available file="${download.dir}/appeng-${ae.version}.zip"/>
+        </and>
+    </condition>
+
+    <target name="download-ae" unless="ae-downloaded">
+        <get dest="${download.dir}/appeng-${ae.version}.zip" src="http://ae-mod.info/releases/appeng-${ae.version}.zip"/>
+    </target>
+
+    <target name="copy-ae-sources" if="build.plugin.appliedEnergistics" depends="download-ae">
+        <delete dir="${download.dir}/appeng-${ae.version}"/>
+        <unzip src="${download.dir}/appeng-${ae.version}.zip" dest="${download.dir}/appeng-${ae.version}"/>
+
+        <mkdir dir="${api.src.dir}/appeng/api"/>
+        <copy todir="${api.src.dir}/appeng/api">
+            <fileset dir="${download.dir}/appeng-${ae.version}/appeng/api">
+                <include name="*/**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
 
 </project>
