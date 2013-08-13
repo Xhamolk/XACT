@@ -18,7 +18,7 @@ public class PluginForBetterStorage implements XACTPlugin {
 
 	@Override
 	public void initialize() {
-		if( Loader.isModLoaded( "BetterStorage" ) ) {
+		if( Loader.isModLoaded( "betterstorage" ) ) {
 			Utils.log( "Better Storage mod detected. Initializing plug-in..." );
 			PluginManager.registerInventoryAdapter( ICrateStorage.class, new CrateInventory.Provider() );
 		} else {
