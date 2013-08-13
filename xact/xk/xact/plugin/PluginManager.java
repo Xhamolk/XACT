@@ -43,7 +43,7 @@ public class PluginManager {
 			}
 		}
 
-		if( true ) {
+		if( ConfigurationManager.ENABLE_AE_PLUGIN ) {
 			// Register Applied Energistics plug-in.
 			Class aePlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.appliedenergistics.PluginForAppliedEnergistics" );
 			if( aePlugin != null ) {
