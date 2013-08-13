@@ -130,6 +130,9 @@
                 <include name="net/machinemuse/api/IPowerModule.class"/>
                 <include name="net/mcft/copy/betterstorage/api/ICrateStorage.class"/>
                 <include name="net/mcft/copy/betterstorage/api/ICrateWatcher.class"/>
+                <include name="appeng/api/IAEItemStack.class"/>
+                <include name="appeng/api/me/util/IMEInventory.class"/>
+                <include name="appeng/api/me/tiles/ITileInterfaceApi.class"/>
             </fileset>
         </copy>
 
@@ -176,6 +179,7 @@
         <antcall target="copy-nei-plugin"/>
         <antcall target="copy-mps-plugin"/>
         <antcall target="copy-betterStorage-plugin"/>
+        <antcall target="copy-ae-plugin"/>
     </target>
 
     <target name="copy-nei-plugin" if="build.plugin.nei">
@@ -191,6 +195,11 @@
     <target name="copy-betterStorage-plugin" if="build.plugin.betterStorage">
         <copy todir="${mcpsrc.dir}">
             <fileset dir="${dir.plugin.betterStorage}"/>
+        </copy>
+    </target>
+    <target name="copy-ae-plugin" if="build.plugin.appliedEnergistics">
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.plugin.appliedEnergistics}"/>
         </copy>
     </target>
 
