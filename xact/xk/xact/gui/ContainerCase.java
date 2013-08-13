@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ChestContainer(rowSize = 6)
 public class ContainerCase extends ContainerItem {
 
 	public ChipCase chipCase;
@@ -155,11 +156,5 @@ public class ContainerCase extends ContainerItem {
 		map.put( ContainerSection.CHEST, slots.subList( 0, 30 ) ); // the storage slots
 		return map;
 	}
-
-	@ChestContainer.RowSizeCallback
-	public int rowSize() {
-		return 6;
-	}
-
 
 }

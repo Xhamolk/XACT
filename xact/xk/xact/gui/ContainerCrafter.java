@@ -3,6 +3,7 @@ package xk.xact.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import invtweaks.api.container.ChestContainer;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,7 @@ import java.util.*;
 /**
  * The container used for the Crafter's GUI.
  */
+@ChestContainer
 public class ContainerCrafter extends ContainerXACT implements InteractiveCraftingContainer {
 
 	public TileCrafter crafter;

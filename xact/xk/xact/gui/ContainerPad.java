@@ -1,6 +1,7 @@
 package xk.xact.gui;
 
 
+import invtweaks.api.container.ChestContainer;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ChestContainer
 public class ContainerPad extends ContainerItem implements InteractiveCraftingContainer {
 
 	public CraftPad craftPad;

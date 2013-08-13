@@ -123,9 +123,9 @@
             <fileset dir="${mcp.dir}/reobf/minecraft">
                 <include name="xk/**/*.*"/>
                 <include name="xk/**/*.*"/>
-                <include name="invtweaks/api/ChestContainer*.class"/>
-                <include name="invtweaks/api/ContainerSection*.class"/>
-                <include name="invtweaks/api/ContainerSectionCallback*.class"/>
+                <include name="invtweaks/api/container/ChestContainer*.class"/>
+                <include name="invtweaks/api/container/ContainerSection*.class"/>
+                <include name="invtweaks/api/container/ContainerSectionCallback*.class"/>
                 <include name="net/machinemuse/api/IModularItem.class"/>
                 <include name="net/machinemuse/api/IPowerModule.class"/>
                 <include name="net/mcft/copy/betterstorage/api/ICrateStorage.class"/>

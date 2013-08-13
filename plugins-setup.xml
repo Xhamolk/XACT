@@ -51,11 +51,11 @@
         <unzip src="${download.dir}/InventoryTweaks-api-${invtweaks.version}.zip" dest="${download.dir}"/>
         <mkdir dir="${api.src.dir}/invtweaks/api/container/"/>
         <move file="${download.dir}/inventory-tweaks-${invtweaks.version}/src/minecraft/invtweaks/api/container/ChestContainer.java"
-              todir="${api.src.dir}/invtweaks/api"/>
+              todir="${api.src.dir}/invtweaks/api/container"/>
         <move file="${download.dir}/inventory-tweaks-${invtweaks.version}/src/minecraft/invtweaks/api/container/ContainerSection.java"
-              todir="${api.src.dir}/invtweaks/api"/>
+              todir="${api.src.dir}/invtweaks/api/container"/>
         <move file="${download.dir}/inventory-tweaks-${invtweaks.version}/src/minecraft/invtweaks/api/container/ContainerSectionCallback.java"
-              todir="${api.src.dir}/invtweaks/api"/>
+              todir="${api.src.dir}/invtweaks/api/container"/>
     </target>
 
 
