@@ -99,8 +99,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		this.resources = new Inventory( 3 * 9, "Resources" ) {
 			@Override
 			public void onInventoryChanged() {
-				stateUpdatePending = true;
-				recentlyUpdated = true;
+				TileCrafter.this.onInventoryChanged();
 			}
 		};
 	}
@@ -131,8 +130,15 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	}
 
 	@Override
-	public void onBlockUpdate(int neighborID) {
-		neighborsUpdatePending = true;
+	public void onBlockUpdate(int type) {
+		switch( type ) {
+			case 0: // Block update
+				neighborsUpdatePending = true;
+				break;
+			case 1: // Tile change
+				stateUpdatePending = true;
+				break;
+		}
 	}
 
 	@Override
@@ -165,20 +171,12 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public boolean[][] recipeStates = new boolean[getRecipeCount()][9];
 
 	@Override
-	public void updateEntity() {
-		if( worldObj.getWorldTime() % 5 != 0 ) { // 4 checks per second might be enough.
+	public void updateEntity() { // It was 5!
+		if( worldObj.getWorldTime() % 40 != 0 ) { // 4 checks per second might be enough.
 			return;
 		}
 
-		if( neighborsUpdatePending && !worldObj.isRemote ) {
-			checkForAdjacentCrates();
-			neighborsUpdatePending = false;
-		}
-
-		if( stateUpdatePending ) {
-			updateState();
-			stateUpdatePending = false;
-		}
+		updateIfChangesDetected();
 	}
 
 	// Gets the recipe's result.
@@ -224,6 +222,19 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		}
 	}
 
+	// Used to trigger updates if changes have been detected.
+	private void updateIfChangesDetected() {
+		if( neighborsUpdatePending && !worldObj.isRemote ) {
+			checkForAdjacentCrates();
+			neighborsUpdatePending = false;
+		}
+
+		if( stateUpdatePending ) {
+			updateState();
+			stateUpdatePending = false;
+		}
+	}
+
 	///////////////
 	///// ICraftingDevice
 
@@ -248,6 +259,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public boolean canCraft(int index) {
 		if( index < 0 || index > getRecipeCount() )
 			return false;
+		updateIfChangesDetected();
 		return craftableRecipes[index];
 	}
 
@@ -326,7 +338,8 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	@Override
 	public void onInventoryChanged() { // this is called when adding stuff through pipes/tubes/etc
 		super.onInventoryChanged();
-		resources.onInventoryChanged();
+		stateUpdatePending = true;
+		recentlyUpdated = true;
 	}
 
 	@Override

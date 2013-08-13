@@ -41,6 +41,6 @@ public abstract class TileMachine extends TileEntity {
 		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, nbt);
 	}
 
-	public void onBlockUpdate(int neighborID) { }
+	public void onBlockUpdate(int type) { }
 
 }

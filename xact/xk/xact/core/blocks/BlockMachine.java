@@ -72,7 +72,15 @@ public class BlockMachine extends BlockContainer {
 	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborID) {
 		TileEntity tileEntity = world.getBlockTileEntity( x, y, z );
 		if( tileEntity != null && tileEntity instanceof TileMachine ) {
-			((TileMachine) tileEntity).onBlockUpdate( neighborID );
+			((TileMachine) tileEntity).onBlockUpdate( 0 ); // Trigger update on next update tick.
+		}
+	}
+
+	@Override
+	public void onNeighborTileChange(World world, int x, int y, int z, int tileX, int tileY, int tileZ) {
+		TileEntity tileEntity = world.getBlockTileEntity( x, y, z );
+		if( tileEntity != null && tileEntity instanceof TileMachine ) {
+			((TileMachine) tileEntity).onBlockUpdate( 1 ); // Tile E
 		}
 	}
 

@@ -13,6 +13,7 @@ import xk.xact.api.IInventoryAdapter;
 import xk.xact.inventory.adapter.LinearInventory;
 import xk.xact.plugin.PluginManager;
 import xk.xact.util.InvalidInventoryAdapterException;
+import xk.xact.util.Utils;
 
 public class InventoryUtils {
 
@@ -219,7 +220,7 @@ public class InventoryUtils {
 				return new LinearInventory( (IInventory) inventory );
 			}
 
-			throw new InvalidInventoryAdapterException( inventory.getClass() );
+			Utils.logException( "Invalid inventory adapter", new InvalidInventoryAdapterException( inventory.getClass() ), false );
 		}
 		return null;
 	}
@@ -227,15 +228,14 @@ public class InventoryUtils {
 	@SuppressWarnings( "unchecked" )
 	public static boolean isValidInventory(Object inventory) {
 		if( inventory != null ) {
+			if( inventory instanceof IInventory ) {
+				return true;
+			}
+
 			for( Class invClass : PluginManager.getInventoryAdapters().keySet() ) {
 				if( invClass != null && invClass.isAssignableFrom( inventory.getClass() ))
 					return true;
 			}
-			// temporarily ignoring IInventory.
-
-//			if( inventory instanceof IInventory ) {
-//				return true;
-//			}
 		}
 		return false;
 	}
