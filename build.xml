@@ -176,32 +176,11 @@
         <copy todir="${mcpsrc.dir}">
             <fileset dir="${dir.xact.src}"/>
         </copy>
-        <antcall target="copy-nei-plugin"/>
-        <antcall target="copy-mps-plugin"/>
-        <antcall target="copy-betterStorage-plugin"/>
-        <antcall target="copy-ae-plugin"/>
+
+        <echo message="Copying plug-in sources."/>
+        <ant antfile="plugins-setup.xml" target="copy-plugin-sources"/>
     </target>
 
-    <target name="copy-nei-plugin" if="build.plugin.nei">
-        <copy todir="${mcpsrc.dir}">
-            <fileset dir="${dir.plugin.nei}"/>
-        </copy>
-    </target>
-    <target name="copy-mps-plugin" if="build.plugin.mps">
-        <copy todir="${mcpsrc.dir}">
-            <fileset dir="${dir.plugin.mps}"/>
-        </copy>
-    </target>
-    <target name="copy-betterStorage-plugin" if="build.plugin.betterStorage">
-        <copy todir="${mcpsrc.dir}">
-            <fileset dir="${dir.plugin.betterStorage}"/>
-        </copy>
-    </target>
-    <target name="copy-ae-plugin" if="build.plugin.appliedEnergistics">
-        <copy todir="${mcpsrc.dir}">
-            <fileset dir="${dir.plugin.appliedEnergistics}"/>
-        </copy>
-    </target>
 
     <!-- Forge Install -->
 

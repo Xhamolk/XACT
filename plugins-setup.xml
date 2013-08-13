@@ -59,6 +59,45 @@
     </target>
 
 
+    <!-- Plug-in Sources -->
+
+    <condition property="do.build.nei">
+        <istrue value="${build.plugin.nei}"/>
+    </condition>
+    <condition property="do.build.mps">
+        <istrue value="${build.plugin.mps}"/>
+    </condition>
+    <condition property="do.build.betterStorage">
+        <istrue value="${build.plugin.betterStorage}"/>
+    </condition>
+    <condition property="do.build.ae">
+        <istrue value="${build.plugin.appliedEnergistics}"/>
+    </condition>
+
+    <target name="copy-plugin-sources"
+            depends="copy-nei-plugin, copy-mps-plugin, copy-betterStorage-plugin, copy-ae-plugin"/>
+
+    <target name="copy-nei-plugin" if="do.build.nei">
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.plugin.nei}"/>
+        </copy>
+    </target>
+    <target name="copy-mps-plugin" if="do.build.mps">
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.plugin.mps}"/>
+        </copy>
+    </target>
+    <target name="copy-betterStorage-plugin" if="do.build.betterStorage">
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.plugin.betterStorage}"/>
+        </copy>
+    </target>
+    <target name="copy-ae-plugin" if="do.build.ae">
+        <copy todir="${mcpsrc.dir}">
+            <fileset dir="${dir.plugin.appliedEnergistics}"/>
+        </copy>
+    </target>
+
     <!-- APIs -->
 
     <target name="download-apis">
@@ -70,12 +109,12 @@
 
     <!-- Modular Powersuits -->
 
-    <target name="download-mps" if="build.plugin.mps">
+    <target name="download-mps" if="do.build.mps">
         <get src="https://github.com/MachineMuse/MachineMusePowersuits/archive/master.zip"
              dest="${download.dir}/mps.zip"/>
     </target>
 
-    <target name="copy-mps-sources" if="build.plugin.mps">
+    <target name="copy-mps-sources" if="do.build.mps">
         <unzip src="${download.dir}/mps.zip" dest="${download.dir}"/>
 
         <copy todir="${api.src.dir}">
@@ -93,13 +132,13 @@
     <property name="ccc.dir" value="${download.dir}/ChickenBones-codechickencore-${ccc.commit}"/>
     <property name="nei.dir" value="${download.dir}/ChickenBones-notenoughitems-${nei.commit}"/>
 
-    <target name="copy-nei-access-transformers" if="build.plugin.nei">
+    <target name="copy-nei-access-transformers" if="do.build.nei">
         <mkdir dir="${forge.dir}/accesstransformers"/>
     <!-- <copy todir="${forge.dir}/accesstransformers" file="${ccc.dir}/codechickencore_at.cfg"/> -->
         <copy todir="${forge.dir}/accesstransformers" file="${nei.dir}/nei_at.cfg"/>
     </target>
 
-    <target name="copy-nei-sources" if="build.plugin.nei">
+    <target name="copy-nei-sources" if="do.build.nei">
         <copy todir="${mcp.dir}/src/minecraft" overwrite="true">
             <fileset dir="${ccc.dir}">
                 <include name="codechicken/**/*.*"/>
@@ -124,7 +163,7 @@
         </and>
     </condition>
 
-    <target name="download-nei" unless="nei-downloaded" if="build.plugin.nei">
+    <target name="download-nei" unless="nei-downloaded" if="do.build.nei">
         <mkdir dir="${download.dir}"/>
         <echo message="Downloading NEI, CCC and CodeChickenLib"/>
 
@@ -143,7 +182,7 @@
 
     <!-- Better Storage -->
 
-    <target name="copy-betterStorage-sources" if="build.plugin.betterStorage">
+    <target name="copy-betterStorage-sources" if="do.build.betterStorage">
         <unzip src="${download.dir}/BetterStorage-${betterStorage.commit}.zip" dest="${download.dir}"/>
 
         <copy todir="${api.src.dir}">
@@ -158,7 +197,7 @@
         <available file="${download.dir}/BetterStorage-${betterStorage.commit}.zip"/>
     </condition>
 
-    <target name="download-betterStorage" unless="betterStorage-downloaded">
+    <target name="download-betterStorage" unless="betterStorage-downloaded" if="do.build.betterStorage">
         <get src="https://github.com/copyboy/mod_BetterStorage/archive/${betterStorage.commit}.zip"
              dest="${download.dir}/BetterStorage-${betterStorage.commit}.zip"/>
     </target>
@@ -171,11 +210,11 @@
         </and>
     </condition>
 
-    <target name="download-ae" unless="ae-downloaded">
+    <target name="download-ae" unless="ae-downloaded" if="do.build.ae">
         <get dest="${download.dir}/appeng-${ae.version}.zip" src="http://ae-mod.info/releases/appeng-${ae.version}.zip"/>
     </target>
 
-    <target name="copy-ae-sources" if="build.plugin.appliedEnergistics" depends="download-ae">
+    <target name="copy-ae-sources" if="do.build.ae" depends="download-ae">
         <delete dir="${download.dir}/appeng-${ae.version}"/>
         <unzip src="${download.dir}/appeng-${ae.version}.zip" dest="${download.dir}/appeng-${ae.version}"/>
 
