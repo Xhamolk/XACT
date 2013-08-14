@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import xk.xact.api.IInventoryAdapter;
+import xk.xact.inventory.adapter.DoubleChestInventory;
 import xk.xact.inventory.adapter.LinearInventory;
 import xk.xact.plugin.PluginManager;
 import xk.xact.util.InvalidInventoryAdapterException;
@@ -216,6 +217,11 @@ public class InventoryUtils {
 				if( adapterClass != null && adapterClass.isAssignableFrom( inventory.getClass() ) )
 					return PluginManager.getInventoryAdapters().get( adapterClass ).createInventoryAdapter( inventory );
 			}
+			if( inventory instanceof TileEntityChest ) {
+				TileEntityChest chest = (TileEntityChest) inventory;
+				if( DoubleChestInventory.isDoubleChest( chest ) )
+					return new DoubleChestInventory( chest );
+			}
 			if( inventory instanceof IInventory ) {
 				return new LinearInventory( (IInventory) inventory );
 			}
@@ -228,6 +234,9 @@ public class InventoryUtils {
 	@SuppressWarnings( "unchecked" )
 	public static boolean isValidInventory(Object inventory) {
 		if( inventory != null ) {
+			if( inventory instanceof TileEntityChest ) {
+				return true;
+			}
 			if( inventory instanceof IInventory ) {
 				return true;
 			}
