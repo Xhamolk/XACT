@@ -44,6 +44,8 @@ public class SlotCraft extends Slot {
 		CraftRecipe recipe = getRecipe();
 		if( recipe == null )
 			return null;
+		if( device.getWorld().isRemote )
+			return getStack(); // Client-side, only show.
 
 		InventoryCrafting grid = handler.generateTemporaryCraftingGridFor( recipe, player, false );
 		ItemStack craftedItem = handler.getRecipeResult( recipe, grid );
