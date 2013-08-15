@@ -7,6 +7,8 @@ import xk.xact.api.IInventoryAdapter;
 import xk.xact.inventory.InvSlot;
 import xk.xact.inventory.InvSlotIterator;
 import xk.xact.inventory.InventoryUtils;
+import xk.xact.inventory.SidedInventory;
+import xk.xact.util.Utils;
 
 import java.util.Iterator;
 
@@ -17,9 +19,15 @@ import java.util.Iterator;
 public class LinearInventory implements IInventoryAdapter {
 
 	private final IInventory inventory;
+	private boolean isSided;
 
 	public LinearInventory(IInventory inventory) {
 		this.inventory = inventory;
+		this.isSided = inventory instanceof ISidedInventory;
+		if( isSided && !(inventory instanceof SidedInventory) ) {
+			// My implementation of ISided is the only one allowed past here.
+			Utils.logException( "Attempting to use LinearInventory on an unregulated ISidedInventory.", new RuntimeException("Class: "+ inventory.getClass()), false );
+		}
 	}
 
 	@Override
@@ -35,6 +43,10 @@ public class LinearInventory implements IInventoryAdapter {
 		ItemStack stack = null;
 		for( InvSlot slot : InvSlotIterator.createNewFor( inventory ) ) {
 			if( slot == null )
+				continue;
+
+			// Again, make sure only my implementation of ISidedInventory reaches this point.
+			if( isSided && !((ISidedInventory)inventory).canExtractItem( slot.slotIndex, slot.stack, -1 ))
 				continue;
 
 			if( InventoryUtils.similarStacks( slot.stack, item, true ) ) {
