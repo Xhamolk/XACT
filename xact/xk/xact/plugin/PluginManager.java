@@ -43,16 +43,16 @@ public class PluginManager {
 			}
 		}
 
-		if( ConfigurationManager.ENABLE_AE_PLUGIN ) {
-			// Register Applied Energistics plug-in.
-			Class aePlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.appliedenergistics.PluginForAppliedEnergistics" );
-			if( aePlugin != null ) {
-				Object instance = ReflectionUtils.newInstanceOf( aePlugin );
-				if( instance != null ) {
-					addPlugin( XACTPlugin.class.cast( instance ) );
-				}
-			}
-		}
+//		if( ConfigurationManager.ENABLE_AE_PLUGIN ) {
+//			// Register Applied Energistics plug-in.
+//			Class aePlugin = ReflectionUtils.getClassByName( "xk.xact.plugin.appliedenergistics.PluginForAppliedEnergistics" );
+//			if( aePlugin != null ) {
+//				Object instance = ReflectionUtils.newInstanceOf( aePlugin );
+//				if( instance != null ) {
+//					addPlugin( XACTPlugin.class.cast( instance ) );
+//				}
+//			}
+//		}
 
 		// Load all other plugins.
 		Utils.log( "Loading plug-ins..." );
