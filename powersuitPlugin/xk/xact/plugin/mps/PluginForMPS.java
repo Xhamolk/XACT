@@ -20,7 +20,7 @@ public class PluginForMPS implements XACTPlugin {
 
 	@Override
 	public void initialize() {
-		if( Loader.isModLoaded( "mmmPowersuits" ) ) {
+		if( Loader.isModLoaded( "powersuits" ) ) {
 			Utils.log( "ModularPowerSuits detected. Initializing plug-in for MPS." );
 			init();
 		} else {
