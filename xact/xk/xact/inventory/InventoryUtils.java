@@ -2,15 +2,12 @@ package xk.xact.inventory;
 
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.InventoryLargeChest;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraftforge.common.ForgeDirection;
 import xk.xact.api.IInventoryAdapter;
-import xk.xact.inventory.adapter.DoubleChestInventory;
 import xk.xact.inventory.adapter.LinearInventory;
 import xk.xact.plugin.PluginManager;
 import xk.xact.util.InvalidInventoryAdapterException;
@@ -94,10 +91,18 @@ public class InventoryUtils {
 				b) there is not enough space for it to fit entirely.
 					So, split and find the next available slot.
 			 */
-
+		boolean isSided = inv instanceof ISidedInventory;
+		if( isSided && !(inv instanceof SidedInventory) ) { // My implementation of ISided is the only one allowed past here.
+			Utils.log( "Attempting to add stack to unregulated ISidedInventory... skipping! Class: %s", inv.getClass() );
+			return stack;
+		}
 		int remaining = stack.stackSize;
 		for( InvSlot slot : InvSlotIterator.createNewFor( inv ) ) {
 			if( slot == null )
+				continue;
+
+			// the side parameter is ignored - make sure only my SidedInventory reaches here.
+			if( isSided && !((ISidedInventory )inv).canInsertItem( slot.slotIndex, stack, -1 ))
 				continue;
 
 			if( slot.isEmpty() ) {
@@ -145,30 +150,49 @@ public class InventoryUtils {
 		return contents;
 	}
 
-	public static IInventory getInventoryFrom(TileEntity tileEntity) {
+	/**
+	 * Gets the IInventory instance for the specified TileEntity.
+	 * The <code>tileEntity</code> might or not be an IInventory instance,
+	 * but some tile entities are special-cased, like modded ones.
+	 * <p/>
+	 * Note: the returned IInventory may just be an adapter of the original inventory.
+	 *
+	 * @param tileEntity the TileEntity from which the IInventory will accessed.
+	 * @param side the side from which the TileEntity is being accessed.
+	 * @return an IInventory instance that represents the accessible inventory on the TileEntity.
+	 */
+	public static IInventory getInventoryFrom(TileEntity tileEntity, ForgeDirection side) {
 		IInventory inventory = null;
 		if( tileEntity instanceof TileEntityChest ) {
-			TileEntityChest chest = (TileEntityChest) tileEntity, chest2 = null;
-
-			if( chest.adjacentChestXNeg != null ) {
-				chest2 = chest.adjacentChestXNeg;
-			} else if( chest.adjacentChestXPos != null ) {
-				chest2 = chest.adjacentChestXPos;
-			} else if( chest.adjacentChestZNeg != null ) {
-				chest2 = chest.adjacentChestZNeg;
-			} else if( chest.adjacentChestZPosition != null ) {
-				chest2 = chest.adjacentChestZPosition;
-			}
-
+			TileEntityChest chest = (TileEntityChest) tileEntity;
+			TileEntityChest chest2 = getChestAdjacentTo( chest );
 			if( chest2 != null ) {
 				inventory = new InventoryLargeChest( "", chest, chest2 );
 			} else {
 				inventory = chest;
 			}
+		} else if( tileEntity instanceof ISidedInventory ) {
+			inventory = new SidedInventory( (ISidedInventory) tileEntity, side );
 		} else if( tileEntity instanceof IInventory ) {
 			inventory = (IInventory) tileEntity;
 		}
 		return inventory;
+	}
+
+	private static TileEntityChest getChestAdjacentTo(TileEntityChest chest) {
+		if( chest.adjacentChestZNeg != null ) {
+			return chest.adjacentChestZNeg;
+		}
+		if( chest.adjacentChestZPosition != null ) {
+			return chest.adjacentChestZPosition;
+		}
+		if( chest.adjacentChestXPos != null ) {
+			return chest.adjacentChestXPos;
+		}
+		if( chest.adjacentChestXNeg != null ) {
+			return chest.adjacentChestXNeg;
+		}
+		return null;
 	}
 
 	/**
@@ -217,11 +241,6 @@ public class InventoryUtils {
 				if( adapterClass != null && adapterClass.isAssignableFrom( inventory.getClass() ) )
 					return PluginManager.getInventoryAdapters().get( adapterClass ).createInventoryAdapter( inventory );
 			}
-			if( inventory instanceof TileEntityChest ) {
-				TileEntityChest chest = (TileEntityChest) inventory;
-				if( DoubleChestInventory.isDoubleChest( chest ) )
-					return new DoubleChestInventory( chest );
-			}
 			if( inventory instanceof IInventory ) {
 				return new LinearInventory( (IInventory) inventory );
 			}
@@ -237,7 +256,7 @@ public class InventoryUtils {
 			if( inventory instanceof TileEntityChest ) {
 				return true;
 			}
-			if( inventory instanceof IInventory ) {
+			if( inventory instanceof IInventory ) { // ISidedInventory is included here.
 				return true;
 			}
 

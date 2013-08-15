@@ -1,6 +1,7 @@
 package xk.xact.inventory.adapter;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import xk.xact.api.IInventoryAdapter;
 import xk.xact.inventory.InvSlot;

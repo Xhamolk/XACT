@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import xk.xact.XActMod;
 import xk.xact.config.ConfigurationManager;
 import xk.xact.inventory.InventoryUtils;
@@ -126,14 +127,13 @@ public class Utils {
 		}
 	}
 
-	private static final int[] varX = { 0, 0, -1, 1, 0, 0 };
-	private static final int[] varY = { -1, 1, 0, 0, 0, 0 };
-	private static final int[] varZ = { 0, 0, 0, 0, -1, 1 };
-
 	public static List<TileEntity> getAdjacentTileEntities(World world, int x, int y, int z) {
 		List<TileEntity> tileEntities = new ArrayList<TileEntity>();
-		for( int i = 0; i < 6; i++ ) {
-			TileEntity te = world.getBlockTileEntity( x + varX[i], y + varY[i], z + varZ[i] );
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
+			int _x = x + dir.offsetX;
+			int _y = y + dir.offsetY;
+			int _z = z + dir.offsetZ;
+			TileEntity te = world.getBlockTileEntity( _x, _y, _z );
 			if( te != null )
 				tileEntities.add( te );
 		}
@@ -142,11 +142,16 @@ public class Utils {
 
 	public static List<IInventory> getAdjacentInventories(World world, int x, int y, int z) {
 		List<IInventory> list = new ArrayList<IInventory>();
-		List<TileEntity> tileEntities = getAdjacentTileEntities( world, x, y, z );
-		for( TileEntity tile : tileEntities ) {
-			IInventory inv = InventoryUtils.getInventoryFrom( tile );
-			if( inv != null )
-				list.add( inv );
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
+			int _x = x + dir.offsetX;
+			int _y = y + dir.offsetY;
+			int _z = z + dir.offsetZ;
+			TileEntity te = world.getBlockTileEntity( _x, _y, _z );
+			if( te != null && InventoryUtils.isValidInventory( te ) ) {
+				IInventory inv = InventoryUtils.getInventoryFrom( te, dir.getOpposite() );
+				if( inv != null )
+					list.add( inv );
+			}
 		}
 		return list;
 	}

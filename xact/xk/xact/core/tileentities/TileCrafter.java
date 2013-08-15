@@ -239,9 +239,11 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	///// ICraftingDevice
 
 	@Override
+	@SuppressWarnings( "unchecked" )
 	public List getAvailableInventories() {
-		// Pulling from adjacent inventories is pending until I find a solution for the client-side issues.
-		List list = getAdjacentInventories( this );
+		// Pulling from adjacent inventories
+		List list = Utils.getAdjacentInventories( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+		// The internal inventory is always the top priority.
 		list.add( 0, resources );
 		return list;
 //		List<IInventory> list = Utils.getAdjacentInventories( worldObj, xCoord, yCoord, zCoord );
