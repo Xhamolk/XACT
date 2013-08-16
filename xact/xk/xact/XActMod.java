@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 /**
  * XACT adds an electronic crafting table capable of reading recipes encoded into chips.
  */
-@Mod(modid = "xact", name = "XACT Mod", version = "0.4.0", useMetadata = true)
+@Mod(modid = "xact", name = "XACT Mod", version = "0.4.1", useMetadata = true)
 @NetworkMod(clientSideRequired = true, serverSideRequired = true,
 		channels = { "xact_channel" }, packetHandler = PacketHandler.class)
 public class XActMod {
