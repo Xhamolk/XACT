@@ -1,5 +1,13 @@
 package xk.xact.core.tileentities;
 
+import appeng.api.IItemList;
+import appeng.api.WorldCoord;
+import appeng.api.events.GridTileLoadEvent;
+import appeng.api.events.GridTileUnloadEvent;
+import appeng.api.me.tiles.IGridTileEntity;
+import appeng.api.me.tiles.INonSignalBlock;
+import appeng.api.me.tiles.IStorageAware;
+import appeng.api.me.util.IGridInterface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.mcft.copy.betterstorage.api.ICrateStorage;
@@ -15,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
 import xk.xact.client.gui.GuiCrafter;
@@ -33,7 +42,7 @@ import java.util.List;
 /**
  * @author Xhamolk_
  */
-public class TileCrafter extends TileMachine implements IInventory, ICraftingDevice, ICrateWatcher {
+public class TileCrafter extends TileMachine implements IInventory, ICraftingDevice, ICrateWatcher, IStorageAware, INonSignalBlock, IGridTileEntity {
 
 	/*
 	Available Inventories:
@@ -145,6 +154,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	public void validate() {
 		super.validate();
 		neighborsUpdatePending = true;
+		fireLoadEventAE();
 	}
 
 	@Override
@@ -156,6 +166,7 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 			}
 		}
 		adjacentCrates = null;
+		fireUnloadEventAE();
 	}
 
 	///////////////
@@ -436,6 +447,53 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 		}
 		if( foundChanges )
 			stateUpdatePending = true;
+	}
+
+	// ---------- Applied Energistics integration ---------- //
+
+	@Override
+	public WorldCoord getLocation() {
+		return new WorldCoord( xCoord, yCoord, zCoord );
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
+	public void setPowerStatus(boolean hasPower) { }
+
+	@Override
+	public boolean isPowered() {
+		return true;
+	}
+
+	@Override
+	public IGridInterface getGrid() {
+		return null;
+	}
+
+	@Override
+	public void setGrid(IGridInterface gi) { }
+
+	@Override
+	public void onNetworkInventoryChange(IItemList iss) {
+		stateUpdatePending = true;
+	}
+
+	// Connectivity events
+
+	private void fireLoadEventAE() {
+		if( ConfigurationManager.ENABLE_AE_PLUGIN ) {
+			MinecraftForge.EVENT_BUS.post( new GridTileLoadEvent( this, this.getWorld(), this.getLocation() ) );
+		}
+	}
+
+	private void fireUnloadEventAE() {
+		if( ConfigurationManager.ENABLE_AE_PLUGIN ) {
+			MinecraftForge.EVENT_BUS.post( new GridTileUnloadEvent( this, this.getWorld(), this.getLocation() ) );
+		}
 	}
 
 }

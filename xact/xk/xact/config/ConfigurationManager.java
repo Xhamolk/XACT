@@ -35,11 +35,11 @@ public class ConfigurationManager {
 						"This plug-in enables the XACT Crafter to pull resources from adjacent crates (from Better Storage)." )
 				.getBoolean( true );
 
-//		ENABLE_AE_PLUGIN = config.get( "Plug-ins", "enableAppliedEnergisticsPlugin", true,
-//				"If true, XACT will try to initialize the plug-in for the Applied Energistics mod. \n" +
-//						"This plug-in enables the XACT Crafter to pull resources from adjacent ME Interfaces, \n" +
-//						"which acts as a access point to that particular ME Network." )
-//				.getBoolean( true );
+		ENABLE_AE_PLUGIN = config.get( "Plug-ins", "enableAppliedEnergisticsPlugin", true,
+				"If true, XACT will try to initialize the plug-in for the Applied Energistics mod. \n" +
+						"This plug-in enables the XACT Crafter to pull resources from adjacent ME Interfaces, \n" +
+						"which acts as a access point to that particular ME Network." )
+				.getBoolean( true );
 
 
 		REPLACE_WORKBENCH = config.get( "Miscellaneous", "addWorkbenchTileEntity", true,
