@@ -187,4 +187,8 @@ public class Utils {
 		return true;
 	}
 
+	public static EntityPlayer getFakePlayerFor(TileEntity tile) {
+		return XActMod.proxy.getFakePlayer( tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord );
+	}
+
 }

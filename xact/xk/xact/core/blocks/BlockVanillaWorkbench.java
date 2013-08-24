@@ -75,6 +75,12 @@ public class BlockVanillaWorkbench extends BlockContainer {
 					continue;
 				Utils.dropItemAsEntity( world, x, y, z, current );
 			}
+			inventoryContents = workbench.subGrid.getContents();
+			for( ItemStack current : inventoryContents ) {
+				if( current == null )
+					continue;
+				Utils.dropItemAsEntity( world, x, y, z, current );
+			}
 		}
 	}
 
