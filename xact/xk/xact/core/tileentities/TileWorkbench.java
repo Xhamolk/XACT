@@ -268,6 +268,10 @@ public class TileWorkbench extends TileEntity implements ISidedInventory {
 		if( slot == 0 )
 			return false;
 
+		// Temp fix: Vanilla Hopper won't obey IInventory.getInventoryStackLimit()
+		if( subGrid.getStackInSlot( slot - 1 ) != null )
+			return false;
+
 		ItemStack gridStack = craftingGrid.getStackInSlot( slot - 1 );
 		return InventoryUtils.similarStacks( gridStack, item, true );
 	}
