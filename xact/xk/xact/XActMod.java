@@ -86,7 +86,9 @@ public class XActMod {
 		proxy.registerHandlers();
 
 		// Register Blocks
-		GameRegistry.registerBlock( blockMachine, ItemMachine.class, "XACT Mod" );
+		GameRegistry.registerBlock( blockMachine, ItemMachine.class, "XACT Machine" );
+		if( blockWorkbench != null )
+			GameRegistry.registerBlock( blockWorkbench, "XACT Workbench" );
 
 		// Register TileEntities
 		GameRegistry.registerTileEntity( TileCrafter.class, "tile.xact.Crafter" );
