@@ -109,16 +109,20 @@
 
     <!-- Modular Powersuits -->
 
-    <target name="download-mps" if="do.build.mps">
-        <get src="https://github.com/MachineMuse/MachineMusePowersuits/archive/master.zip"
-             dest="${download.dir}/mps.zip"/>
+    <condition property="mps-downloaded">
+        <available file="${download.dir}/MachineMusePowersuits-${mps.commit}.zip"/>
+    </condition>
+
+    <target name="download-mps" if="do.build.mps" unless="mps-downloaded">
+        <get src="https://github.com/MachineMuse/MachineMusePowersuits/archive/${mps.commit}.zip"
+             dest="${download.dir}/MachineMusePowersuits-${mps.commit}.zip"/>
     </target>
 
     <target name="copy-mps-sources" if="do.build.mps">
-        <unzip src="${download.dir}/mps.zip" dest="${download.dir}"/>
+        <unzip src="${download.dir}/MachineMusePowersuits-${mps.commit}.zip" dest="${download.dir}"/>
 
         <copy todir="${api.src.dir}">
-            <fileset dir="${download.dir}/MachineMusePowersuits-master/src/minecraft">
+            <fileset dir="${download.dir}/MachineMusePowersuits-${mps.commit}/src/minecraft">
                 <include name="net/machinemuse/api/IModularItem.java"/>
                 <include name="net/machinemuse/api/IPowerModule.java"/>
                 <include name="net/machinemuse/api/IPropertyModifier.java"/>
