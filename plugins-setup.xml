@@ -211,7 +211,7 @@
     </condition>
 
     <target name="download-ae" unless="ae-downloaded" if="do.build.ae">
-        <get dest="${download.dir}/appeng-${ae.version}.zip" src="http://ae-mod.info/releases/appeng-${ae.version}.zip"/>
+        <get dest="${download.dir}/appeng-${ae.version}.zip" src="http://ae-mod.info/releases/appeng-${ae.version}.jar"/>
     </target>
 
     <target name="copy-ae-sources" if="do.build.ae" depends="download-ae">
@@ -222,6 +222,7 @@
         <copy todir="${api.src.dir}/appeng">
             <fileset dir="${download.dir}/appeng-${ae.version}/appeng">
                 <include name="api/**/*.java"/>
+                <exclude name="api/integration/**/*.java"/>
             </fileset>
         </copy>
     </target>
