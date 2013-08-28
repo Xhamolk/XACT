@@ -2,8 +2,6 @@ package xk.xact.core.tileentities;
 
 import appeng.api.IItemList;
 import appeng.api.WorldCoord;
-import appeng.api.events.GridTileLoadEvent;
-import appeng.api.events.GridTileUnloadEvent;
 import appeng.api.me.tiles.IGridTileEntity;
 import appeng.api.me.tiles.INonSignalBlock;
 import appeng.api.me.tiles.IStorageAware;
@@ -23,7 +21,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import xk.xact.api.CraftingHandler;
 import xk.xact.api.ICraftingDevice;
 import xk.xact.client.gui.GuiCrafter;
@@ -32,6 +29,7 @@ import xk.xact.config.ConfigurationManager;
 import xk.xact.gui.ContainerCrafter;
 import xk.xact.inventory.Inventory;
 import xk.xact.inventory.InventoryUtils;
+import xk.xact.plugin.PluginManager;
 import xk.xact.recipes.CraftRecipe;
 import xk.xact.recipes.RecipeUtils;
 import xk.xact.util.Utils;
@@ -485,14 +483,14 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	// Connectivity events
 
 	private void fireLoadEventAE() {
-		if( ConfigurationManager.ENABLE_AE_PLUGIN ) {
-			MinecraftForge.EVENT_BUS.post( new GridTileLoadEvent( this, this.getWorld(), this.getLocation() ) );
+		if( PluginManager.aeProxy != null ) {
+			PluginManager.aeProxy.fireTileLoadEvent( this );
 		}
 	}
 
 	private void fireUnloadEventAE() {
-		if( ConfigurationManager.ENABLE_AE_PLUGIN ) {
-			MinecraftForge.EVENT_BUS.post( new GridTileUnloadEvent( this, this.getWorld(), this.getLocation() ) );
+		if( PluginManager.aeProxy != null ) {
+			PluginManager.aeProxy.fireTileUnloadEvent( this );
 		}
 	}
 

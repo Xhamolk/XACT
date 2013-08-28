@@ -19,6 +19,7 @@ public class PluginForAppliedEnergistics implements XACTPlugin {
 		if( Loader.isModLoaded( "AppliedEnergistics" ) ) {
 			Utils.log( "Applied Energistics mod detected. Initializing plug-in..." );
 			PluginManager.registerInventoryAdapter( ITileInterfaceApi.class, new AEInventory.Provider() );
+			PluginManager.aeProxy = new AEProxy();
 		} else {
 			Utils.log( "Applied Energistics mod not detected. Plug-in not initialized." );
 		}

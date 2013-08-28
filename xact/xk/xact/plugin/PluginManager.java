@@ -6,12 +6,18 @@ import xk.xact.api.IInventoryAdapterProvider;
 import xk.xact.api.SpecialCasedRecipe;
 import xk.xact.api.plugin.XACTPlugin;
 import xk.xact.config.ConfigurationManager;
+import xk.xact.plugin.appliedenergistics.AEProxy;
 import xk.xact.util.ReflectionUtils;
 import xk.xact.util.Utils;
 
 import java.util.*;
 
 public class PluginManager {
+
+	// ---------- Proxies ---------- //
+
+	public static AEProxy aeProxy = null;
+
 
 	private static List<SpecialCasedRecipe> specialCasedRecipes = new ArrayList<SpecialCasedRecipe>();
 	private static List<XACTPlugin> plugins = new ArrayList<XACTPlugin>();
