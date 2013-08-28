@@ -133,6 +133,9 @@
                 <include name="appeng/api/IAEItemStack.class"/>
                 <include name="appeng/api/me/util/IMEInventory.class"/>
                 <include name="appeng/api/me/tiles/ITileInterfaceApi.class"/>
+                <include name="appeng/api/me/tiles/IStorageAware.class"/>
+                <include name="appeng/api/me/tiles/INonSignalBlock.class"/>
+                <include name="appeng/api/me/tiles/IGridTileEntity.class"/>
             </fileset>
         </copy>
 
