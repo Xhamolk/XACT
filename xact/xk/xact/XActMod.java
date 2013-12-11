@@ -58,7 +58,7 @@ public class XActMod {
 
 	public static CreativeTabXACT xactTab;
 
-	@Mod.PreInit
+	@Mod.EventHandler
 	@SuppressWarnings("unused")
 	public void preInit(FMLPreInitializationEvent event) {
 		// Load Configurations
@@ -69,7 +69,7 @@ public class XActMod {
 		logger.setParent( FMLLog.getLogger() );
 	}
 
-	@Mod.Init
+	@Mod.EventHandler
 	@SuppressWarnings("unused")
 	public void initializeAll(FMLInitializationEvent ignoredEvent) {
 
@@ -124,7 +124,7 @@ public class XActMod {
 		addRecipes();
 	}
 
-	@Mod.PostInit
+	@Mod.EventHandler
 	@SuppressWarnings("unused")
 	public void postInit(FMLPostInitializationEvent event) {
 		PluginManager.checkEverything();

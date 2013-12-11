@@ -223,7 +223,7 @@ public class GuiUtils {
 	}
 
 	public static void bindTexture(ResourceLocation resource) {
-		Minecraft.getMinecraft().renderEngine.func_110577_a( resource );
+		Minecraft.getMinecraft().renderEngine.bindTexture( resource );
 	}
 
 	/**

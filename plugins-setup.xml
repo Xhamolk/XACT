@@ -215,16 +215,18 @@
     </condition>
 
     <target name="download-ae" unless="ae-downloaded" if="do.build.ae">
+        <echo message="http://ae-mod.info/releases/appeng-${ae.version}.jar"/>
         <get dest="${download.dir}/appeng-${ae.version}.zip" src="http://ae-mod.info/releases/appeng-${ae.version}.jar"/>
     </target>
 
     <target name="copy-ae-sources" if="do.build.ae" depends="download-ae">
         <delete dir="${download.dir}/appeng-${ae.version}"/>
         <unzip src="${download.dir}/appeng-${ae.version}.zip" dest="${download.dir}/appeng-${ae.version}"/>
+        <unzip src="${download.dir}/appeng-${ae.version}/appeng_api.zip" dest="${download.dir}/appeng-${ae.version}/API"/>
 
         <mkdir dir="${api.src.dir}/appeng"/>
         <copy todir="${api.src.dir}/appeng">
-            <fileset dir="${download.dir}/appeng-${ae.version}/appeng">
+            <fileset dir="${download.dir}/appeng-${ae.version}/API/appeng">
                 <include name="api/**/*.java"/>
                 <exclude name="api/integration/**/*.java"/>
             </fileset>

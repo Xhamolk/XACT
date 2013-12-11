@@ -63,7 +63,7 @@ public class TileWorkbench extends TileEntity implements ISidedInventory {
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
 		if( packet.actionType == 0 )
-			readFromNBT( packet.customParam1 );
+			readFromNBT( packet.data );
 	}
 
 	@Override
