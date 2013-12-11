@@ -5,7 +5,6 @@ import net.machinemuse.api.IPowerModule;
 import net.machinemuse.api.IPropertyModifier;
 
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,7 +63,7 @@ public abstract class AbstractModule implements IPowerModule {
 	}
 
 	@Override
-	public boolean isValidForItem(ItemStack stack, EntityPlayer player) {
+	public boolean isValidForItem(ItemStack stack) {
 		Item item = stack.getItem();
 		return item instanceof IModularItem && this.validItems.contains( item );
 	}
