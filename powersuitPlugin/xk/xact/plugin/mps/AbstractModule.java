@@ -97,7 +97,7 @@ public abstract class AbstractModule implements IPowerModule {
 
 	@Override
 	public String getStitchedTexture(ItemStack item) {
-		return "/gui/items.png";
+		return "textures/atlas/items.png";
 	}
 
 }
