@@ -158,12 +158,13 @@ public class TileCrafter extends TileMachine implements IInventory, ICraftingDev
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		for( ICrateStorage crate : adjacentCrates ) {
+		for( int i = 0; i < adjacentCrates.length; i++ ) {
+			ICrateStorage crate = adjacentCrates[i];
 			if( crate != null ) {
 				crate.unregisterCrateWatcher( this );
+				adjacentCrates[i] = null;
 			}
 		}
-		adjacentCrates = null;
 		fireUnloadEventAE();
 	}
 
