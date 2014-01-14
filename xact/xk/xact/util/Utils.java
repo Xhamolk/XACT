@@ -6,7 +6,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -189,6 +189,78 @@ public class Utils {
 
 	public static EntityPlayer getFakePlayerFor(TileEntity tile) {
 		return XActMod.proxy.getFakePlayer( tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord );
+	}
+
+
+	public static void appendFieldToNBTList(NBTTagList list, String name, Object field) {
+		NBTBase element = null;
+		if( field instanceof Boolean ) {
+			element = new NBTTagByte( "_BOOL_" + name, (byte) ((Boolean) field ? 1 : 0) );
+		} else if( field instanceof Byte ) {
+			element = new NBTTagByte( name, (Byte) field );
+		} else if( field instanceof byte[] ) {
+			element = new NBTTagByteArray( name, (byte[]) field );
+		} else if( field instanceof Integer ) {
+			element = new NBTTagInt( name, (Integer) field );
+		} else if( field instanceof int[] ) {
+			element = new NBTTagIntArray( name, (int[]) field );
+		} else if( field instanceof Short ) {
+			element = new NBTTagShort( name, (Short) field );
+		} else if( field instanceof Long ) {
+			element = new NBTTagLong( name, (Long) field );
+		} else if( field instanceof Float ) {
+			element = new NBTTagFloat( name, (Float) field );
+		} else if( field instanceof Double ) {
+			element = new NBTTagDouble( name, (Double) field );
+		} else if( field instanceof String ) {
+			element = new NBTTagString( name, (String) field );
+		} else if( field instanceof NBTBase ) {
+			element = ((NBTBase) field).setName( name );
+		}
+
+		if( element != null ) {
+			list.appendTag( element );
+		} else {
+			String extra = field == null ? " (NULL)" : "Class: " + field.getClass();
+			Utils.logError( "Unable to save field \"%s\" to NBT. Value: %s %s", name, field, extra );
+		}
+	}
+
+	public static Object readFieldFromNBT(NBTBase tag) {
+		if( tag instanceof NBTTagByte ) {
+			String name = tag.getName();
+			byte b = ((NBTTagByte) tag).data;
+			if( name.indexOf( "_BOOL_" ) == 0 ) {
+				tag.setName( tag.getName().substring( "_BOOL_".length() ) );
+				return b == 10;
+			}
+			return b;
+		}
+		if( tag instanceof NBTTagShort ) {
+			return ((NBTTagShort) tag).data;
+		}
+		if( tag instanceof NBTTagInt ) {
+			return ((NBTTagInt) tag).data;
+		}
+		if( tag instanceof NBTTagLong ) {
+			return ((NBTTagLong) tag).data;
+		}
+		if( tag instanceof NBTTagFloat ) {
+			return ((NBTTagFloat) tag).data;
+		}
+		if( tag instanceof NBTTagDouble ) {
+			return ((NBTTagDouble) tag).data;
+		}
+		if( tag instanceof NBTTagByteArray ) {
+			return ((NBTTagByteArray) tag).byteArray;
+		}
+		if( tag instanceof NBTTagString ) {
+			return ((NBTTagString) tag).data;
+		}
+		if( tag instanceof NBTTagIntArray ) {
+			return ((NBTTagIntArray) tag).intArray;
+		}
+		return tag;
 	}
 
 }

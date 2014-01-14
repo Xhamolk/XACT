@@ -7,19 +7,25 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import xk.xact.api.OverriddenBlock;
 import xk.xact.inventory.Inventory;
 import xk.xact.inventory.InventoryUtils;
 import xk.xact.util.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // the TE for the vanilla crafting table
-public class TileWorkbench extends TileEntity implements ISidedInventory {
+public class TileWorkbench extends TileEntity implements ISidedInventory, OverriddenBlock {
 
 	public Inventory craftingGrid; // size 9
 	public Inventory outputInv; // size 1
@@ -50,6 +56,22 @@ public class TileWorkbench extends TileEntity implements ISidedInventory {
 		craftingGrid.readFromNBT( compound );
 		outputInv.readFromNBT( compound );
 		subGrid.readFromNBT( compound );
+
+		// Extra Fields
+		NBTTagList list = compound.getTagList( "extraFields" );
+		if( list != null ) {
+			int count = list.tagCount();
+			for(int i=0; i<count; i++) {
+				NBTBase tag = list.tagAt( i );
+				if( tag != null ) {
+					Object field = Utils.readFieldFromNBT( tag );
+					String name = tag.getName();
+					if( field != null ) {
+						extraFields.put( name, field );
+					}
+				}
+			}
+		}
 	}
 
 	public void writeToNBT(NBTTagCompound compound) {
@@ -58,6 +80,12 @@ public class TileWorkbench extends TileEntity implements ISidedInventory {
 		craftingGrid.writeToNBT( compound );
 		outputInv.writeToNBT( compound );
 		subGrid.writeToNBT( compound );
+
+		// Extra Fields
+		NBTTagList list = new NBTTagList( "extraFields" );
+		for(String key : extraFields.keySet()) {
+			Utils.appendFieldToNBTList( list, key, extraFields.get( key ) );
+		}
 	}
 
 	@Override
@@ -107,6 +135,7 @@ public class TileWorkbench extends TileEntity implements ISidedInventory {
 	/**
 	 * Will consume the ingredients and handle the crafting events.
 	 * Only used by automation.
+	 *
 	 * @param result the result of the recipe.
 	 */
 	private void handleExtraction(ItemStack result) {
@@ -274,6 +303,22 @@ public class TileWorkbench extends TileEntity implements ISidedInventory {
 
 		ItemStack gridStack = craftingGrid.getStackInSlot( slot - 1 );
 		return InventoryUtils.similarStacks( gridStack, item, true );
+	}
+
+
+	// ----- OverriddenBlock -----
+
+	private Map<String, Object> extraFields = new HashMap<String, Object>();
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getField(Class<T> clazz, String name) {
+		return (T) extraFields.get( name );
+	}
+
+	@Override
+	public <T> void setField(Class<T> clazz, String name, T value) {
+		extraFields.put( name, value );
 	}
 
 }
